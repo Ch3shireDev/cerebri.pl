@@ -31,6 +31,7 @@
     var correct_sequences = `{{exercise_answers.correct_sequences | escapejs}}`.replace(/'/g, '"');
     correct_sequences = JSON.parse(correct_sequences);
     var id = `{{exercise_id}}`;
+    var points = parseInt(`{{exercise_points}}`);
 </script>
 {% endif %}
 

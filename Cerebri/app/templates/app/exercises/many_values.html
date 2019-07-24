@@ -32,6 +32,7 @@
     var correctAnswers = `{{exercise_answers.answers}}`;
     correctAnswers = JSON.parse(correctAnswers);
     var id = `{{exercise_id}}`;
+    var points = parseInt(`{{exercise_points}}`);
 </script>
 
 <script>
@@ -106,11 +107,12 @@
             $('#submit-answer').addClass('text-white');
         }
 
+
         var data = { number: given_number, values: valueArray, correct: correctArray, answered: true };
 
         if (sessionStorage.getItem(id) === null && wrong === 0) {
             var currentPoints = parseInt(sessionStorage.getItem('points'));
-            sessionStorage.setItem(currentPoints + points);
+            sessionStorage.setItem('points', currentPoints + points);
         }
 
         UpdatePoints();

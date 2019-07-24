@@ -1,5 +1,5 @@
 ﻿{% extends "app/layout.html" %}
-
+{% load static %}
 {% block content %}
 <style>
 
@@ -68,7 +68,7 @@
     }
 </style>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/6.0.3/math.min.js"></script>
+<script src="{% static 'math.min.js'%}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 <script type="text/x-mathjax-config">
     MathJax.Hub.Config({

@@ -304,10 +304,12 @@ Exercises = {
     '17': Exercise(
         'Zadanie 17', 'Proste o równaniach $y=(2m+2)x-2019$ oraz $y=(3m-3)x+2019$ są równoległe, gdy:',
         {
+            'answers':{
             'A': '$m=-1$',
             'B': '$m=0$',
             'C': '$m=1$',
             'D': '$m=5$',
+            },
             'correct': 'D'
         }, answer_type=AnswerType.Closed,
         points=1,

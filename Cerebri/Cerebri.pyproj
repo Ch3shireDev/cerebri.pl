@@ -51,6 +51,7 @@
     <Folder Include="app\templates\app\exercises\" />
     <Folder Include="media\" />
     <Folder Include="media\mat\" />
+    <Folder Include="static\" />
     <Folder Include="system\" />
   </ItemGroup>
   <ItemGroup>
@@ -64,6 +65,8 @@
     <Content Include="db.sqlite3" />
     <Content Include="app\templates\app\index.html" />
     <Content Include="app\templates\app\layout.html" />
+    <Content Include="static\bootstrap.min.css" />
+    <Content Include="static\jquery-3.4.1.min.js" />
   </ItemGroup>
   <ItemGroup>
     <None Include="readme.html">

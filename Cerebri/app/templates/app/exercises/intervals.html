@@ -32,9 +32,9 @@
 
                     <label class="form-label mx-2">Rodzaj przedziału: </label>
                     <select class="form-control flex-fill interval-type-left">
-                        <option type="left-closed">Lewostronnie domknięty</option>
-                        <option type="left-open">Lewostronnie otwarty</option>
-                        <option type="left-inf">Lewostronnie nieograniczony</option>
+                        <option value="left-closed">Lewostronnie domknięty</option>
+                        <option value="left-open">Lewostronnie otwarty</option>
+                        <option value="left-inf">Lewostronnie nieograniczony</option>
                     </select>
                 </div>
 
@@ -42,9 +42,9 @@
 
                     <label class="form-label mx-2"></label>
                     <select class="form-control flex-fill interval-type-right">
-                        <option type="right-closed">Prawostronnie domknięty</option>
-                        <option type="right-open">Prawostronnie otwarty</option>
-                        <option type="right-inf">Prawostronnie nieograniczony</option>
+                        <option value="right-closed">Prawostronnie domknięty</option>
+                        <option value="right-open">Prawostronnie otwarty</option>
+                        <option value="right-inf">Prawostronnie nieograniczony</option>
                     </select>
 
                 </div>
@@ -139,7 +139,7 @@
 
     function UpdateIntervals() {
         $('.interval-type-left').each(function(index, value) {
-            var type = $(value).children(":selected").attr("type");
+            var type = $(value).children(":selected").attr("value");
             var element = $(value).parent().parent();
             if (type === 'left-inf') {
                 element.find('.interval-from input').addClass('disabled');
@@ -154,7 +154,7 @@
             }
         });
         $('.interval-type-right').each(function(index, value) {
-            var type = $(value).children(":selected").attr("type");
+            var type = $(value).children(":selected").attr("value");
             var element = $(value).parent().parent();
             if (type === 'right-inf') {
                 element.find('.interval-to input').addClass('disabled');
@@ -210,9 +210,9 @@
         ];
 
         var from_value = Field[0].val().replace('∞', 'inf');
-        var from_type = Field[1].find(':selected').attr('type');
+        var from_type = Field[1].find(':selected').attr('value');
         var to_value = Field[2].val().replace('∞', 'inf');
-        var to_type = Field[3].find(':selected').attr('type');
+        var to_type = Field[3].find(':selected').attr('value');
 
         var user_answers = [from_value, from_type, to_value, to_type];
         return [user_answers, Field];
@@ -260,9 +260,9 @@
             ];
 
             var from_value = Field[0].val().replace('∞', 'inf');
-            var from_type = Field[1].find(':selected').attr('type');
+            var from_type = Field[1].find(':selected').attr('value');
             var to_value = Field[2].val().replace('∞', 'inf');
-            var to_type = Field[3].find(':selected').attr('type');
+            var to_type = Field[3].find(':selected').attr('value');
 
             if (typeof from_value === 'undefined') {
                 from_value = '-inf';
