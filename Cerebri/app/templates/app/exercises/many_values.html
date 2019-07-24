@@ -1,0 +1,175 @@
+{% extends "app/exercise_base.html" %}
+{% block exercise %}
+
+<div class="bg-white px-5 py-2 my-2">
+    <div class="w-100 container">
+        <div class="form-group row">
+            <label class="pr-5 py-1 col-6" for="sel1">Podaj liczbę rozwiązań:</label>
+            <div class="flex-fill">
+                <select class="form-control" id="number-answers" style="max-width: 200px">
+                    <option selected>(Wybierz odpowiedź)</option>
+                    {% for x in exercise_answers.num_answers %}
+                    <option value="{{x}}">{{x}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="row form-group">
+
+            <p>Rozwiązania:</p>
+
+            <ul class="list-horizontal" id="solution-list">
+            </ul>
+
+        </div>
+        <div class="row">
+            <button id="submit-answer" class="answer btn-lg mx-auto shadow" style="max-width: 200px">Zatwierdź</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    var correctAnswers = `{{exercise_answers.answers}}`;
+    correctAnswers = JSON.parse(correctAnswers);
+    var id = `{{exercise_id}}`;
+</script>
+
+<script>
+    var storage = sessionStorage.getItem(id);
+    var answers = [];
+
+    if (storage !== null && id !== '') {
+        storage = JSON.parse(storage);
+        answers = storage.values;
+        var number = storage.number;
+        $(`#number-answers`).val(number);
+        setElements();
+        $('input').each(function(index, value) {
+            $(value).val(answers[index]);
+        });
+
+        if (storage.answered) {
+            Submit();
+        }
+    }
+
+    function Submit() {
+        var number_of_answers = correctAnswers.length.toString();
+        var given_number = $('#number-answers option:selected').val();
+
+        var correct = 0;
+        var wrong = 0;
+
+        if (number_of_answers === given_number) {
+            $('#number-answers').addClass('bg-success');
+            $('#number-answers').addClass('text-white');
+            correct++;
+        } else {
+            $('#number-answers').addClass('bg-danger');
+            $('#number-answers').addClass('text-white');
+            wrong++;
+        }
+
+        var correctArray = [];
+        var valueArray = [];
+
+        $('input').each(function(index, value) {
+            var isCorrect = false;
+            var givenValue = $(value).val();
+            valueArray.push(givenValue);
+
+            var x = parseInt($(value).val());
+            var y = parseFloat($(value).val());
+
+            if (correctAnswers.includes(x) || correctAnswers.includes(y)) {
+                var indexA = correctAnswers.indexOf(x);
+                var indexB = correctAnswers.indexOf(y);
+                var i = indexA !== -1 ? indexA : indexB;
+                correctAnswers = array_remove(correctAnswers, i);
+                $(value).addClass('bg-success');
+                correct++;
+                isCorrect = true;
+            } else {
+                $(value).addClass('bg-danger');
+                wrong++;
+            }
+            $(value).addClass('text-white');
+
+            correctArray.push(isCorrect);
+        });
+
+        if (wrong === 0 && correct > 0) {
+            $('#submit-answer').addClass('bg-success');
+            $('#submit-answer').addClass('text-white');
+        } else if (wrong > 0) {
+            $('#submit-answer').addClass('bg-danger');
+            $('#submit-answer').addClass('text-white');
+        }
+
+        var data = { number: given_number, values: valueArray, correct: correctArray, answered: true };
+
+        if (sessionStorage.getItem(id) === null && wrong === 0) {
+            var currentPoints = parseInt(sessionStorage.getItem('points'));
+            sessionStorage.setItem(currentPoints + points);
+        }
+
+        UpdatePoints();
+        sessionStorage.setItem(id, JSON.stringify(data));
+    }
+
+
+    $('#submit-answer').click(Submit);
+
+
+    function setElements() {
+
+        $('input').off();
+
+        var x = $('#number-answers option:selected').val();
+
+        var n = 0;
+        try {
+            n = parseInt(x);
+        } catch (e) {
+        }
+
+        if (isNaN(n)) n = 0;
+
+        for (var i = 0; i < 10; i++) {
+            var len = $('#solution-list li').length;
+            if (len < n) {
+                $('#solution-list').append('<li><input class="form-control m-1"/></li>');
+            } else if (len > n) {
+                $('#solution-list li').last().remove();
+            }
+        }
+
+        $('input').each(function(index, value) {
+            if (index < answers.length) {
+                $(value).val(answers[index]);
+            }
+        });
+
+        $('input').change(save_answers);
+    }
+
+    function save_answers() {
+        answers = [];
+        $('input').each(function(index, value) {
+            var val = $(value).val();
+            answers.push(val);
+        });
+        $('input').off();
+        $('input').change(save_answers);
+    }
+
+    $('input').change(save_answers);
+
+    setElements();
+
+    $('#number-answers').change(setElements);
+
+
+</script>
+
+{% endblock %}

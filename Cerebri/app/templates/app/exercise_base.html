@@ -1,0 +1,208 @@
+﻿{% extends "app/layout.html" %}
+
+{% block content %}
+<style>
+
+    
+    label {
+        user-select: none;
+        -moz-user-select: -moz-none;
+    }
+
+    .disabled {
+        pointer-events: none;
+        opacity: 0.4;
+        background: lightgrey;
+        user-select: none;
+        -moz-user-select: -moz-none;
+    }
+
+    .form-group label {
+        width: 200px;
+
+        justify-content: right !important;
+    }
+
+    .form-control { max-width: 275px !important; }
+
+    .answer {
+        flex-grow: 1;
+        margin: 0 1rem;
+        padding: 0.5rem 3rem;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    a:hover { text-decoration: none; }
+
+    .select-none { user-select: none; }
+
+    .btn-container {
+        width: 50%;
+        height: 50px;
+        padding-top: 10px;
+    }
+
+    .btn-container a, .btn-container button {
+        display: inline-table;
+        min-width: 150px !important;
+    }
+
+    #exercise {
+        overflow-x: hidden;
+        overflow-y: visible;
+        visibility: hidden;
+        height: calc(100vh - 500px);
+    }
+
+    ul.list-horizontal {
+        list-style: none;
+        width: 500px;
+    }
+
+    ul.list-horizontal li { display: inline; }
+
+    ul.list-horizontal li input {
+        width: 50px;
+        display: inline !important;
+    }
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/6.0.3/math.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [['$','$'], ['\\(','\\)']],
+            processEscapes: true,
+            "fast-preview": {disabled: true},
+            tex2jax: {preview: "none"}
+        },
+    TeX:{
+    
+        extensions: ["AMSmath.js"],
+        Macros: {xspace: '', ensuremath: ''}
+    }
+
+    });
+
+</script>
+
+
+<script>
+
+    function array_remove(array, index) {
+        var newArray = [];
+        for (var i = 0; i < array.length; i++) {
+            if (i === index) continue;
+            newArray.push(array[i]);
+        }
+        return newArray;
+    }
+
+
+    function compare(a, b) {
+        if (typeof a === 'undefined' && typeof b === 'undefined') return true;
+        if (typeof a === 'undefined' || typeof b === 'undefined') return false;
+        if (a === null && b === null) return true;
+        if (a === null || b === null) return false;
+        if (a === b) return true;
+        if (a.includes('inf') && !b.includes('inf')) return false;
+        if (b.includes('inf') && !a.includes('inf')) return false;
+        try {
+            a = a.replace('%', 'percent');
+            b = b.replace('%', 'percent');
+
+            var parser = math.parser();
+            parser.evaluate('percent = 0.01');
+
+            a = parser.evaluate(a);
+            b = parser.evaluate(b);
+
+            if (a === b) return true;
+            if (parser.compare(a, b) === 0) return true;
+        } catch (e) {
+            return false;
+        }
+        return false;
+    }
+
+    if (sessionStorage.getItem('points') === null) {
+        sessionStorage.setItem('points', 0);
+    }
+</script>
+
+<div class="d-flex flex-fill flex-column border mx-5 mt-5 mb-2 pb-1" id="exercise">
+
+    <div class="mx-auto mt-1 flex-fill w-100 py-2">
+        <div class="bg-white px-5 py-2 my-2">
+            <h3>{{exercise_title}} <small class="mx-5">({{points_text}})</small></h3>
+            <div class="py-2 mb-3">{{exercise_content | safe}}</div>
+        </div>
+        {% block exercise %}
+        {% endblock %}
+    </div>
+    <div class="row container mx-2">
+        <p>Punkty: <span id="points"></span></p>
+    </div>
+</div>
+
+
+<div class="mb-3 d-flex">
+    <div class="flex-fill text-center btn-container">
+        {%if previous_url and previous_url != "" %}
+        <a href="{{previous_url}}" class="btn-primary btn-lg btn-danger select-none">Poprzedni</a>
+        {%else%}
+        <a href="/" class="btn-primary btn-lg btn-danger select-none">Wróć</a>
+        {% endif %}
+    </div>
+    <div class="flex-fill text-center btn-container">
+        {%if next_url and next_url != "" %}
+        <a href="{{next_url}}" class="btn-primary btn-lg btn-success select-none mx-auto">Następny</a>
+        {% else%}
+        <a href="/" id="end-test" class="btn-primary btn-lg btn-success select-none mx-auto">Zakończ</a>
+        {% endif %}
+    </div>
+</div>
+
+
+{% endblock %}
+
+
+{% block scripts %}
+<script>
+    var total_points = parseInt(`{{total_points}}`);
+</script>
+
+<script>
+    $(document).ready(function() {});
+    MathJax.Hub.Queue(function() {
+        $('#exercise').css('visibility', 'initial');
+    });
+
+    function UpdatePoints() {
+        let points = parseInt(sessionStorage.getItem('points'));
+        if (points === NaN) {
+            sessionStorage.setItem('points', 0);
+            points = 0;
+        }
+
+        $('#points').text(points);
+    }
+
+    UpdatePoints();
+
+    $('#end-test').click(function(event) {
+        event.preventDefault();
+        if (confirm("Przechodząc dalej kończysz test. Kontynuować?")) {
+            var points = parseInt(sessionStorage.getItem('points'));
+            var percent = Math.floor(points * 100 / total_points);
+            alert(`Gratulacje! Twój wynik to ${points} punktów z ${total_points} możliwych: ${percent}%.`);
+            window.location = "/";
+        }
+    });
+
+</script>
+
+
+{% endblock %}

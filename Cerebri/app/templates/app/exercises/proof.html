@@ -1,0 +1,133 @@
+{% extends "app/exercise_base.html" %}
+{% block exercise %}
+
+<div class="bg-white px-5 py-2 my-2">
+    {% if exercise_answers is not None and exercise_answers.steps is not None %}
+    <div class="my-2">
+        <h3>Kroki:</h3>
+        <div class="mb-2">
+            <small>(wybierz kroki dowodu w odpowiedniej kolejności).</small>
+        </div>
+        <div id="steps-field">
+            <ul class="list-group">
+                {% for step in exercise_answers.steps|shuffle %}
+                <li id="{{step.id}}" class="proof-step list-group-item" type="button">{{step.value}}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="my-2">
+        <h3>Dowód:</h3>
+        <p id="proof-field" class="border" style="min-height: 150px"></p>
+    </div>
+    <div class="row my-2 mt-5">
+        <button id="submit-answer" class="answer btn-lg mx-auto shadow" style="max-width: 200px">Zatwierdź</button>
+    </div>
+    {% endif %}
+</div>
+
+{% if exercise_answers != None %}
+<script>
+    var correct_sequences = `{{exercise_answers.correct_sequences | escapejs}}`.replace(/'/g, '"');
+    correct_sequences = JSON.parse(correct_sequences);
+    var id = `{{exercise_id}}`;
+</script>
+{% endif %}
+
+<script>
+    function proof_click() {
+        var id = $(this).attr('id');
+        var value = $(this).html();
+        $(this).remove();
+        $('#proof-field').append(`<span id='${id}' class='field-step mx-1'>${value} </span>`);
+
+        $(`#${id}`).click(step_click);
+    }
+
+    function step_click() {
+        $(this).remove();
+        var id = $(this).attr('id');
+        var value = $(this).html();
+        $('#steps-field')
+            .append(
+                `<button id="${id}" class="btn m-2 btn-outline-primary proof-step" type="button">${value}</button>`);
+        $(`#${id}`).click(proof_click);
+    }
+
+    $('.proof-step').click(proof_click);
+
+    function Submit() {
+        var answers = [];
+        $('.field-step').each(function(index, value) {
+            var id = $(value).attr('id');
+            answers.push(id);
+        });
+
+        var error = 0;
+
+        for (var i = 0; i < correct_sequences[0].length; i++) {
+            var x = correct_sequences[0][i];
+            var y = answers[i];
+
+            if (x === y) {
+                $(`#${x}.field-step`).addClass('bg-success');
+            } else {
+                $(`#${x}.field-step`).addClass('bg-danger');
+                error++;
+            }
+
+            $(`#${x}.field-step`).addClass('text-white');
+        }
+
+        if (error > 0) {
+            $('#submit-answer').addClass('bg-danger');
+        } else {
+            $('#submit-answer').addClass('bg-success');
+        }
+        $('#submit-answer').addClass('text-white');
+
+        $('.field-step, button').attr('disabled', 'true');
+        $('.field-step').off();
+        $('.proof-step').off();
+
+        var user_answers = {
+            answers: answers,
+            finished: true,
+        };
+
+        if (sessionStorage.getItem(id) === null && error === 0) {
+            if (sessionStorage.getItem('points') === null) {
+                sessionStorage.setItem('points', 0);
+            }
+            var currentPoints = parseInt(sessionStorage.getItem('points'));
+            sessionStorage.setItem('points', currentPoints + points);
+        }
+
+        UpdatePoints();
+        sessionStorage.setItem(id, JSON.stringify(user_answers));
+    }
+
+    $('#submit-answer').click(Submit);
+
+    var session = sessionStorage.getItem(id);
+
+    if (session !== null && id !== "") {
+        session = JSON.parse(session);
+        var answers = session.answers;
+        answers.forEach(function(value) {
+            $(`#${value}`).click();
+        });
+        Submit();
+    }
+
+</script>
+
+<style>
+    .field-step {
+        text-decoration: underline dotted;
+        line-break: loose;
+        cursor: pointer;
+    }
+</style>
+
+{% endblock %}

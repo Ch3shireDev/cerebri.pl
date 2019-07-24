@@ -1,0 +1,103 @@
+{% extends "app/exercise_base.html" %}
+{% block exercise %}
+
+<div class="bg-white px-5 py-2 my-2">
+    <div>
+
+        <div class="w-100">
+            {% for element in exercise_answers %}
+            <div class="form-group form-inline">
+                <label>
+                    <p class="m-2">{{element.description}}:</p>
+                </label>
+                <input class="form-control" id="{{element.id}}"/>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="row my-5">
+            <button id="submit-answer" class="answer btn-lg mx-auto shadow" style="max-width: 200px">Zatwierdź</button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var answers = `{{exercise_answers|escapejs}}`.replace(/'/g, `"`);
+    answers = JSON.parse(answers);
+    var id = `{{exercise_id}}`;
+    //    var correct_answer = `{{exercise_answers | escapejs}}`.replace(/'/g, `"`);
+//    correct_answer = JSON.parse(correct_answer);
+    var points = parseInt(`{{exercise_points}}`);
+</script>
+
+<script>
+
+    function Submit() {
+        var flag = false;
+        $('input').each(function(index, value) {
+            var val = $(value).val();
+            if (val === "") {
+                flag = true;
+            }
+        });
+        if (flag) {
+            alert("Uzupełnij wszystkie wartości przed wysłaniem!");
+            return;
+        }
+
+        var errors = 0;
+
+        var user_answers = [];
+
+        answers.forEach(function(answer) {
+                var element = $(`#${answer.id}`);
+                user_answers.push(element.val());
+                var user_answer = element.val().replace(/,/g, '.');
+                var correct_answer = answer.value;
+                if (compare(user_answer, correct_answer)) {
+                    element.addClass('bg-success');
+                } else {
+                    element.addClass('bg-danger');
+                    errors++;
+                }
+                element.addClass('text-white');
+            }
+        );
+
+        $('#submit-answer').addClass('text-white');
+        $('input, select, #submit-answer').attr('disabled', 'true');
+        $('#submit-answer').off();
+        if (errors > 0) {
+            $('#submit-answer').addClass('bg-danger');
+        } else {
+            $('#submit-answer').addClass('bg-success');
+        }
+
+        if (sessionStorage.getItem("points") === null) {
+            sessionStorage.setItem("points", 0);
+        }
+
+        if (sessionStorage.getItem(id) === null && errors === 0) {
+            var currentPoints = parseInt(sessionStorage.getItem('points'));
+            sessionStorage.setItem('points', currentPoints + points);
+        }
+
+        UpdatePoints();
+        var ans = { answers: user_answers, points_added: true };
+        sessionStorage.setItem(id, JSON.stringify(ans));
+    }
+
+    $('#submit-answer').click(Submit);
+
+    var session = sessionStorage.getItem(id);
+    if (session !== null && id !== "") {
+        session = JSON.parse(session);
+        $('input').each(function(index, value) {
+            $(value).val(session.answers[index]);
+        });
+        Submit();
+    }
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,415 @@
+{% extends "app/exercise_base.html" %}
+{% block exercise %}
+<div class="bg-white px-5 py-2 my-2">
+    <div class="w-100 container px-0">
+
+        <div class="border m-2 p-2 justify-content-center" id="interval-number">
+            <div class="form-inline my-1 d-flex form-group justify-content-center">
+                <label class="form-label mx-2">Liczba przedziałów:</label>
+                <select class="form-control flex-fill" id="interval-number-select">
+                    {% for num in exercise_answers.num_answers %}
+                    <option>{{num}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div id="intervals">
+            <div class="border m-2 p-2 justify-content-center interval-div">
+                <div class="form-inline my-1 d-flex form-group justify-content-center interval-from">
+                    <label class="form-label mx-2">Od: </label>
+                    <input class="form-control flex-fill interval-value"/>
+
+                </div>
+                <div class=" form-inline my-1 form-group d-flex justify-content-center interval-to">
+
+                    <label class="form-label mx-2">Do: </label>
+                    <input class="form-control flex-fill interval-value"/>
+                </div>
+
+
+                <div class=" form-inline my-1 form-group d-flex justify-content-center">
+
+                    <label class="form-label mx-2">Rodzaj przedziału: </label>
+                    <select class="form-control flex-fill interval-type-left">
+                        <option type="left-closed">Lewostronnie domknięty</option>
+                        <option type="left-open">Lewostronnie otwarty</option>
+                        <option type="left-inf">Lewostronnie nieograniczony</option>
+                    </select>
+                </div>
+
+                <div class="form-inline my-1 form-group d-flex justify-content-center">
+
+                    <label class="form-label mx-2"></label>
+                    <select class="form-control flex-fill interval-type-right">
+                        <option type="right-closed">Prawostronnie domknięty</option>
+                        <option type="right-open">Prawostronnie otwarty</option>
+                        <option type="right-inf">Prawostronnie nieograniczony</option>
+                    </select>
+
+                </div>
+            </div>
+        </div>
+        <!--
+        <div class="border p-2 m-2">
+            <div class="mx-auto" style="max-width: 350px">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="empty-set">
+                    <label class="custom-control-label" for="empty-set">Zbiór rozwiązań jest pusty</label>
+                </div>
+
+            </div>
+        </div>
+        <div class="border p-2 m-2" id="single-value-div">
+            <div class="mx-auto" style="max-width: 350px">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="single-value">
+                    <label class="custom-control-label" for="single-value">Zbiór rozwiązań składa się z jednej liczby</label>
+                </div>
+            </div>
+            <div class="mx-auto" style="visibility: hidden" id="single-value-answer">
+                <div class="form-inline my-1 d-flex form-group justify-content-center">
+                    <label class="form-label mx-2" for="single-value-input">Rozwiązanie: </label>
+                    <input class="form-control flex-fill" id="single-value-input"/>
+                </div>
+            </div>
+        </div>
+        -->
+
+        <div class="row my-5">
+            <button id="submit-answer" class="answer btn-lg mx-auto shadow" style="max-width: 200px">Zatwierdź</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    var answers = `{{exercise_answers.answers | escapejs}}`;
+    answers = answers.replace(/'/g, '"');
+    answers = JSON.parse(answers);
+    var id = `{{exercise_id}}`;
+    var points = parseInt(`{{exercise_points}}`);
+</script>
+
+<script>
+    //function UpdateIntervalField() {
+    //    const emptySetChecked = $('#empty-set')[0].checked;
+    //    const singleValueChecked = $('#single-value')[0].checked;
+
+    //    if (emptySetChecked || singleValueChecked) {
+    //        $('#interval-number').addClass('disabled');
+    //        $('.interval-div').addClass("disabled");
+    //    } else {
+    //        $('#interval-number').removeClass("disabled");
+    //        $('.interval-div').removeClass("disabled");
+    //    }
+    //}
+
+    /*
+    function UpdateSingleValueField() {
+        const emptySetChecked = $('#empty-set')[0].checked;
+        const singleValueChecked = $('#single-value')[0].checked;
+
+        if (emptySetChecked) {
+            $('#single-value-div').addClass("disabled");
+        } else {
+            $('#single-value-div').removeClass("disabled");
+        }
+
+        if (singleValueChecked) {
+            $('#single-value-answer').css('visibility', 'initial');
+        } else {
+            $('#single-value-answer').css('visibility', 'hidden');
+        }
+    }
+    */
+
+    var interval_html = $('.interval-div')[0].outerHTML;
+
+    function UpdateIntervalNumber() {
+        var num = $('#interval-number-select').val();
+        num = parseInt(num);
+        if ($('.interval-div').length === num) return;
+        $('#intervals').html('');
+        for (var i = 0; i < num; i++) {
+            $('#intervals').append(interval_html);
+        }
+        $('.interval-div select').off();
+        $('.interval-div select').change(Update);
+    }
+
+    function UpdateIntervals() {
+        $('.interval-type-left').each(function(index, value) {
+            var type = $(value).children(":selected").attr("type");
+            var element = $(value).parent().parent();
+            if (type === 'left-inf') {
+                element.find('.interval-from input').addClass('disabled');
+                element.find('.interval-from input').val('-∞');
+                element.find('.interval-from label').addClass('text-muted');
+            } else {
+                element.find('.interval-from input').removeClass('disabled');
+                element.find('.interval-from label').removeClass('text-muted');
+                if (element.find('.interval-from input').val() === '-∞') {
+                    element.find('.interval-from input').val('');
+                }
+            }
+        });
+        $('.interval-type-right').each(function(index, value) {
+            var type = $(value).children(":selected").attr("type");
+            var element = $(value).parent().parent();
+            if (type === 'right-inf') {
+                element.find('.interval-to input').addClass('disabled');
+                element.find('.interval-to input').val('∞');
+                element.find('.interval-to label').addClass('text-muted');
+            } else {
+                element.find('.interval-to input').removeClass('disabled');
+                element.find('.interval-to label').removeClass('text-muted');
+                if (element.find('.interval-to input').val() === '∞') {
+                    element.find('.interval-to input').val('');
+                }
+            }
+        });
+    }
+
+    function Update() {
+        UpdateIntervalNumber();
+        UpdateIntervals();
+        //UpdateSingleValueField();
+        //UpdateIntervalField();
+    }
+
+
+    function match_points(user_answer, answer) {
+        var points = 0;
+        for (let i = 0; i < 4; i++) {
+            if (user_answer === answer) points++;
+        }
+        return points;
+    }
+
+    function match_answer_index(from_value, from_type, to_value, to_type) {
+
+        var max = 0;
+        var index_max = 0;
+        for (var i = 0; i < answers.length; i++) {
+            var points = match_points;
+            if (points > max) {
+                max = points;
+                index_max = i;
+            }
+        }
+
+        return index_max;
+    }
+
+    function GetAnswers(value) {
+        var Field = [
+            $(value).find('.interval-from input'),
+            $(value).find('.interval-type-left'),
+            $(value).find('.interval-to input'),
+            $(value).find('.interval-type-right')
+        ];
+
+        var from_value = Field[0].val().replace('∞', 'inf');
+        var from_type = Field[1].find(':selected').attr('type');
+        var to_value = Field[2].val().replace('∞', 'inf');
+        var to_type = Field[3].find(':selected').attr('type');
+
+        var user_answers = [from_value, from_type, to_value, to_type];
+        return [user_answers, Field];
+    }
+
+
+    function Submit() {
+        //var empty_set = $('#empty-set')[0].checked;
+        //var single_value = $('#single-value')[0].cheanked;
+        //var intervals = !empty_set && !single_value;
+        //if (intervals) {
+        var flag = false;
+        $('.interval-div').each(function(index, value) {
+            if (flag) return;
+            const [user_answers,] = GetAnswers(value);
+            if (user_answers[0] === "" || user_answers[2] === "") {
+                alert("Błąd - nie wszystkie pola zostały wypełnione!");
+                flag = true;
+            }
+        });
+        if (flag) return;
+
+        $('input, select').attr('disabled', 'true');
+        const intervals_num = parseInt($('#interval-number-select').val());
+        const correct_intervals_num = answers.length;
+        if (intervals_num === correct_intervals_num) {
+            $('#interval-number-select').addClass('bg-success');
+        } else {
+            $('#interval-number-select').addClass('bg-danger');
+        }
+        $('#interval-number-select').addClass('text-white');
+        $('#interval-number-select').attr('disabled', 'true');
+
+        var correct_answers = 0;
+        var wrong_answers = 0;
+
+        var answers_field = [...answers];
+
+        $('.interval-div').each(function(index, value) {
+            var Field = [
+                $(value).find('.interval-from input'),
+                $(value).find('.interval-type-left'),
+                $(value).find('.interval-to input'),
+                $(value).find('.interval-type-right')
+            ];
+
+            var from_value = Field[0].val().replace('∞', 'inf');
+            var from_type = Field[1].find(':selected').attr('type');
+            var to_value = Field[2].val().replace('∞', 'inf');
+            var to_type = Field[3].find(':selected').attr('type');
+
+            if (typeof from_value === 'undefined') {
+                from_value = '-inf';
+            }
+
+            if (typeof to_value === 'undefined') {
+                to_value = 'inf';
+            }
+
+            var correct_index = match_answer_index([from_value, from_type, to_value, to_type]);
+
+
+            var correct = answers_field[correct_index];
+            answers_field = array_remove(answers_field, correct_index);
+
+            var user = [from_value, from_type, to_value, to_type];
+
+            for (var i = 0; i < 4; i++) {
+                if (compare(user[i], correct[i])) {
+                    Field[i].addClass('bg-success');
+                    correct_answers++;
+                } else {
+                    Field[i].addClass('bg-danger');
+                    wrong_answers++;
+                }
+                Field[i].addClass('text-white');
+            }
+
+            if (wrong_answers === 0 && correct_answers > 0) {
+                $('#submit-answer').addClass('bg-success');
+                $('#submit-answer').addClass('text-white');
+            } else {
+                $('#submit-answer').addClass('bg-danger');
+                $('#submit-answer').addClass('text-white');
+            }
+
+            $('input, select, #submit-answer').attr('disable', 'true');
+            $('#submit-answer').off();
+        });
+        //} 
+        /*
+        else if (empty_set) {
+            console.log(answers);
+            $('input, select').attr('disable', 'true');
+            if (answers.length === 0) {
+                $('#empty-set').parent().addClass('bg-success');
+                $('#empty-set').parent().addClass('text-white');
+                $('#submit-answer').addClass('bg-success');
+                $('#submit-answer').addClass('text-white');
+            } else {
+                $('#empty-set').parent().addClass('bg-danger');
+                $('#empty-set').parent().addClass('text-white');
+                $('#submit-answer').addClass('bg-danger');
+                $('#submit-answer').addClass('text-white');
+            }
+        } else if (single_value) {
+            var answer = $('#single-value-answer input').val();
+            if (answer === '') {
+                alert("Błąd - nie wszystkie pola zostały wypełnione!");
+                return;
+            }
+            $('input select').attr('disable', 'true');
+            if (answers.length !== 1 || answers[0].length !== 1) {
+                $('#single-value-div').addClass('bg-danger');
+                $('#submit-answer').addClass('bg-danger');
+            } else {
+                if (answer !== answers[0][0]) {
+                    $('#single-value-div').addClass('bg-danger');
+                    $('#submit-answer').addClass('bg-danger');
+                } else {
+                    $('#single-value-div').addClass('bg-success');
+                    $('#submit-answer').addClass('bg-success');
+                }
+            }
+            $('#single-value-div').addClass('text-white');
+            $('#submit-answer').addClass('text-white');
+        }
+        */
+
+        var values = [];
+        var selected = [];
+
+        $('.interval-value').each(function(index, value) {
+            values.push($(value).val());
+        });
+
+        $('select').each(function(index, value) {
+            selected.push($(value).val());
+        });
+
+        var user_answers = {
+            number: $('#interval-number-select').val(),
+            //empty_set: empty_set,
+            //single_value: single_value,
+            //value: $('#single-value').val(),
+            intervals: intervals,
+            values: values,
+            selected: selected
+        };
+
+        if (sessionStorage.getItem(id) === null) {
+            if (wrong_answers === 0) {
+                var currentPoints = sessionStorage.getItem('points');
+                currentPoints = parseInt(currentPoints);
+                sessionStorage.setItem('points', currentPoints + points);
+            }
+        }
+
+        UpdatePoints();
+        sessionStorage.setItem(id, JSON.stringify(user_answers));
+
+    }
+
+    var session = sessionStorage.getItem(id);
+    if (session !== null && id !== "") {
+        session = JSON.parse(session);
+        var number = session.number;
+        $('#interval-number-select').val(number);
+        UpdateIntervalNumber();
+        $('input').each(function(index, value) {
+            $(value).val(session.values[index]);
+        });
+        $('select').each(function(index, value) {
+            $(value).val(session.selected[index]);
+        });
+
+        if (session.single_value) {
+            $('#single-value')[0].checked = true;
+        }
+        if (session.single_value) {
+            $('#empty-set')[0].checked = true;
+        }
+
+        Update();
+        Submit();
+    }
+
+    $('#empty-set').change(Update);
+    $('#single-value').change(Update);
+    $('#interval-number-select').change(Update);
+    $('select').change(Update);
+
+    Update();
+
+    $('#submit-answer').click(Submit);
+
+</script>
+
+
+{% endblock %}

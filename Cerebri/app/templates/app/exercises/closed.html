@@ -1,0 +1,91 @@
+{% extends "app/exercise_base.html" %}
+{% block exercise %}
+<div class="bg-white px-5 py-2 my-2">
+    <div>
+        {% if exercise_answers == '' %}
+        <div class="w-100 d-flex">
+            <button class="answer btn-lg btn-primary">A</button>
+            <button class="answer btn-lg btn-primary">B</button>
+            <button class="answer btn-lg btn-primary">C</button>
+            <button class="answer btn-lg btn-primary">D</button>
+        </div>
+        {% else%}
+        <div class="w-100">
+            <ol type="a">
+                {% for x in exercise_answers.answers|shuffle %}
+                <li class="my-1">
+                    <button id="{{x}}" class="answer btn-lg text-left px-3" style="min-width: 200px">
+                        {{exercise_answers.answers|get_item:x}}
+                    </button>
+                </li>
+                {% endfor %}
+            </ol>
+
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+
+<script>
+    var correct_answer = `{{exercise_answers.correct}}`;
+    var id = `{{exercise_id}}`;
+    var points = parseInt(`{{exercise_points}}`);
+</script>
+
+<script>
+
+    var already_answered = false;
+    var storage = sessionStorage.getItem(id);
+    if (storage !== null && id !== null && id !== "") {
+        storage = JSON.parse(storage);
+        already_answered = storage.answered;
+        if (already_answered) {
+            var clicked = $(`#${storage.clicked}`);
+            var correct = $(`#${correct_answer}`);
+            if (already_answered) {
+                if (storage.clicked !== correct_answer) {
+                    clicked.addClass('bg-danger');
+                    clicked.addClass('text-white');
+                }
+                correct.addClass('bg-success');
+                correct.addClass('text-white');
+            }
+        }
+    }
+
+    $('.answer').click(function() {
+        if (already_answered) return;
+        already_answered = true;
+        var correct = $(this).attr('id') === correct_answer;
+        if (correct) {
+            $(this).addClass('btn-success');
+        } else {
+            $(this).addClass('btn-danger');
+            $(`#${correct_answer}`).removeClass('bg-light');
+            $(`#${correct_answer}`).addClass('btn-success');
+        }
+
+        var data = {
+            answered: true,
+            correct: correct,
+            clicked: $(this).attr('id')
+        };
+
+        if (sessionStorage.getItem('points') === null) {
+            sessionStorage.setItem('points', 0);
+        }
+
+        const currentPoints = parseInt(sessionStorage.getItem('points'));
+        if (correct && sessionStorage.getItem(id) === null) {
+            sessionStorage.setItem('points', currentPoints + points);
+        }
+
+        UpdatePoints();
+
+        sessionStorage.setItem(id, JSON.stringify(data));
+    });
+
+</script>
+
+{% endblock %}
