@@ -7,12 +7,11 @@ using System.Threading;
 
 namespace Selenium
 {
-
     [TestFixture]
     public class FirefoxSampleTest
     {
         private IWebDriver driver;
-        
+
         [SetUp]
         public void SetupTest()
         {
@@ -25,7 +24,7 @@ namespace Selenium
             driver.Close();
         }
 
-        void AssertPoints(int points)
+        private void AssertPoints(int points)
         {
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(15));
             wait.Until(x => driver.FindElement(By.Id("points")).Text != "");
@@ -37,43 +36,87 @@ namespace Selenium
         [Test(Description = "Start browsing")]
         public void TestExercises()
         {
-
             driver.Navigate().GoToUrl("http://localhost:8000");
             var startButton = driver.FindElement(By.LinkText("Rozpocznij"));
             startButton.Click();
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(15));
             wait.Until(x => x.FindElement(By.Id("exercise")));
-            Assert.IsTrue(driver.FindElements(By.Id("exercise")).Count>0); driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
-
-            for (var i = 0; i < 25; i++)
+            Assert.IsTrue(driver.FindElements(By.Id("exercise")).Count > 0);
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+            var answers = "ABBDBCCCDDAADACADBCABDBCA";
+            foreach(var answerChar in answers)
             {
-                wait.Until(x => driver.FindElement(By.Id("A")).Displayed);
-                driver.FindElement(By.Id("A")).Click();
-                driver.FindElement(By.LinkText("Następny")).Click();
+                var answer = answerChar.ToString();
+                wait.Until(x => driver.FindElement(By.Id(answer)).Displayed);
+                driver.FindElement(By.Id(answer)).Click();
+                Next();
             }
-            AssertPoints(7);
-            ManyValues(new[] { "5", "3", "-3" }); 
-            driver.FindElement(By.LinkText("Następny")).Click();
-            AssertPoints(9);
-            Intervals();
-            driver.FindElement(By.LinkText("Następny")).Click();
-            AssertPoints(11);
-            Proof(new[] {"0", "1", "2", "3"});
-            driver.FindElement(By.LinkText("Następny")).Click();
-            AssertPoints(13);
-            Proof(new[] {"0", "1", "2", "3","4","5","6"});
-            driver.FindElement(By.LinkText("Następny")).Click();
-            AssertPoints(15);
 
+            var points = 25;
+            AssertPoints(points);
+            ManyValues(new[] {"5", "3", "-3"});
+            Next();
+            points += 2;
+            AssertPoints(points);
+            Intervals();
+            Next();
+            points += 2;
+            AssertPoints(points);
+            Proof(new[] {"0", "1", "2", "3"});
+            Next();
+            points += 2;
+            AssertPoints(points);
+            Proof(new[] {"0", "1", "2", "3", "4", "5", "6"});
+            Next();
+            points += 2;
+            AssertPoints(points);
+            SingleValue("36%");
+            Next();
+            points += 2;
+            AssertPoints(points);
+            SingleValue("2sqrt(17)");
+            Next();
+            points += 2;
+            AssertPoints(points);
+            ListOfValues(new []{"26","27"});
+            Next();
+            points += 4;
+            AssertPoints(points);
+            ListOfValues(new []{"20.4","-2.8"});
+            Next();
+            points += 4;
+            AssertPoints(points);
+            SingleValue("sqrt(5)/5");
+            points += 5;
+            AssertPoints(points);
+        }
+
+        void ListOfValues(string[] answers)
+        {
+            var inputs = driver.FindElements(By.TagName("input"));
+            for (var i = 0; i < answers.Length; i++)
+            {
+                Thread.Sleep(50);
+                inputs[i].SendKeys(answers[i]);
+            }
+            driver.FindElement(By.Id("submit-answer")).Click();
+            Thread.Sleep(500);
+            var success = driver.FindElements(By.ClassName("bg-success")).Count;
+            Assert.AreEqual(success, answers.Length+1);
+        }
+
+        private void Next()
+        {
+            driver.FindElement(By.LinkText("Następny")).Click();
+            Thread.Sleep(100);
         }
 
         [Test(Description = "Get Exercise 26")]
         public void TestExercise26()
         {
-
             driver.Navigate().GoToUrl("http://localhost:8000/test/26");
             AssertPoints(0);
-            ManyValues(new[] { "5", "3", "-3" }); 
+            ManyValues(new[] {"5", "3", "-3"});
             Thread.Sleep(500);
             AssertPoints(2);
         }
@@ -81,7 +124,6 @@ namespace Selenium
         [Test(Description = "Get Exercise 26")]
         public void TestExercise27()
         {
-
             driver.Navigate().GoToUrl("http://localhost:8000/test/27");
             AssertPoints(0);
             Intervals();
@@ -89,13 +131,13 @@ namespace Selenium
             AssertPoints(2);
         }
 
-        static SelectElement Select(IWebElement element)
+        private static SelectElement Select(IWebElement element)
         {
             var select = new SelectElement(element);
             return select;
         }
 
-        void Intervals()
+        private void Intervals()
         {
             var select = driver.FindElement(By.Id("interval-number-select"));
             var y = new SelectElement(select);
@@ -106,8 +148,8 @@ namespace Selenium
             driver.FindElements(By.TagName("input"))[3].SendKeys("4");
 
             Select(driver.FindElements(By.TagName("select"))[1]).SelectByValue("left-inf");
-            Select(driver.FindElements(By.TagName("select"))[2]).SelectByValue("right-open");   
-            
+            Select(driver.FindElements(By.TagName("select"))[2]).SelectByValue("right-open");
+
             Select(driver.FindElements(By.TagName("select"))[3]).SelectByValue("left-open");
             Select(driver.FindElements(By.TagName("select"))[4]).SelectByValue("right-inf");
 
@@ -117,35 +159,32 @@ namespace Selenium
             Assert.AreEqual(success, 10);
         }
 
-        void ManyValues(string[] answers)
+        private void ManyValues(string[] answers)
         {
             var select = driver.FindElement(By.Id("number-answers"));
             var y = new SelectElement(select);
-            y.SelectByText("3");
+            y.SelectByText(answers.Length.ToString());
             var inputs = driver.FindElements(By.TagName("input"));
-            for (var i = 0; i < answers.Length; i++)
-            {
-                inputs[i].SendKeys(answers[i]);
-            }
+            for (var i = 0; i < answers.Length; i++) inputs[i].SendKeys(answers[i]);
             driver.FindElement(By.Id("submit-answer")).Click();
             Thread.Sleep(100);
 
             var exercise = driver.FindElement(By.Id("exercise"));
             var successNum = exercise.FindElements(By.ClassName("bg-success")).Count;
-            Assert.IsTrue(successNum == answers.Length+2, "Wrong number of success class");
-
+            Assert.IsTrue(successNum == answers.Length + 2, "Wrong number of success class");
         }
 
-        void Proof(string[] answers)
+        private void Proof(string[] answers)
         {
             foreach (var answer in answers)
             {
                 driver.FindElement(By.Id(answer)).Click();
                 Thread.Sleep(500);
             }
+
             driver.FindElement(By.Id("submit-answer")).Click();
             var correct = driver.FindElements(By.ClassName("bg-success")).Count;
-            Assert.AreEqual(correct, answers.Length+1);
+            Assert.AreEqual(correct, answers.Length + 1);
         }
 
         [Test]
@@ -153,7 +192,7 @@ namespace Selenium
         {
             driver.Navigate().GoToUrl("http://localhost:8000/test/28");
             AssertPoints(0);
-            Proof(new []{"0","1","2","3"});
+            Proof(new[] {"0", "1", "2", "3"});
             AssertPoints(2);
         }
 
@@ -162,10 +201,27 @@ namespace Selenium
         {
             driver.Navigate().GoToUrl("http://localhost:8000/test/29");
             AssertPoints(0);
-            Proof(new []{"0","1","2","3","4","5","6"});
+            Proof(new[] {"0", "1", "2", "3", "4", "5", "6"});
             AssertPoints(2);
         }
+
+        [Test]
+        public void TestExercise30()
+        {
+            driver.Navigate().GoToUrl("http://localhost:8000/test/30");
+            AssertPoints(0);
+            SingleValue("36%");
+            AssertPoints(2);
+        }
+
+
+        public void SingleValue(string value)
+        {
+            driver.FindElement(By.TagName("input")).SendKeys(value);
+            driver.FindElement(By.Id("submit-answer")).Click();
+            Thread.Sleep(500);
+            var success = driver.FindElements(By.ClassName("bg-success")).Count;
+            Assert.AreEqual(success, 2);
+        }
     }
-
 }
-

@@ -5,6 +5,7 @@
 - 22/07/2019 - Uzupełniłem sekcję Dowodów.
 - 23/07/2019 - Pierwsze wydanie.
 - 24/07/2019 - Nowy projekt git.
+- 25/07/2019 - Poprawiłem testy i naprawiłem problem brakujących punktów.
 
 
 ![](./pics/30.png)
