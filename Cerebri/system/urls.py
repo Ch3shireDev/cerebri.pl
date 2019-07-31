@@ -11,8 +11,8 @@ from django.shortcuts import redirect
 
 urlpatterns = [
                   path('', views.home_view),
-                  path('test', lambda request: redirect('test/1')),
-                  path('test/<exercise>', views.test_view),
+                  path('1', lambda request: redirect('1/1')),
+                  path('<test_url>/<exercise_url>', views.test_view),
                   path('admin/', admin.site.urls),
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 #+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

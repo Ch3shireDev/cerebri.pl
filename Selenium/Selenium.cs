@@ -114,7 +114,7 @@ namespace Selenium
         [Test(Description = "Get Exercise 26")]
         public void TestExercise26()
         {
-            driver.Navigate().GoToUrl("http://localhost:8000/test/26");
+            driver.Navigate().GoToUrl("http://localhost:8000/1/26");
             AssertPoints(0);
             ManyValues(new[] {"5", "3", "-3"});
             Thread.Sleep(500);
@@ -124,7 +124,7 @@ namespace Selenium
         [Test(Description = "Get Exercise 26")]
         public void TestExercise27()
         {
-            driver.Navigate().GoToUrl("http://localhost:8000/test/27");
+            driver.Navigate().GoToUrl("http://localhost:8000/1/27");
             AssertPoints(0);
             Intervals();
             Thread.Sleep(500);
@@ -190,7 +190,7 @@ namespace Selenium
         [Test]
         public void TestExercise28()
         {
-            driver.Navigate().GoToUrl("http://localhost:8000/test/28");
+            driver.Navigate().GoToUrl("http://localhost:8000/1/28");
             AssertPoints(0);
             Proof(new[] {"0", "1", "2", "3"});
             AssertPoints(2);
@@ -199,7 +199,7 @@ namespace Selenium
         [Test]
         public void TestExercise29()
         {
-            driver.Navigate().GoToUrl("http://localhost:8000/test/29");
+            driver.Navigate().GoToUrl("http://localhost:8000/1/29");
             AssertPoints(0);
             Proof(new[] {"0", "1", "2", "3", "4", "5", "6"});
             AssertPoints(2);
@@ -208,7 +208,7 @@ namespace Selenium
         [Test]
         public void TestExercise30()
         {
-            driver.Navigate().GoToUrl("http://localhost:8000/test/30");
+            driver.Navigate().GoToUrl("http://localhost:8000/1/30");
             AssertPoints(0);
             SingleValue("36%");
             AssertPoints(2);

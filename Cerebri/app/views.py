@@ -4,7 +4,7 @@ Definition of views.
 
 from django.shortcuts import render, redirect
 from django.template.defaulttags import register
-from . import Exercises, webpage_dict
+from app.models import webpage_dict, Exercise, ProblemSet, AnswerType
 import random
 
 @register.filter
@@ -21,27 +21,28 @@ def home_view(request):
     return render(request, 'app/index.html')
 
 
-def test_view(request, exercise):
-    if exercise not in Exercises:
-        return redirect('/')
+def test_view(request, test_url, exercise_url):
+    
+    exercise = Exercise.objects.get(url=exercise_url)
+    test = ProblemSet.objects.get(url=test_url)
 
-    data = Exercises[exercise]
-    title = data.title
-    content = data.content
-    answers = data.answers
-    answer_type = data.answer_type
-    next_url = data.next
-    previous_url = data.previous
-    points = data.points
+    title = exercise.title
+    content = exercise.content
+    answers = eval(exercise.answers)
+    answer_type = AnswerType(exercise.answer_type)
+    next_url = test.get_next_exercise(exercise_url)
 
-    if points == 1:
+    previous_url = test.get_previous_exercise(exercise_url)
+    points = exercise.points
+
+    if points == 1: 
         points_text = "1 punkt"
     elif points in [2,3,4]:
         points_text = "%d punkty" % points
     else:
         points_text = "%d punktów" % points
 
-    total_points = sum(Exercises[key].points for key in Exercises)
+    total_points = test.get_total_points()
 
     context = {'exercise_title': title,
                'exercise_content': content,
