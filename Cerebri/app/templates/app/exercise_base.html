@@ -135,16 +135,20 @@
 <div class="d-flex flex-fill flex-column border mx-5 mt-5 mb-2 pb-1" id="exercise">
 
     <div class="mx-auto mt-1 flex-fill w-100 py-2">
+        {% block description %}
         <div class="bg-white px-5 py-2 my-2">
             <h3>{{exercise_title}} <small class="mx-5">({{points_text}})</small></h3>
             <div class="py-2 mb-3">{{exercise_content | safe}}</div>
         </div>
+        {% endblock %}
         {% block exercise %}
         {% endblock %}
     </div>
+    {% block points %}
     <div class="row container mx-2">
         <p>Punkty: <span id="points"></span></p>
     </div>
+    {% endblock %}
 </div>
 
 

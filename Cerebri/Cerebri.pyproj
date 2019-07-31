@@ -58,6 +58,9 @@
     <Folder Include="system\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="app\templates\app\edit.html">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="app\templates\app\exercises\proof.html" />
     <Content Include="app\templates\app\exercises\intervals.html" />
     <Content Include="app\templates\app\exercises\list_of_values.html" />
