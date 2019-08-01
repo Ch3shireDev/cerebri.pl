@@ -14,6 +14,7 @@ urlpatterns = [
                   path('<test_url>', views.test_view),
                   path('<test_url>/<exercise_url>', views.exercise_view),
                   path('<test_url>/<exercise_url>/edit', views.exercise_edit_view),
+                  path('<test_url>/<exercise_url>/render', views.exercise_edit_render),
                   path('admin/', admin.site.urls),
               ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 #+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

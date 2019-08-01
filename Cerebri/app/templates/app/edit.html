@@ -1,18 +1,21 @@
 {% extends "app/exercise_base.html" %}
 {% block description %}
+<div id="rendered">
+
+</div>
 {% endblock %}
 {% block exercise %}
 <div class="m-2">
     <h3>Tytuł</h3>
-    <input type="email" class="form-control" id="title-input" placeholder="Enter email" value="{{exercise_title}}">
+    <input class="form-control" id="title-input" value="{{exercise_title}}">
 </div>
 <div class="m-2">
     <h3>Opis</h3>
-    <div id="editor" style="width: 90%; height:200px">{{exercise_content}}</div>
+    <div id="editor" style="width: 90%; min-height:100px">{{exercise_content}}</div>
 </div>
 <div class="m-2">
 <h3>Odpowiedzi</h3>
-<div id="answers-editor" style="width: 90%; height:200px">{{exercise_answers}}</div>
+<div id="answers-editor" style="width: 90%; min-height:100px">{{exercise_answers}}</div>
 </div> 
 
 <div class="form-group m-2">
@@ -20,7 +23,7 @@
     <label for="sel1">Select list:</label>
     <select class="form-control" id="answer-type"  autocomplete="off">
         {% for number, type in answer_types %}
-        <option value="{{number}}" 
+        <option value="{{number}}" name="{{type}}" 
                 {%ifequal answer_type type %}
                 selected
                 {%endifequal%}>
@@ -30,19 +33,23 @@
     </select>
 </div> 
 
-
-{% for key, value in answer_dict %}
-<div class="container">
-    {{key}}
-    <code>{{value|safe}}</code>
-
+<div class="m-2">
+<button class="btn btn-lg" style="background: #dc143c; color: white;" id="render-button">Render</button>
 </div>
-{% endfor %}
+<script>
+    
+    var AnswersDict = {};
+</script>
+    {% for key, value in answer_dict %}
+<script>
+    AnswersDict['{{key}}'] = `{{value|escapejs}}`;
+</script>
+    {% endfor %}
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.5/ace.js" type="text/javascript" charset="utf-8"></script>
 
-
+<form method="post">{% csrf_token %}</form>
 
 <script>
 
@@ -50,15 +57,32 @@
     editor.setTheme("ace/theme/monokai");
     editor.setShowPrintMargin(false);
     editor.getSession().setMode("ace/mode/latex");
+    //editor.setOption('maxLines', '{Infinity}');
 
     var answersEditor = ace.edit("answers-editor");
     answersEditor.setTheme("ace/theme/monokai");
     answersEditor.setShowPrintMargin(false);
     answersEditor.getSession().setMode("ace/mode/python");
+    //answersEditor.setOption('maxLines', '{Infinity}');
 
-    $('#answer-type').change(function() {
-        var val = $(this).val();
-        answersEditor.getSession().setValue('abc');
+    $('#answer-type').change(function () {
+        var name = $('#answer-type option:selected').attr('name');
+        var answer = AnswersDict[name];
+        answersEditor.getSession().setValue(answer);
+    });
+
+    $('#render-button').click(function() {
+        $.post('render',
+            {
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                title: $('#title-input').val(),
+                content: editor.getValue(),
+                answers: answersEditor.getValue(),
+                answer_type: $('#answer-type').val(),
+            },
+            function (data) {
+                console.log(data);
+            });
     });
 </script>
 {% endblock %}

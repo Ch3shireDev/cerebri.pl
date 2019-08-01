@@ -6,6 +6,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, redirect
 from django.template.defaulttags import register
 from app.models import webpage_dict, Exercise, Test, AnswerType, AnswerDictionary
+from django.http import HttpResponse
 import random
 
 @register.filter
@@ -109,3 +110,13 @@ def exercise_edit_view(request, test_url, exercise_url):
 
 
     return render(request, 'app/edit.html', context)
+
+def exercise_edit_render(request, test_url, exercise_url):
+    if request.method != 'POST':
+        return HttpResponse(status=500)
+
+    title = request.POST['title']
+    content = request.POST['content']
+
+
+    return HttpResponse(status=200)
