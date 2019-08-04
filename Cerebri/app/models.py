@@ -13,10 +13,10 @@ class AnswerType(Enum):
     Intervals = 4
 
 AnswerDictionary = [
-(AnswerType.Closed, '''{'answers':{'A': '2','B': '4','C': '\(\sqrt2\)','D': r'$\\frac12$',},'correct': 'A'},}'''),
+(AnswerType.Closed, '''{'answers':{'A': '2','B': '4','C': '\(\sqrt2\)','D': r'$\\frac12$',},'correct': 'A'}'''),
 (AnswerType.Intervals, '''{'num_answers': [1, 2],'answers': [['-inf', 'left-inf', '4/3', 'right-open'],['4', 'left-open', 'inf', 'right-inf']]},'''),
 (AnswerType.ListOfValues, '''[{"description": "Wartość $\\cos\\alpha$", "id": "cos-value", "value": "sqrt(5)/5"}],'''),
-(AnswerType.ManyValues, '''{{'num_answers': [0, 1, 2, 3, 4, 5],'answers': [5, 3, -3],},}'''),
+(AnswerType.ManyValues, '''{'num_answers': [0, 1, 2, 3, 4, 5],'answers': [5, 3, -3],}'''),
 (AnswerType.Proof, '''{'steps': [{'id': '0', 'value': 'First step'},{'id': '1', 'value': 'Second step'},], 'correct_sequences': [['0','1']] },'''),
          ]
 
@@ -34,6 +34,7 @@ class Test(models.Model):
 
     def get_exercises(self):
         tab = eval(self.exercises)
+        tab = [str(x) for x in tab]
         return tab
 
     def set_exercises(self, tab):
@@ -72,9 +73,9 @@ class Exercise(models.Model):
     url = models.AutoField(primary_key=True)
     title = models.CharField(max_length=32)
     content = models.TextField()
-    answers = models.TextField()
+    answers = models.TextField(default=AnswerDictionary[0][1])
     answer_type = models.PositiveSmallIntegerField(default=0)
-    points = models.PositiveSmallIntegerField(default=0)
+    points = models.PositiveSmallIntegerField(default=1)
 
     def get_content(self):
         return self.content

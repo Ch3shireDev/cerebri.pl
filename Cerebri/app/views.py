@@ -8,7 +8,7 @@ from django.template.defaulttags import register
 from app.models import webpage_dict, Exercise, Test, AnswerType, AnswerDictionary
 from django.http import HttpResponse
 import random
-import json
+import re
 
 @register.filter
 def get_item(dictionary, key):
@@ -16,6 +16,8 @@ def get_item(dictionary, key):
 
 @register.filter
 def shuffle(arg):
+    if arg==None:
+        return []
     tmp = list(arg)[:]
     random.shuffle(tmp)
     return tmp
@@ -66,7 +68,14 @@ def exercise_view(request, test_url, exercise_url):
 
     title = exercise.title
     content = exercise.content
-    answers = eval(exercise.answers)
+
+    answers = exercise.answers
+    answers = re.sub(r'(?<!\\)\\(?<!\\)', '\\\\', answers)
+
+    try:
+        answers = eval(answers)
+    except:
+        answers = None
     answer_type = AnswerType(exercise.answer_type)
     next_url = test.get_next_exercise(exercise_url)
 
@@ -76,10 +85,6 @@ def exercise_view(request, test_url, exercise_url):
 
     return exercise_render(request,title,content,answers,answer_type,test_url, exercise_url,next_url,previous_url,points,total_points)
 
-
-
-
-
 @staff_member_required
 def exercise_edit_view(request, test_url, exercise_url):
     exercise = Exercise.objects.get(url=exercise_url)
@@ -88,7 +93,10 @@ def exercise_edit_view(request, test_url, exercise_url):
     title = exercise.title
     points = exercise.points
     content = exercise.content
-    answers = eval(exercise.answers)
+    try:
+        answers = eval(exercise.answers)
+    except:
+        answers = ""
     answer_type = AnswerType(exercise.answer_type)
     answer_types = [(e.value, e) for e in AnswerType]
 
@@ -119,8 +127,6 @@ def exercise_edit_view(request, test_url, exercise_url):
         'answer_types': answer_types,
         'answer_dict': AnswerDictionary
                }
-
-
     return render(request, 'app/edit_exercise.html', context)
 
 @staff_member_required
@@ -132,8 +138,10 @@ def exercise_edit_render(request, test_url, exercise_url):
     content = request.POST['content']
     answer_type = request.POST['answer_type']
     answers = request.POST['answers']
-    answers = eval(answers)
-
+    try:
+        answers = eval(answers)
+    except:
+        answers = ""
     answer_type = AnswerType(int(answer_type))
     return exercise_render(request,title,content,answers,answer_type)
 
@@ -158,8 +166,13 @@ def exercise_edit_save(request,test_url,exercise_url):
     exercise.title = title
     exercise.content = content
     exercise.answer_type = int(answer_type)
+
+    answers = re.sub(r'(?<!\\)\\(?<!\\)', r'\\\\', answers)
+    
     exercise.answers = answers
     exercise.points = points
+
+    exercise.save()
 
     return HttpResponse(status=200)
 
@@ -183,4 +196,15 @@ def exercise_add_before(request, test_url, exercise_url):
 
 @staff_member_required
 def exercise_add_after(request,test_url, exercise_url):
-    return HttpResponse(status=200)
+    test = Test.objects.get(url=test_url)
+    exercises = test.get_exercises()
+    if exercise_url not in exercises:
+        return HttpResponse(status=500)
+    index = exercises.index(exercise_url)
+    title = "Zadanie %d" % (index+2)
+    exercise = Exercise.objects.create(title=title)
+    exercise.save()
+    exercises.insert(index+1, str(exercise.url))
+    test.set_exercises(exercises)
+    test.save()
+    return redirect('/%s/%s/edit' % (test_url, exercise.url))

@@ -1,21 +1,14 @@
 {% extends "app/layout.html" %}
-
 {% load static %}
 {% block content %}
 <link rel="stylesheet" href="{% static 'exercise.css'%}" type="text/css"/>
-
 <div class="d-flex flex-fill flex-column border mx-5 mt-5 mb-2">
     <div id="rendered">
 
     </div>
 </div>
-
-
 <div class="d-flex flex-fill flex-column border mx-5 mt-5 mb-2 pb-1">
-
     <div class="mx-auto mt-1 flex-fill w-100 py-2">
-
-
         <div class="m-2">
             <h3>Tytuł</h3>
             <input class="form-control" id="title-input" value="{{exercise_title}}" autocomplete="off">
@@ -26,11 +19,11 @@
         </div>
         <div class="m-2">
             <h3>Opis</h3>
-            <div id="editor" style="width: 90%; min-height: 100px">{{exercise_content}}</div>
+            <div id="editor" class="tex2jax_ignore" style="width: 90%; min-height: 100px">{{exercise_content}}</div>
         </div>
         <div class="m-2">
             <h3>Odpowiedzi</h3>
-            <div id="answers-editor" style="width: 90%; min-height: 100px">{{exercise_answers}}</div>
+            <div id="answers-editor" class="tex2jax_ignore" style="width: 90%; min-height: 100px">{{exercise_answers}}</div>
         </div>
 
         <div class="form-group m-2">
@@ -52,7 +45,7 @@
             <button class="btn btn-lg" style="background: #dc143c; color: white;" id="render-button">Render</button>
 
             <button class="btn btn-lg bg-success text-white" id="save-button">Save</button>
-            <a href="/{{test_url}}/{{exercise_url}}" class="btn btn-lg bg-warning text-white" id="show-button">Show page</a>
+            <button class="btn btn-lg bg-warning text-white" id="show-button">Save and show</button>
         </div>
         <script>
 
@@ -74,12 +67,19 @@
             var editor = ace.edit("editor");
             editor.setTheme("ace/theme/monokai");
             editor.setShowPrintMargin(false);
+            editor.setOption('useWrapMode', true);
+            editor.getSession().setUseWrapMode(true);
             editor.getSession().setMode("ace/mode/latex");
             //editor.setOption('maxLines', '{Infinity}');
+
+            var html = $('#answers-editor').html().replace(/\\\\/g, '\\');
+            $('#answers-editor').html(html);
 
             var answersEditor = ace.edit("answers-editor");
             answersEditor.setTheme("ace/theme/monokai");
             answersEditor.setShowPrintMargin(false);
+            answersEditor.setOption('useWrapMode', true);
+            answersEditor.getSession().setUseWrapMode(true);
             answersEditor.getSession().setMode("ace/mode/python");
             //answersEditor.setOption('maxLines', '{Infinity}');
 
@@ -94,14 +94,14 @@
                     csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
                     title: $('#title-input').val(),
                     content: editor.getValue(),
-                    answers: answersEditor.getValue(),
+                    answers: answersEditor.getValue().replace(/\\f/g, '\\\\f'),
                     answer_type: $('#answer-type').val(),
                     points: $('#points-input').val(),
                 };
             }
 
             $('#render-button').click(function() {
-                $.post('render',
+                $.post('view',
                     getPostData(),
                     function(data) {
                         $('#rendered').html(data);
@@ -120,6 +120,17 @@
                                 $('#save-button').text("Save");
                             },
                             500);
+                    });
+            });
+
+            $('#show-button').click(function() {
+                $.post('save',
+                    getPostData(),
+                    function (data) {
+                        var url = window.location.href.split('/');
+                        url.pop();
+                        url = url.join('/');
+                        window.location.href = url;
                     });
             });
 
