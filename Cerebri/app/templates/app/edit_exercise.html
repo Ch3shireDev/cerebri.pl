@@ -1,0 +1,173 @@
+{% extends "app/layout.html" %}
+
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'exercise.css'%}" type="text/css"/>
+
+<div class="d-flex flex-fill flex-column border mx-5 mt-5 mb-2">
+    <div id="rendered">
+
+    </div>
+</div>
+
+
+<div class="d-flex flex-fill flex-column border mx-5 mt-5 mb-2 pb-1">
+
+    <div class="mx-auto mt-1 flex-fill w-100 py-2">
+
+
+        <div class="m-2">
+            <h3>Tytuł</h3>
+            <input class="form-control" id="title-input" value="{{exercise_title}}" autocomplete="off">
+        </div>
+        <div class="m-2">
+            <h3>Punkty</h3>
+            <input class="form-control" id="points-input" value="{{exercise_points}}" autocomplete="off"/>
+        </div>
+        <div class="m-2">
+            <h3>Opis</h3>
+            <div id="editor" style="width: 90%; min-height: 100px">{{exercise_content}}</div>
+        </div>
+        <div class="m-2">
+            <h3>Odpowiedzi</h3>
+            <div id="answers-editor" style="width: 90%; min-height: 100px">{{exercise_answers}}</div>
+        </div>
+
+        <div class="form-group m-2">
+            <h3>Typ odpowiedzi</h3>
+            <label for="sel1">Select list:</label>
+            <select class="form-control" id="answer-type" autocomplete="off">
+                {% for number, type in answer_types %}
+                <option value="{{number}}" name="{{type}}"
+                        {%ifequal answer_type type %}
+                        selected
+                        {%endifequal%}>
+                    {{type}}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="m-2">
+            <button class="btn btn-lg" style="background: #dc143c; color: white;" id="render-button">Render</button>
+
+            <button class="btn btn-lg bg-success text-white" id="save-button">Save</button>
+            <a href="/{{test_url}}/{{exercise_url}}" class="btn btn-lg bg-warning text-white" id="show-button">Show page</a>
+        </div>
+        <script>
+
+            var AnswersDict = {};
+        </script>
+        {% for key, value in answer_dict %}
+        <script>
+            AnswersDict['{{key}}'] = `{{value|escapejs}}`;
+        </script>
+        {% endfor %}
+
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.5/ace.js" type="text/javascript" charset="utf-8"></script>
+
+        <form method="post">{% csrf_token %}</form>
+
+        <script>
+
+            var editor = ace.edit("editor");
+            editor.setTheme("ace/theme/monokai");
+            editor.setShowPrintMargin(false);
+            editor.getSession().setMode("ace/mode/latex");
+            //editor.setOption('maxLines', '{Infinity}');
+
+            var answersEditor = ace.edit("answers-editor");
+            answersEditor.setTheme("ace/theme/monokai");
+            answersEditor.setShowPrintMargin(false);
+            answersEditor.getSession().setMode("ace/mode/python");
+            //answersEditor.setOption('maxLines', '{Infinity}');
+
+            $('#answer-type').change(function() {
+                var name = $('#answer-type option:selected').attr('name');
+                var answer = AnswersDict[name];
+                answersEditor.getSession().setValue(answer);
+            });
+
+            function getPostData() {
+                return {
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                    title: $('#title-input').val(),
+                    content: editor.getValue(),
+                    answers: answersEditor.getValue(),
+                    answer_type: $('#answer-type').val(),
+                    points: $('#points-input').val(),
+                };
+            }
+
+            $('#render-button').click(function() {
+                $.post('render',
+                    getPostData(),
+                    function(data) {
+                        $('#rendered').html(data);
+                        var exercise = $('#exercise').last().html();
+                        $('#rendered').html(exercise);
+                        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+                    });
+            });
+
+            $('#save-button').click(function() {
+                $.post('save',
+                    getPostData(),
+                    function(data) {
+                        $('#save-button').text("Saved!");
+                        setTimeout(function() {
+                                $('#save-button').text("Save");
+                            },
+                            500);
+                    });
+            });
+
+        </script>
+    </div>
+</div>
+
+
+<div class="mb-3 d-flex">
+    <div class="flex-fill text-center btn-container">
+        {%if previous_url and previous_url != "" %}
+        <a href="{{previous_url}}" class="btn-primary btn-lg btn-danger select-none">Poprzedni</a>
+        {%else%}
+        <a href="/" class="btn-primary btn-lg btn-danger select-none">Wróć</a>
+        {% endif %}
+    </div>
+    <div class="flex-fill text-center btn-container">
+        {%if next_url and next_url != "" %}
+        <a href="{{next_url}}" class="btn-primary btn-lg btn-success select-none mx-auto">Następny</a>
+        {% else%}
+        <a href="/" id="end-test" class="btn-primary btn-lg btn-success select-none mx-auto">Zakończ</a>
+        {% endif %}
+    </div>
+</div>
+
+
+{% endblock %}
+
+
+{% block scripts %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [['$','$'], ['\\(','\\)']],
+            processEscapes: true,
+            "fast-preview": {disabled: true},
+            tex2jax: {preview: "none"}
+        },
+    TeX:{
+    
+        extensions: ["AMSmath.js"],
+        Macros: {xspace: '', ensuremath: ''}
+    }
+
+    });
+
+</script>
+
+{% endblock %}

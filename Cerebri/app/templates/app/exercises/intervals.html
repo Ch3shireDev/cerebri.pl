@@ -86,7 +86,7 @@
     var answers = `{{exercise_answers.answers | escapejs}}`;
     answers = answers.replace(/'/g, '"');
     answers = JSON.parse(answers);
-    var id = `{{exercise_id}}`;
+    var id = `{{exercise_url}}`;
     var points = parseInt(`{{exercise_points}}`);
 </script>
 

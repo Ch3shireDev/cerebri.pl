@@ -1,72 +1,7 @@
 ﻿{% extends "app/layout.html" %}
 {% load static %}
 {% block content %}
-<style>
-
-    
-    label {
-        user-select: none;
-        -moz-user-select: -moz-none;
-    }
-
-    .disabled {
-        pointer-events: none;
-        opacity: 0.4;
-        background: lightgrey;
-        user-select: none;
-        -moz-user-select: -moz-none;
-    }
-
-    .form-group label {
-        width: 200px;
-
-        justify-content: right !important;
-    }
-
-    .form-control { max-width: 275px !important; }
-
-    .answer {
-        flex-grow: 1;
-        margin: 0 1rem;
-        padding: 0.5rem 3rem;
-        font-size: 14px;
-        font-weight: 600;
-    }
-
-    a:hover { text-decoration: none; }
-
-    .select-none { user-select: none; }
-
-    .btn-container {
-        width: 50%;
-        height: 50px;
-        padding-top: 10px;
-    }
-
-    .btn-container a, .btn-container button {
-        display: inline-table;
-        min-width: 150px !important;
-    }
-
-    #exercise {
-        overflow-x: hidden;
-        overflow-y: visible;
-        visibility: hidden;
-        height: calc(100vh - 500px);
-    }
-
-    ul.list-horizontal {
-        list-style: none;
-        width: 500px;
-    }
-
-    ul.list-horizontal li { display: inline; }
-
-    ul.list-horizontal li input {
-        width: 50px;
-        display: inline !important;
-    }
-</style>
+<link rel="stylesheet" href="{% static 'exercise.css'%}" type="text/css"/>
 
 <script src="{% static 'math.min.js'%}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
@@ -132,7 +67,7 @@
     }
 </script>
 
-<div class="d-flex flex-fill flex-column border mx-5 mt-5 mb-2 pb-1" id="exercise">
+<div id="exercise" class="d-flex flex-fill flex-column border mx-5 mt-5 mb-2 pb-1">
 
     <div class="mx-auto mt-1 flex-fill w-100 py-2">
         {% block description %}
@@ -155,11 +90,22 @@
 <div class="mb-3 d-flex">
     <div class="flex-fill text-center btn-container">
         {%if previous_url and previous_url != "" %}
-        <a href="{{previous_url}}" class="btn-primary btn-lg btn-danger select-none">Poprzedni</a>
-        {%else%}
+        <a href="{{previous_url}}" class="btn-lg btn-danger select-none">Poprzedni</a>
+        {% else %}
         <a href="/" class="btn-primary btn-lg btn-danger select-none">Wróć</a>
         {% endif %}
     </div>
+    {% if user.is_superuser %}
+    <div class="flex-fill text-center btn-container">
+        <a href="/{{test_url}}/{{exercise_url}}/add_before" class="btn-secondary btn-lg select-none text-white">Dodaj przed</a>
+    </div>
+    <div class="flex-fill text-center btn-container">
+        <a href="/{{test_url}}/{{exercise_url}}/edit" class="btn-warning btn-lg select-none text-white">Edytuj</a>
+    </div>
+    <div class="flex-fill text-center btn-container">
+        <a href="/{{test_url}}/{{exercise_url}}/add_next" class="btn-primary btn-lg select-none text-white">Dodaj po</a>
+    </div>
+    {% endif %}
     <div class="flex-fill text-center btn-container">
         {%if next_url and next_url != "" %}
         <a href="{{next_url}}" class="btn-primary btn-lg btn-success select-none mx-auto">Następny</a>

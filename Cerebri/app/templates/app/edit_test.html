@@ -1,0 +1,108 @@
+{% extends "app/layout.html" %}
+
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'exercise.css'%}" type="text/css"/>
+
+<div class="d-flex flex-fill flex-column border mx-5 mt-5 mb-2">
+    <div id="rendered">
+
+    </div>
+</div>
+
+
+<div class="d-flex flex-fill flex-column border mx-5 mt-5 mb-2 pb-1">
+
+    <div class="mx-auto mt-1 flex-fill w-100 py-2">
+
+
+        <div class="m-2">
+            <h3>Tytuł</h3>
+            <input class="form-control" id="title-input" value="{{test.title}}" autocomplete="off">
+        </div>
+        <div class="m-2">
+            <h3>Opis</h3>
+            <input class="form-control" id="points-input" value="{{test.desciption}}" autocomplete="off"/>
+        </div>
+        <div class="m-2">
+            <h3>Zadania</h3>
+            <div id="editor" style="width: 90%; min-height: 100px">{{test#exercises}}</div>
+        </div>
+        <div class="m-2">
+            <button class="btn btn-lg" style="background: #dc143c; color: white;" id="render-button">Render</button>
+
+            <button class="btn btn-lg bg-success text-white" id="save-button">Save</button>
+        </div>
+
+
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.5/ace.js" type="text/javascript" charset="utf-8"></script>
+
+        <form method="post">{% csrf_token %}</form>
+
+        <script>
+
+            function getPostData() {
+                return {
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                    title: $('#title-input').val(),
+                    content: editor.getValue(),
+                    answers: answersEditor.getValue(),
+                    answer_type: $('#answer-type').val(),
+                    points: $('#points-input').val(),
+                };
+            }
+
+            $('#render-button').click(function() {
+                $.post('render',
+                    getPostData(),
+                    function(data) {
+                        $('#rendered').html(data);
+                        var exercise = $('#exercise').last().html();
+                        $('#rendered').html(exercise);
+                        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+                    });
+            });
+
+            $('#save-button').click(function() {
+                $.post('save',
+                    getPostData(),
+                    function(data) {
+                        $('#save-button').text("Saved!");
+                        setTimeout(function() {
+                                $('#save-button').text("Save");
+                            },
+                            500);
+                    });
+            });
+
+        </script>
+    </div>
+</div>
+
+
+{% endblock %}
+
+
+{% block scripts %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [['$','$'], ['\\(','\\)']],
+            processEscapes: true,
+            "fast-preview": {disabled: true},
+            tex2jax: {preview: "none"}
+        },
+    TeX:{
+    
+        extensions: ["AMSmath.js"],
+        Macros: {xspace: '', ensuremath: ''}
+    }
+
+    });
+
+</script>
+
+{% endblock %}

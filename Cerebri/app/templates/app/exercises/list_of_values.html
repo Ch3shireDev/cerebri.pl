@@ -24,7 +24,7 @@
 <script>
     var answers = `{{exercise_answers|escapejs}}`.replace(/'/g, `"`);
     answers = JSON.parse(answers);
-    var id = `{{exercise_id}}`;
+    var id = `{{exercise_url}}`;
     //    var correct_answer = `{{exercise_answers | escapejs}}`.replace(/'/g, `"`);
 //    correct_answer = JSON.parse(correct_answer);
     var points = parseInt(`{{exercise_points}}`);

@@ -58,7 +58,8 @@
     <Folder Include="system\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="app\templates\app\edit.html">
+    <Content Include="app\templates\app\edit_test.html" />
+    <Content Include="app\templates\app\edit_exercise.html">
       <SubType>Code</SubType>
     </Content>
     <Content Include="app\templates\app\exercises\proof.html" />
@@ -72,6 +73,7 @@
     <Content Include="app\templates\app\index.html" />
     <Content Include="app\templates\app\layout.html" />
     <Content Include="static\bootstrap.min.css" />
+    <Content Include="static\exercise.css" />
     <Content Include="static\jquery-3.4.1.min.js" />
   </ItemGroup>
   <ItemGroup>
