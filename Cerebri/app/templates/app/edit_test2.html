@@ -1,0 +1,48 @@
+{% extends "app/layout.html" %}
+
+{% load static %}
+{% block content %}
+{% csrf_token %}
+<link rel="stylesheet" href="{% static 'exercise.css'%}" type="text/css"/>
+
+<div class="d-flex flex-fill flex-column border mx-5 mt-5 mb-2 pb-1">
+
+    <div class="mx-auto mt-1 flex-fill w-100 py-2">
+        {% for exercise in exercises %}
+        <div class="m-2 p-2">
+            <input class="form-control exercise-title" num="{{exercise.number}}" value="{{exercise.title}}" />
+            <img src="{{exercise.url}}" class="my-1 d-block"/>
+            
+            <div class="input-group">
+                <textarea class="exercise-content form-control my-2" style="min-width: 600px; height: 300px;">{{exercise.content}}</textarea>
+            </div>
+            <button class="btn-lg btn-primary px-2 save-button" num="{{exercise.number}}" style="width:100px">Save</button>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    $('.save-button').click(function() {
+        const num = $(this).attr('num');
+        const parent = $(this).parent();
+        const title = parent.find('.exercise-title').val();
+        const content = parent.find('.exercise-content').val();
+        const csrf = $('input[name=csrfmiddlewaretoken]').val();
+        const url = parent.find('img').attr('src');
+        $.post('add_exercise',
+            {
+                csrfmiddlewaretoken: csrf,
+                title: title,
+                content: content,
+                num: num,
+                url: url,
+            },
+            function(data) {
+                parent.hide();
+            }
+        );
+    });
+</script>
+
+{% endblock %}

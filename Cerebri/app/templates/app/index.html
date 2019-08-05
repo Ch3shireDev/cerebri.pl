@@ -15,6 +15,12 @@
 </div>
 {% endfor %}
 
+{% if user.is_superuser %}
+<div class="row px-5">
+<a href="/add_test" class="btn-primary btn-lg m-5">Dodaj test</a>
+</div>
+{% endif %}
+
 <script>
     sessionStorage.clear();
 </script>

@@ -20,10 +20,17 @@ urlpatterns = [
 
 urlpatterns += [
                 #path('admin/', admin.site.urls),
+                path('add_test', views.add_test),
                 path('<test_url>', views.test_view),
+
+                path('<test_url>/edit_test', views.edit_test),
+                path('<test_url>/add_exercise', views.add_exercise),
+
                 path('<test_url>/edit', views.test_edit_view),
                 path('<test_url>/view', views.test_edit_show),
                 path('<test_url>/save', views.test_edit_save),
+                path('<test_url>/delete', views.test_edit_delete),
+
                 path('<test_url>/<exercise_url>', views.exercise_view),
                 path('<test_url>/<exercise_url>/edit', views.exercise_edit_view),
                 path('<test_url>/<exercise_url>/view', views.exercise_edit_render),

@@ -1,0 +1,220 @@
+{% extends 'app/layout.html' %}
+{% block content %}
+{% csrf_token %}
+<div class="m-5">
+    <div class="m-2">
+        
+        <div class="input-group my-2">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Tytuł</span>
+            </div>
+            <input type="text" class="form-control" id="title-input" >
+        </div>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Opis</span>
+            </div>
+            <textarea class="form-control" id="description-input"></textarea>
+        </div>
+    </div>
+
+    <div id="drop-zone" class="py-5">
+        <div class="m-2">
+            <p>Umieść pliki w tym miejscu...</p>
+            <button id="clickHere" class="d-inline btn btn-primary">
+                lub kliknij tutaj<i class="fa fa-upload mx-2"></i>
+            </button>
+            <input type="file" name="file" id="file" multiple style="display: none"/>
+        </div>
+    </div>
+
+    <div class="m-5" id="file-div" style="display: none">
+        <table id="file-table" class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Plik</th>
+                <th scope="col">Tytuł</th>
+                <th scope="col">Modyfikacja</th>
+            </tr>
+            </thead>
+            <tbody id="filename">
+
+            </tbody>
+        </table>
+
+        <div class="mt-5 text-center">
+            <button class="btn btn-primary" onclick="sendFiles()">Wyślij zadania</button>
+        </div>
+    </div>
+</div>
+<script>
+    function sendFiles() {
+        const csrf = $('input[name=csrfmiddlewaretoken]').val();
+        const title = $('#title-input').val();
+        const description = $('#description-input').val();
+
+        const data = new FormData();
+        data.append('csrfmiddlewaretoken', csrf);
+        data.append('title', title);
+        data.append('description', description);
+        const files = $('#file')[0].files;
+
+        data.append('filesNum', files.length);
+
+        for (let i = 0; i < files.length; i++) {
+            data.append(i, files[i]);
+        }
+        $.ajax({
+            url: '',
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            method: 'POST',
+            success: function(data) {
+                window.location.href = `/${data.test_url}/edit_test`;
+            }
+        });
+    }
+
+    var dropZoneId = "drop-zone";
+    const buttonId = "clickHere";
+    var mouseOverClass = "mouse-over";
+
+    var dropZone = $(`#${dropZoneId}`);
+    var ooleft = dropZone.offset().left;
+    var ooright = dropZone.outerWidth() + ooleft;
+    var ootop = dropZone.offset().top;
+    var oobottom = dropZone.outerHeight() + ootop;
+    var inputFile = dropZone.find("input");
+
+    dropZone.on("dragover",
+        function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            dropZone.addClass(mouseOverClass);
+            const x = e.pageX;
+            const y = e.pageY;
+
+            if (!(x < ooleft || x > ooright || y < ootop || y > oobottom)) {
+                inputFile.offset({
+                    top: y - 15,
+                    left: x - 100
+                });
+            } else {
+                inputFile.offset({
+                    top: -400,
+                    left: -400
+                });
+            }
+
+        });
+
+    const clickZone = $(`#${buttonId}`);
+
+    var oleft = clickZone.offset().left;
+    var oright = clickZone.outerWidth() + oleft;
+    var otop = clickZone.offset().top;
+    var obottom = clickZone.outerHeight() + otop;
+
+    $(`#${buttonId}`).mousemove(function(e) {
+        const x = e.pageX;
+        const y = e.pageY;
+        if (!(x < oleft || x > oright || y < otop || y > obottom)) {
+            inputFile.offset({
+                top: y - 15,
+                left: x - 160
+            });
+        } else {
+            inputFile.offset({
+                top: -400,
+                left: -400
+            });
+        }
+    });
+
+    dropZone.on("drop",
+        function(event) {
+            event.preventDefault();
+            var dt = event.originalEvent.dataTransfer;
+            var files = dt.files;
+            $('#file')[0].files = files;
+            sendFiles();
+        });
+
+    $(`#${buttonId}`).click(function(event) {
+        event.stopPropagation();
+        $('#file').click();
+    });
+
+    inputFile.on('change',
+        function(e) {
+            $('#filename').html("");
+            $('#file-div').show();
+            const fileNum = this.files.length;
+            var initial = 0,
+                counter = 0;
+            for (initial; initial < fileNum; initial++) {
+                counter = counter + 1;
+                $('#filename').append(`
+<tr>
+    <td>
+        <span class="fa-stack fa-lg">
+            <i class="fa fa-file fa-stack-1x "></i>
+            <strong class="fa-stack-1x" style="color:#FFF; font-size:12px;">
+                ${counter} 
+            </strong>
+        </span>
+    </td>
+    <td>${this.files[initial].name}</td>
+    <td><input type="text" class="form-control" value="Zadanie ${counter}" style="width:140px"></td>
+    <td class="text-center"><button class="btn-danger button-mod"><i class="fa fa-trash"></i></button></td>
+</tr>`
+                );
+            }
+        });
+</script>
+
+<style>
+    #drop-zone {
+        border: 3px dashed rgba(0, 0, 0, .3);
+        border-radius: 5px;
+        color: #7E7E7E;
+        font-family: Arial;
+        font-size: 20px;
+        min-height: 150px;
+        position: relative;
+        text-align: center;
+        width: 100%;
+    }
+
+    #drop-zone.mouse-over {
+        border: 3px dashed rgba(0, 0, 0, .3);
+        color: #7E7E7E;
+    }
+
+    /*If you dont want the button*/
+
+    #filename {
+        font-size: 14px;
+        line-height: 1.5em;
+        margin-bottom: 10px;
+        margin-top: 10px;
+    }
+
+    .file-preview {
+        background: #ccc;
+        border: 5px solid #fff;
+        box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+        display: inline-block;
+        font-size: 14px;
+        height: 60px;
+        margin-top: 5px;
+        text-align: center;
+        width: 60px;
+    }
+
+</style>
+
+{% endblock %}
