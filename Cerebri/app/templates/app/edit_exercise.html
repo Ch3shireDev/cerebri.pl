@@ -23,7 +23,7 @@
         </div>
         <div class="m-2">
             <h3>Odpowiedzi</h3>
-            <div id="answers-editor" class="tex2jax_ignore" style="width: 90%; min-height: 100px">{{exercise_answers}}</div>
+            <div id="answers-editor" class="tex2jax_ignore" style="width: 90%; min-height: 100px">{{exercise_answers|safe}}</div>
         </div>
 
         <div class="form-group m-2">
@@ -42,10 +42,11 @@
         </div>
 
         <div class="m-2">
-            <button class="btn btn-lg" style="background: #dc143c; color: white;" id="render-button">Render</button>
+            <button class="btn btn-lg btn-primary text-white" id="render-button">Render</button>
 
             <button class="btn btn-lg bg-success text-white" id="save-button">Save</button>
             <button class="btn btn-lg bg-warning text-white" id="show-button">Save and show</button>
+            <button class="btn btn-danger btn-lg text-white" id="remove-button">Remove</button>
         </div>
         <script>
 
@@ -94,7 +95,7 @@
                     csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
                     title: $('#title-input').val(),
                     content: editor.getValue(),
-                    answers: answersEditor.getValue().replace(/\\f/g, '\\\\f'),
+                    answers: answersEditor.getValue().replace(/\\([A-Za-z])/g, '\\\\$1'),
                     answer_type: $('#answer-type').val(),
                     points: $('#points-input').val(),
                 };
@@ -133,6 +134,13 @@
                         window.location.href = url;
                     });
             });
+
+            $('#remove-button').click(function() {
+                var confirmed = confirm("Are you sure you want to remove exercise?");
+                if (confirmed) {
+                    $.post('remove', getPostData(), function(data) { window.location.href = data.url; });
+                }
+            })
 
         </script>
     </div>

@@ -6,7 +6,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, redirect
 from django.template.defaulttags import register
 from app.models import webpage_dict, Exercise, Test, AnswerType, AnswerDictionary
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 import random
 import re
 
@@ -156,6 +156,8 @@ def exercise_edit_save(request,test_url,exercise_url):
     answers = request.POST['answers']
     points = request.POST['points']
 
+    print(content)
+
     try:
         points = int(points)
     except:
@@ -208,3 +210,37 @@ def exercise_add_after(request,test_url, exercise_url):
     test.set_exercises(exercises)
     test.save()
     return redirect('/%s/%s/edit' % (test_url, exercise.url))
+
+@staff_member_required
+def exercise_edit_remove(request, test_url, exercise_url):
+    url = ''
+    try:
+        test = Test.objects.get(url=test_url)
+    except:
+        return HttpResponse(status=500)
+
+    tab = test.get_exercises()
+    if exercise_url not in tab:
+        return HttpResponse(status=500)
+
+    try:
+        exercise = Exercise.objects.get(url=exercise_url)
+    except:
+        tab.remove(exercise_url)
+        test.set_exercises(tab)
+        test.save()
+        return HttpResponse(status=500)
+    
+    exercise.delete()
+
+    index = tab.index(exercise_url)
+
+    tab.remove(exercise_url)
+    test.set_exercises(tab)
+    test.save()
+
+    if index >= len(tab):
+        url = tab[-1]
+    else:
+        url = tab[index]
+    return JsonResponse({'url': '/%s/%s' %(test_url, url)}, status=200)

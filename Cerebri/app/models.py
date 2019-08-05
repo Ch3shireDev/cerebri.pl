@@ -14,10 +14,10 @@ class AnswerType(Enum):
 
 AnswerDictionary = [
 (AnswerType.Closed, '''{'answers':{'A': '2','B': '4','C': '\(\sqrt2\)','D': r'$\\frac12$',},'correct': 'A'}'''),
-(AnswerType.Intervals, '''{'num_answers': [1, 2],'answers': [['-inf', 'left-inf', '4/3', 'right-open'],['4', 'left-open', 'inf', 'right-inf']]},'''),
-(AnswerType.ListOfValues, '''[{"description": "Wartość $\\cos\\alpha$", "id": "cos-value", "value": "sqrt(5)/5"}],'''),
+(AnswerType.Intervals, '''{'num_answers': [1, 2],'answers': [['-inf', 'left-inf', '4/3', 'right-open'],['4', 'left-open', 'inf', 'right-inf']]}'''),
+(AnswerType.ListOfValues, '''[{"description": "Wartość $\\cos\\alpha$", "id": "cos-value", "value": "sqrt(5)/5"}]'''),
 (AnswerType.ManyValues, '''{'num_answers': [0, 1, 2, 3, 4, 5],'answers': [5, 3, -3],}'''),
-(AnswerType.Proof, '''{'steps': [{'id': '0', 'value': 'First step'},{'id': '1', 'value': 'Second step'},], 'correct_sequences': [['0','1']] },'''),
+(AnswerType.Proof, '''{'steps': [{'id': '0', 'value': 'First step'},{'id': '1', 'value': 'Second step'},], 'correct_sequences': [['0','1']] }'''),
          ]
 
 class Test(models.Model):
@@ -38,6 +38,7 @@ class Test(models.Model):
         return tab
 
     def set_exercises(self, tab):
+        tab = [str(x) for x in tab]
         self.exercises = str(tab)
         self.save()
 
