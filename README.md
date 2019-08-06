@@ -10,5 +10,6 @@
 - 01/08/2019 - Zacząłem pracować nad trybem edycji.
 - 04/08/2019 - Poprawiłem znacząco dodawanie zadań poprzez tryb edycji.
 - 05/08/2019 - Dodana kolejna matura - Matematyka 2018, PP.
+- 06/08/2019 - Dodany edytor FancyPants do zadania typu Closed, dodana matura 2017 PP.
 
-![](./pics/32.png)
+![](./pics/33.png)

@@ -31,6 +31,7 @@
         <div class="m-2">
             <button class="btn btn-lg btn-primary text-white" id="render-button">Render</button>
             <button class="btn btn-lg bg-success text-white" id="save-button">Save</button>
+            <button class="btn btn-lg bg-dark text-white" id="quit-button">Quit</button>
             <button class="btn btn-lg bg-danger text-white" id="delete-button">Delete</button>
         </div>
 
@@ -41,6 +42,8 @@
         <form method="post">{% csrf_token %}</form>
 
         <script>
+
+            $('#quit-button').click(function () { window.location.href = '/'; });
 
             function getPostData() {
                 return {

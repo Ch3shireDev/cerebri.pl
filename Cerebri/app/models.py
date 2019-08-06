@@ -13,7 +13,7 @@ class AnswerType(Enum):
     Intervals = 4
 
 AnswerDictionary = [
-(AnswerType.Closed, '''{'answers':{'A': '2','B': '4','C': '\(\sqrt2\)','D': r'$\\frac12$',},'correct': 'A'}'''),
+(AnswerType.Closed, '''{'answers':{'A': '2', 'B': '4', 'C': '6', 'D': '3',},'correct': 'A'}'''),
 (AnswerType.Intervals, '''{'num_answers': [1, 2],'answers': [['-inf', 'left-inf', '4/3', 'right-open'],['4', 'left-open', 'inf', 'right-inf']]}'''),
 (AnswerType.ListOfValues, '''[{"description": "Wartość $\\cos\\alpha$", "id": "cos-value", "value": "sqrt(5)/5"}]'''),
 (AnswerType.ManyValues, '''{'num_answers': [0, 1, 2, 3, 4, 5],'answers': [5, 3, -3],}'''),

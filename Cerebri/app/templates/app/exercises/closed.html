@@ -2,10 +2,10 @@
 {% block exercise %}
 <div class="bg-white px-5 py-2 my-2">
     <div class="w-100">
-        <ol type="a">
+        <ol type="none" class="list-inline">
             {% for x in exercise_answers.answers|shuffle %}
-            <li class="my-1">
-                <button id="{{x}}" class="answer btn-lg text-left px-3" style="min-width: 200px">
+            <li class="m-1">
+                <button id="{{x}}" class="answer btn-lg text-center px-3" style="min-width: 200px">
                     {{exercise_answers.answers|get_item:x}}
                 </button>
             </li>

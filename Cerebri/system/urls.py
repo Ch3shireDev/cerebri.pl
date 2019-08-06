@@ -30,6 +30,7 @@ urlpatterns += [
                 path('<test_url>/view', views.test_edit_show),
                 path('<test_url>/save', views.test_edit_save),
                 path('<test_url>/delete', views.test_edit_delete),
+                path('<test_url>/append', views.test_append),
 
                 path('<test_url>/<exercise_url>', views.exercise_view),
                 path('<test_url>/<exercise_url>/edit', views.exercise_edit_view),

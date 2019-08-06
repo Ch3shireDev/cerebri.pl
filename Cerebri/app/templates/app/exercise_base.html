@@ -97,13 +97,7 @@
     </div>
     {% if user.is_superuser %}
     <div class="flex-fill text-center btn-container">
-        <a href="/{{test_url}}/{{exercise_url}}/add-before" class="btn-secondary btn-lg select-none text-white">Dodaj przed</a>
-    </div>
-    <div class="flex-fill text-center btn-container">
         <a href="/{{test_url}}/{{exercise_url}}/edit" class="btn-warning btn-lg select-none text-white">Edytuj</a>
-    </div>
-    <div class="flex-fill text-center btn-container">
-        <a href="/{{test_url}}/{{exercise_url}}/add-after" class="btn-primary btn-lg select-none text-white">Dodaj po</a>
     </div>
     {% endif %}
     <div class="flex-fill text-center btn-container">
@@ -115,6 +109,13 @@
     </div>
 </div>
 
+{% if user.is_superuser %}
+<div class="mb-3 d-flex">
+    <div class="flex-fill text-center btn-container">
+        <a href="/{{test_url}}/append" class="btn-lg btn-dark text-white select-none">Dodaj na końcu</a>
+    </div>
+</div>
+{% endif %}
 
 {% endblock %}
 

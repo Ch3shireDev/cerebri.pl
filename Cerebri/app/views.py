@@ -340,3 +340,15 @@ def test_edit_delete(request, test_url):
         exercise.delete()
 
     return HttpResponse(status=200)
+
+@staff_member_required
+def test_append(request, test_url):
+    test = Test.objects.get(url=test_url)
+    tab = test.get_exercises()
+    title = "Zadanie %d" % (len(tab)+1)
+    exercise = Exercise.objects.create(title=title)
+    exercise.save()
+    tab.append(str(exercise.url))
+    test.set_exercises(tab)
+    test.save()
+    return redirect('/%s/%s/edit' % (test_url, exercise.url))
