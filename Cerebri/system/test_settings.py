@@ -80,15 +80,9 @@ WSGI_APPLICATION = 'system.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'test.sqlite3'),
     },
 
-    'test': {
-        'NAME': os.path.join(BASE_DIR, 'test.sqlite3'),
-        'ENGINE': 'django.db.backends.sqlite3',
-        'USER': 'test_user',
-        'PASSWORD': 'test_pass'
-    }
 }
 
 # Password validation
