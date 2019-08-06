@@ -18,15 +18,15 @@
 
         <div class="m-2">
             <h3>Tytuł</h3>
-            <input class="form-control" id="title-input" value="{{test.title}}" autocomplete="off">
+            <input class="form-control" id="title-input" value="{{course.title}}" autocomplete="off">
         </div>
         <div class="m-2">
             <h3>Opis</h3>
-            <input class="form-control" id="content-input" value="{{test.desciption}}" autocomplete="off"/>
+            <input class="form-control" id="content-input" value="{{course.desciption}}" autocomplete="off"/>
         </div>
         <div class="m-2">
             <h3>Zadania</h3>
-            <div id="editor" style="width: 90%; min-height: 100px">{{test.exercises}}</div>
+            <div id="editor" style="width: 90%; min-height: 100px">{{course.exercises}}</div>
         </div>
         <div class="m-2">
             <button class="btn btn-lg btn-primary text-white" id="render-button">Render</button>
@@ -80,7 +80,7 @@
             });
 
             $('#delete-button').click(function () {
-                var conf = confirm("Are you sure you want to delete this test?");
+                var conf = confirm("Are you sure you want to delete this course?");
                 if (!conf) return;
                 $.post('delete',
                     getPostData(),

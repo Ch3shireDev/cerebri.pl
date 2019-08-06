@@ -20,7 +20,7 @@ AnswerDictionary = [
 (AnswerType.Proof, '''{'steps': [{'id': '0', 'value': 'First step'},{'id': '1', 'value': 'Second step'},], 'correct_sequences': [['0','1']] }'''),
          ]
 
-class Test(models.Model):
+class Course(models.Model):
     url = models.AutoField(primary_key=True)
     title = models.CharField(max_length=64)
     description = models.TextField()

@@ -5,7 +5,7 @@ Definition of views.
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, redirect
 from django.template.defaulttags import register
-from app.models import webpage_dict, Exercise, Test, AnswerType, AnswerDictionary
+from app.models import webpage_dict, Exercise, Course, AnswerType, AnswerDictionary
 from django.http import HttpResponse, JsonResponse
 import random
 import re
@@ -23,15 +23,15 @@ def shuffle(arg):
     return tmp
 
 def home_view(request):
-    tests = Test.objects.all()
-    return render(request, 'app/index.html', context={'tests': tests})
+    courses = Course.objects.all()
+    return render(request, 'app/index.html', context={'courses': courses})
 
-def test_view(request, test_url):
-    test = Test.objects.get(url=test_url)
-    exercise_url = test.get_first_exercise()
-    return redirect('%s/%s' % (test_url, exercise_url))
+def course_view(request, course_url):
+    course = Course.objects.get(url=course_url)
+    exercise_url = course.get_first_exercise()
+    return redirect('%s/%s' % (course_url, exercise_url))
 
-def exercise_render(request,title, content, answers,answer_type,test_url=None,exercise_url=None,next_url=None,previous_url=None,points=None,total_points=None):
+def exercise_render(request,title, content, answers,answer_type,course_url=None,exercise_url=None,next_url=None,previous_url=None,points=None,total_points=None):
    
     
     if points is not None:
@@ -54,17 +54,17 @@ def exercise_render(request,title, content, answers,answer_type,test_url=None,ex
                'exercise_points': points,
                'exercise_url': exercise_url,
                'total_points': total_points,
-               'test_url': test_url,
+               'course_url': course_url,
                'exercise_url': exercise_url,
                }
 
     webpage = webpage_dict[str(answer_type)] #html source
     return render(request, webpage, context=context)
 
-def exercise_view(request, test_url, exercise_url):
+def exercise_view(request, course_url, exercise_url):
     
     exercise = Exercise.objects.get(url=exercise_url)
-    test = Test.objects.get(url=test_url)
+    course = Course.objects.get(url=course_url)
 
     title = exercise.title
     content = exercise.content
@@ -77,18 +77,18 @@ def exercise_view(request, test_url, exercise_url):
     except:
         answers = None
     answer_type = AnswerType(exercise.answer_type)
-    next_url = test.get_next_exercise(exercise_url)
+    next_url = course.get_next_exercise(exercise_url)
 
-    previous_url = test.get_previous_exercise(exercise_url)
+    previous_url = course.get_previous_exercise(exercise_url)
     points = exercise.points
-    total_points = test.get_total_points()
+    total_points = course.get_total_points()
 
-    return exercise_render(request,title,content,answers,answer_type,test_url, exercise_url,next_url,previous_url,points,total_points)
+    return exercise_render(request,title,content,answers,answer_type,course_url, exercise_url,next_url,previous_url,points,total_points)
 
 @staff_member_required
-def exercise_edit_view(request, test_url, exercise_url):
+def exercise_edit_view(request, course_url, exercise_url):
     exercise = Exercise.objects.get(url=exercise_url)
-    test = Test.objects.get(url=test_url)
+    course = Course.objects.get(url=course_url)
     
     title = exercise.title
     points = exercise.points
@@ -100,8 +100,8 @@ def exercise_edit_view(request, test_url, exercise_url):
     answer_type = AnswerType(exercise.answer_type)
     answer_types = [(e.value, e) for e in AnswerType]
 
-    next_url = test.get_next_exercise(exercise_url)
-    previous_url = test.get_previous_exercise(exercise_url)
+    next_url = course.get_next_exercise(exercise_url)
+    previous_url = course.get_previous_exercise(exercise_url)
 
     if points == 1: 
         points_text = "1 punkt"
@@ -110,7 +110,7 @@ def exercise_edit_view(request, test_url, exercise_url):
     else:
         points_text = "%d punktów" % points
 
-    total_points = test.get_total_points()
+    total_points = course.get_total_points()
 
     context = {
         'exercise_title': title,
@@ -121,7 +121,7 @@ def exercise_edit_view(request, test_url, exercise_url):
         'points_text': points_text,
         'exercise_points': points,
         'exercise_url': exercise_url,
-        'test_url': test_url,
+        'course_url': course_url,
         'total_points': total_points,
         'answer_type': answer_type,
         'answer_types': answer_types,
@@ -130,7 +130,7 @@ def exercise_edit_view(request, test_url, exercise_url):
     return render(request, 'app/edit_exercise.html', context)
 
 @staff_member_required
-def exercise_edit_render(request, test_url, exercise_url):
+def exercise_edit_render(request, course_url, exercise_url):
     if request.method != 'POST':
         return HttpResponse(status=500)
 
@@ -146,7 +146,7 @@ def exercise_edit_render(request, test_url, exercise_url):
     return exercise_render(request,title,content,answers,answer_type)
 
 @staff_member_required
-def exercise_edit_save(request,test_url,exercise_url):
+def exercise_edit_save(request,course_url,exercise_url):
     if request.method != 'POST':
         return HttpResponse(status=500)
 
@@ -179,27 +179,27 @@ def exercise_edit_save(request,test_url,exercise_url):
     return HttpResponse(status=200)
 
 @staff_member_required
-def test_edit_view(request, test_url):
-    test = Test.objects.get(url=test_url)
-    return render(request, 'app/edit_test.html', {'test':test, 'test_url':test_url })
+def course_edit_view(request, course_url):
+    course = Course.objects.get(url=course_url)
+    return render(request, 'app/edit_course.html', {'course':course, 'course_url':course_url })
 
 @staff_member_required
-def test_edit_show(request, test_url):
+def course_edit_show(request, course_url):
     return HttpResponse(status=200)
 
 @staff_member_required
-def test_edit_save(request,test_url):
+def course_edit_save(request,course_url):
     return HttpResponse(status=200)
 
 @staff_member_required
-def exercise_add_before(request, test_url, exercise_url):
+def exercise_add_before(request, course_url, exercise_url):
 
     return HttpResponse(status=200)
 
 @staff_member_required
-def exercise_add_after(request,test_url, exercise_url):
-    test = Test.objects.get(url=test_url)
-    exercises = test.get_exercises()
+def exercise_add_after(request,course_url, exercise_url):
+    course = Course.objects.get(url=course_url)
+    exercises = course.get_exercises()
     if exercise_url not in exercises:
         return HttpResponse(status=500)
     index = exercises.index(exercise_url)
@@ -207,19 +207,19 @@ def exercise_add_after(request,test_url, exercise_url):
     exercise = Exercise.objects.create(title=title)
     exercise.save()
     exercises.insert(index+1, str(exercise.url))
-    test.set_exercises(exercises)
-    test.save()
-    return redirect('/%s/%s/edit' % (test_url, exercise.url))
+    course.set_exercises(exercises)
+    course.save()
+    return redirect('/%s/%s/edit' % (course_url, exercise.url))
 
 @staff_member_required
-def exercise_edit_remove(request, test_url, exercise_url):
+def exercise_edit_remove(request, course_url, exercise_url):
     url = ''
     try:
-        test = Test.objects.get(url=test_url)
+        course = Course.objects.get(url=course_url)
     except:
         return HttpResponse(status=500)
 
-    tab = test.get_exercises()
+    tab = course.get_exercises()
     if exercise_url not in tab:
         return HttpResponse(status=500)
 
@@ -227,8 +227,8 @@ def exercise_edit_remove(request, test_url, exercise_url):
         exercise = Exercise.objects.get(url=exercise_url)
     except:
         tab.remove(exercise_url)
-        test.set_exercises(tab)
-        test.save()
+        course.set_exercises(tab)
+        course.save()
         return HttpResponse(status=500)
     
     exercise.delete()
@@ -236,14 +236,14 @@ def exercise_edit_remove(request, test_url, exercise_url):
     index = tab.index(exercise_url)
 
     tab.remove(exercise_url)
-    test.set_exercises(tab)
-    test.save()
+    course.set_exercises(tab)
+    course.save()
 
     if index >= len(tab):
         url = tab[-1]
     else:
         url = tab[index]
-    return JsonResponse({'url': '/%s/%s' %(test_url, url)}, status=200)
+    return JsonResponse({'url': '/%s/%s' %(course_url, url)}, status=200)
 
 import os
 from tempfile import mkdtemp
@@ -251,7 +251,7 @@ from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 
 @staff_member_required
-def add_test(request):
+def add_course(request):
     if request.method == 'POST':
         num = request.POST['filesNum']
         files = request.FILES
@@ -270,14 +270,14 @@ def add_test(request):
         title = request.POST['title']
         description = request.POST['description']
         
-        test = Test.objects.create(title=title, description=description)
-        test.save()
-        return JsonResponse({'test_url': test.url}, status=200)
+        course = Course.objects.create(title=title, description=description)
+        course.save()
+        return JsonResponse({'course_url': course.url}, status=200)
     else:
-        return render(request, 'app/add_test.html')
+        return render(request, 'app/add_course.html')
 
 @staff_member_required
-def edit_test(request, test_url):
+def edit_course(request, course_url):
 
     if request.method == 'POST':
 
@@ -301,39 +301,39 @@ def edit_test(request, test_url):
         exercise = {'title': 'Zadanie %d' % n, 'content': text, 'url': url, 'number': n-1}
         exercises.append(exercise)
         n+=1
-    return render(request, 'app/edit_test2.html', context={'exercises': exercises})
+    return render(request, 'app/edit_course2.html', context={'exercises': exercises})
 
 @staff_member_required
-def add_exercise(request,test_url):
+def add_exercise(request,course_url):
     if request.method == 'POST':
         title = request.POST['title']
         content = request.POST['content']
         url = request.POST['url']
-        test = Test.objects.get(url=test_url)
+        course = Course.objects.get(url=course_url)
 
         content = "<img src='%s' class='mx-auto d-block'/>\n\n%s" % (url, content)
 
         exercise = Exercise.objects.create(title=title, content=content)
         exercise.save()
 
-        tab = test.get_exercises()
+        tab = course.get_exercises()
         tab += [exercise.url]
-        test.set_exercises(tab)
-        test.save()
+        course.set_exercises(tab)
+        course.save()
 
         return HttpResponse(status=200)
 
     return HttpResponse(status=500)
 
 @staff_member_required
-def test_edit_delete(request, test_url):
+def course_edit_delete(request, course_url):
     if request.method != 'POST':
         return HttpResponse(status=500)
 
-    test = Test.objects.get(url=test_url)
-    tab = test.get_exercises()
+    course = Course.objects.get(url=course_url)
+    tab = course.get_exercises()
 
-    test.delete()
+    course.delete()
 
     for exercise_url in tab:
         exercise = Exercise.objects.get(url=exercise_url)
@@ -342,13 +342,13 @@ def test_edit_delete(request, test_url):
     return HttpResponse(status=200)
 
 @staff_member_required
-def test_append(request, test_url):
-    test = Test.objects.get(url=test_url)
-    tab = test.get_exercises()
+def course_append(request, course_url):
+    course = Course.objects.get(url=course_url)
+    tab = course.get_exercises()
     title = "Zadanie %d" % (len(tab)+1)
     exercise = Exercise.objects.create(title=title)
     exercise.save()
     tab.append(str(exercise.url))
-    test.set_exercises(tab)
-    test.save()
-    return redirect('/%s/%s/edit' % (test_url, exercise.url))
+    course.set_exercises(tab)
+    course.save()
+    return redirect('/%s/%s/edit' % (course_url, exercise.url))

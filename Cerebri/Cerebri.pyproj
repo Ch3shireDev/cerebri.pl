@@ -57,24 +57,33 @@
     <Folder Include="system\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="app\templates\app\add_test.html" />
-    <Content Include="app\templates\app\edit_test.html" />
+    <Content Include="app\templates\app\add_course.html" />
+    <Content Include="app\templates\app\edit_course.html" />
     <Content Include="app\templates\app\edit_exercise.html">
       <SubType>Code</SubType>
     </Content>
-    <Content Include="app\templates\app\edit_test2.html" />
+    <Content Include="app\templates\app\edit_course2.html" />
     <Content Include="app\templates\app\exercises\proof.html" />
     <Content Include="app\templates\app\exercises\intervals.html" />
     <Content Include="app\templates\app\exercises\list_of_values.html" />
     <Content Include="app\templates\app\exercises\closed.html" />
     <Content Include="app\templates\app\exercises\many_values.html" />
     <Content Include="app\templates\app\exercise_base.html" />
+    <Content Include="media\07_2017.png" />
+    <Content Include="media\10_2017.png" />
+    <Content Include="media\11_2017.png" />
     <Content Include="media\14_2018.png" />
+    <Content Include="media\15_2017.png" />
+    <Content Include="media\16_2017.png" />
     <Content Include="media\16_2018.png" />
+    <Content Include="media\17_2017.png" />
     <Content Include="media\17_2018.png" />
+    <Content Include="media\18_2017.png" />
     <Content Include="media\20_2018.png" />
     <Content Include="media\21_2018.png" />
+    <Content Include="media\22_2017.png" />
     <Content Include="media\22_2018.png" />
+    <Content Include="media\28_2017.png" />
     <Content Include="media\29_2018.png" />
     <Content Include="media\34_2018.png" />
     <Content Include="requirements.txt" />

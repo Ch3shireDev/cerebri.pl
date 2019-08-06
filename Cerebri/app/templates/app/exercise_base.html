@@ -97,14 +97,14 @@
     </div>
     {% if user.is_superuser %}
     <div class="flex-fill text-center btn-container">
-        <a href="/{{test_url}}/{{exercise_url}}/edit" class="btn-warning btn-lg select-none text-white">Edytuj</a>
+        <a href="/{{course_url}}/{{exercise_url}}/edit" class="btn-warning btn-lg select-none text-white">Edytuj</a>
     </div>
     {% endif %}
     <div class="flex-fill text-center btn-container">
         {%if next_url and next_url != "" %}
         <a href="{{next_url}}" class="btn-primary btn-lg btn-success select-none mx-auto">Następny</a>
         {% else%}
-        <a href="/" id="end-test" class="btn-primary btn-lg btn-success select-none mx-auto">Zakończ</a>
+        <a href="/" id="end-course" class="btn-primary btn-lg btn-success select-none mx-auto">Zakończ</a>
         {% endif %}
     </div>
 </div>
@@ -112,7 +112,7 @@
 {% if user.is_superuser %}
 <div class="mb-3 d-flex">
     <div class="flex-fill text-center btn-container">
-        <a href="/{{test_url}}/append" class="btn-lg btn-dark text-white select-none">Dodaj na końcu</a>
+        <a href="/{{course_url}}/append" class="btn-lg btn-dark text-white select-none">Dodaj na końcu</a>
     </div>
 </div>
 {% endif %}
@@ -143,9 +143,9 @@
 
     UpdatePoints();
 
-    $('#end-test').click(function(event) {
+    $('#end-course').click(function(event) {
         event.preventDefault();
-        if (confirm("Przechodząc dalej kończysz test. Kontynuować?")) {
+        if (confirm("Przechodząc dalej kończysz course. Kontynuować?")) {
             var points = parseInt(sessionStorage.getItem('points'));
             var percent = Math.floor(points * 100 / total_points);
             alert(`Gratulacje! Twój wynik to ${points} punktów z ${total_points} możliwych: ${percent}%.`);
