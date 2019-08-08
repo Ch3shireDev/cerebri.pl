@@ -3,12 +3,12 @@
 {% csrf_token %}
 <div class="m-5">
     <div class="m-2">
-        
+
         <div class="input-group my-2">
             <div class="input-group-prepend">
                 <span class="input-group-text">Tytuł</span>
             </div>
-            <input type="text" class="form-control" id="title-input" >
+            <input type="text" class="form-control" id="title-input">
         </div>
         <div class="input-group">
             <div class="input-group-prepend">
@@ -28,6 +28,10 @@
         </div>
     </div>
 
+    <div>
+        <button id="add-course" class="btn btn-primary my-2">Dodaj kurs</button>
+    </div>
+
     <div class="m-5" id="file-div" style="display: none">
         <table id="file-table" class="table">
             <thead>
@@ -44,11 +48,29 @@
         </table>
 
         <div class="mt-5 text-center">
-            <button class="btn btn-primary" onclick="sendFiles()">Wyślij zadania</button>
+            <button id="send-exercises" class="btn btn-primary" onclick="sendFiles()">Wyślij zadania</button>
         </div>
     </div>
 </div>
 <script>
+
+    $('#add-course').click(function() {
+        const csrf = $('input[name=csrfmiddlewaretoken]').val();
+        const title = $('#title-input').val();
+        const description = $('#description-input').val();
+        $.post('/add_course2',
+            {
+                csrfmiddlewaretoken: csrf,
+                title: title,
+                description: description
+            },
+            function(data) {
+                const url = data.url;
+                window.location.href = `/${url}/`;
+            }
+        );
+    });
+
     function sendFiles() {
         const csrf = $('input[name=csrfmiddlewaretoken]').val();
         const title = $('#title-input').val();

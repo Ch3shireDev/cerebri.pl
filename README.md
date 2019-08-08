@@ -11,5 +11,7 @@
 - 04/08/2019 - Poprawiłem znacząco dodawanie zadań poprzez tryb edycji.
 - 05/08/2019 - Dodana kolejna matura - Matematyka 2018, PP.
 - 06/08/2019 - Dodany edytor FancyPants do zadania typu Closed, dodana matura 2017 PP.
+- 08/08/2019 - Poprawiłem testy na działanie poszczególnych typów zadań, tworzenia kursu oraz odczytywania zadań przez OCR.
+
 
 ![](./pics/33.png)

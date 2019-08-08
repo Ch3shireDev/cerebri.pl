@@ -6,6 +6,8 @@
 <link rel="stylesheet" href="{% static 'exercise.css'%}" type="text/css"/>
 
 <div class="d-flex flex-fill flex-column border mx-5 mt-5 mb-2 pb-1">
+    
+    <button id="send-exercises" class="btn btn-primary btn-lg mx-auto" style="width:200px">Wyślij zadania</button>
 
     <div class="mx-auto mt-1 flex-fill w-100 py-2">
         {% for exercise in exercises %}
@@ -36,12 +38,35 @@
                 title: title,
                 content: content,
                 num: num,
-                url: url,
+                url: url
             },
             function(data) {
                 parent.hide();
             }
         );
+    });
+
+    $('#send-exercises').click(function() {
+
+        var n = 0;
+        $('.save-button').each(function (index, element) {
+
+            setTimeout(function() {
+                    $(element).click();
+                },
+                50 * index);
+            n = index;
+        });
+
+        setTimeout(function () {
+            var url = window.location.href;
+            url = url.split('/');
+            url.pop();
+            url = url.join('/');
+            window.location.href = url;
+        },
+            50*(n+1));
+
     });
 </script>
 

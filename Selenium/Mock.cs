@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
@@ -14,12 +10,15 @@ namespace Selenium
     [TestFixture]
     public class Mock
     {
+        private string port = "8888";
         private FirefoxDriver driver;
+        private string admin_login = "admin";
+        private string admin_pass = "pass1234";
 
         [SetUp]
         public void SetupTest()
         {
-            RunServer();
+            resultProcess = Tools.RunServer(port, admin_login, admin_pass);
             driver = new FirefoxDriver();
         }
 
@@ -33,41 +32,118 @@ namespace Selenium
         private Process resultProcess;
 
         [Test]
+        public void AddCourseTest()
+        {
+            Tools.CreateCourse(driver);
+            Tools.OpenExercise(driver);
+        }
+
+        [Test]
+        public void EditExerciseClosedTest()
+        {
+            Tools.CreateCourse(driver);
+            Tools.OpenExercise(driver);
+            Tools.EditExercise(driver, "AnswersType.Closed");
+        }
+
+        [Test]
+        public void EditExerciseManyValuesTest()
+        {
+            Tools.CreateCourse(driver);
+            Tools.OpenExercise(driver);
+            Tools.EditExercise(driver, "AnswersType.ManyValues");
+        }
+
+        [Test]
+        public void EditExerciseProofTest()
+        {
+            Tools.CreateCourse(driver);
+            Tools.OpenExercise(driver);
+            Tools.EditExercise(driver, "AnswersType.Proof");
+        }
+
+        [Test]
+        public void EditExerciseListOfValuesTest()
+        {
+            Tools.CreateCourse(driver);
+            Tools.OpenExercise(driver);
+            Tools.EditExercise(driver, "AnswersType.ListOfValues");
+        }
+
+        [Test]
+        public void EditExerciseIntervalsTest()
+        {
+            Tools.CreateCourse(driver);
+            Tools.OpenExercise(driver);
+            Tools.EditExercise(driver, "AnswersType.Intervals");
+        }
+
+        [Test]
         public void ConnectionTest()
         {
-            var url = "http://localhost:8000/";
-            driver.Navigate().GoToUrl(url);
-            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
-            wait.Until(c => c.FindElement(By.TagName("body")));
+            Tools.GoHome(driver);
             Assert.IsTrue(driver.FindElement(By.TagName("body")).Displayed);
         }
 
         [Test]
         public void AdminTest()
         {
-            var url = "http://localhost:8000/admin";
-            driver.Navigate().GoToUrl(url);
-            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
-            driver.FindElementById("id_username").SendKeys("admin");
-            driver.FindElementById("id_password").SendKeys("adminpass");
-            driver.FindElementByXPath("//input[@type='submit']").Click();
+            Tools.AdminLogin(driver, port, admin_login, admin_pass);
             Assert.IsTrue(driver.FindElementByXPath("//*[text()='Administracja stroną']").Displayed);
         }
 
-        private void RunServer()
+        [Test]
+        public void AddManyExercisesOCR()
         {
-            var startupPath = Environment.CurrentDirectory;
-            var array = startupPath.Split('\\').ToArray();
-            array = array.Reverse().Skip(3).Reverse().ToArray();
-            startupPath = @"C:\Users\cheshire\OneDrive\Documents\GitHub\Cerebri.pl\Cerebri";
-            Directory.SetCurrentDirectory(startupPath);
-            Process.Start("python", "manage.py flush --settings=system.test_settings --no-input");
-            Process.Start("python", "manage.py migrate --settings=system.test_settings");
-            var script = "from django.contrib.auth.models import User;";
-            script += "User.objects.create_superuser('admin', 'admin@example.com', 'adminpass')";
-            Process.Start("python", $"manage.py shell --settings=system.test_settings -c \"{script}\"");
-            resultProcess =
-                Task.Run(() => Process.Start("python", "manage.py runserver --settings=system.test_settings")).Result;
+            var courseTitle = "xyz";
+            var courseDescription = "abc";
+
+            Tools.AdminLogin(driver);
+            Tools.GoHome(driver);
+            driver.FindElement(By.Id("add-course")).Click();
+            driver.FindElement(By.Id("title-input")).SendKeys(courseTitle);
+            driver.FindElement(By.Id("description-input")).SendKeys(courseDescription);
+
+            //driver.FindElementById("clickHere").Click();
+
+            var dir = @"C:\Users\cheshire\OneDrive\Documents\GitHub\Cerebri.pl\Selenium\test-exercises";
+
+            var fileDir1 = $@"{dir}\zadanie-001.png";
+            var fileDir2 = $@"{dir}\zadanie-002.png";
+            var fileDir3 = $@"{dir}\zadanie-003.png";
+            
+            driver.FindElementById("file").SendKeys(fileDir1);
+            driver.FindElementById("file").SendKeys(fileDir2);
+            driver.FindElementById("file").SendKeys(fileDir3);
+
+
+            driver.FindElementById("send-exercises").Click();
+
+            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+            wait.Until(c => driver.FindElementsByClassName("exercise-content").Count != 0);
+
+            var i = 1;
+            foreach (var textArea in driver.FindElementsByClassName("exercise-content"))
+            {
+                textArea.Clear();
+                textArea.SendKeys($"Exercise {i++}");
+            }
+
+            driver.FindElementById("send-exercises").Click();
+
+            for (i = 1; i < 4; i++)
+            {
+                wait.Until(c => driver.FindElementsById("exercise-description").Count != 0);
+                wait.Until(c => driver.FindElementById("exercise-description").Displayed);
+
+                var descriptionText = driver.FindElementById("exercise-description").Text;
+                Assert.AreEqual($"Exercise {i}", descriptionText);
+
+                if (i < 3) driver.FindElementById("next-exercise").Click();
+            }
+
+            Assert.AreEqual(0, driver.FindElementsById("next-exercise").Count);
+            Assert.AreEqual(1, driver.FindElementsById("end-course").Count);
         }
     }
 }

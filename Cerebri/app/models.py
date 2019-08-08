@@ -69,11 +69,19 @@ class Course(models.Model):
         url = tab[0]
         return url
     
+    def add_exercise(self):
+        tab = self.get_exercises()
+        title = 'Zadanie %d' % (len(tab)+1)
+        exercise = Exercise.objects.create(title=title)
+        exercise.save()
+        tab.append(exercise.url)
+        self.set_exercises(tab)
+        self.save()
 
 class Exercise(models.Model):
     url = models.AutoField(primary_key=True)
     title = models.CharField(max_length=32)
-    content = models.TextField()
+    content = models.TextField(default='')
     answers = models.TextField(default=AnswerDictionary[0][1])
     answer_type = models.PositiveSmallIntegerField(default=0)
     points = models.PositiveSmallIntegerField(default=1)

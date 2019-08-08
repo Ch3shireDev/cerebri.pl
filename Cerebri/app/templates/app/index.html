@@ -4,12 +4,12 @@
 
 {% for course in courses %}
 <div class="jumbotron mx-5 my-2 mx-auto px-5" style="max-width: 800px">
-    <h3>{{course.title}}</h3>
-    <p class="lead">{{course.description}}</p>
+    <h3 class="course-title">{{course.title}}</h3>
+    <p class="lead course-description">{{course.description}}</p>
     <p>
-        <a href="/{{course.url}}" class="btn btn-primary btn-large">Rozpocznij</a>
+        <a href="/{{course.url}}" class="btn btn-primary btn-large start-course">Rozpocznij</a>
         {% if user.is_superuser %}
-        <a href="/{{course.url}}/edit" class="btn btn-secondary btn-large">Edytuj</a>
+        <a href="/{{course.url}}/edit" class="btn btn-secondary btn-large edit-course">Edytuj</a>
         {% endif %}
         </p>
 </div>
@@ -17,7 +17,7 @@
 
 {% if user.is_superuser %}
 <div class="row px-5">
-<a href="/add_course" class="btn-primary btn-lg m-5">Dodaj course</a>
+<a href="/add_course" class="btn-primary btn-lg m-5" id="add-course">Dodaj kurs</a>
 </div>
 {% endif %}
 

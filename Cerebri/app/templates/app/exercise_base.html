@@ -55,7 +55,7 @@
             b = parser.evaluate(b);
 
             if (a === b) return true;
-            if (parser.compare(a, b) === 0) return true;
+            if (math.compare(a, b) === 0) return true;
         } catch (e) {
             return false;
         }
@@ -72,8 +72,8 @@
     <div class="mx-auto mt-1 flex-fill w-100 py-2">
         {% block description %}
         <div class="bg-white px-5 py-2 my-2">
-            <h3>{{exercise_title}} <small class="mx-5">({{points_text}})</small></h3>
-            <div class="py-2 mb-3">{{exercise_content | safe}}</div>
+            <h3 id="exercise-title">{{exercise_title}} <small class="mx-5">({{points_text}})</small></h3>
+            <div id="exercise-description" class="py-2 mb-3">{{exercise_content | safe}}</div>
         </div>
         {% endblock %}
         {% block exercise %}
@@ -90,19 +90,19 @@
 <div class="mb-3 d-flex">
     <div class="flex-fill text-center btn-container">
         {%if previous_url and previous_url != "" %}
-        <a href="{{previous_url}}" class="btn-lg btn-danger select-none">Poprzedni</a>
+        <a href="{{previous_url}}" class="btn-lg btn-danger select-none" id="previous-exercise">Poprzedni</a>
         {% else %}
         <a href="/" class="btn-primary btn-lg btn-danger select-none">Wróć</a>
         {% endif %}
     </div>
     {% if user.is_superuser %}
     <div class="flex-fill text-center btn-container">
-        <a href="/{{course_url}}/{{exercise_url}}/edit" class="btn-warning btn-lg select-none text-white">Edytuj</a>
+        <a href="/{{course_url}}/{{exercise_url}}/edit" class="btn-warning btn-lg select-none text-white" id="exercise-edit">Edytuj</a>
     </div>
     {% endif %}
     <div class="flex-fill text-center btn-container">
         {%if next_url and next_url != "" %}
-        <a href="{{next_url}}" class="btn-primary btn-lg btn-success select-none mx-auto">Następny</a>
+        <a href="{{next_url}}" class="btn-primary btn-lg btn-success select-none mx-auto" id="next-exercise">Następny</a>
         {% else%}
         <a href="/" id="end-course" class="btn-primary btn-lg btn-success select-none mx-auto">Zakończ</a>
         {% endif %}

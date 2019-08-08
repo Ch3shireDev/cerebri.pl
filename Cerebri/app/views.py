@@ -2,13 +2,19 @@
 Definition of views.
 """
 
-from django.contrib.admin.views.decorators import staff_member_required
+import os
+import re
+import random
+from tempfile import mkdtemp
+
+from django.conf import settings
 from django.shortcuts import render, redirect
 from django.template.defaulttags import register
-from app.models import webpage_dict, Exercise, Course, AnswerType, AnswerDictionary
 from django.http import HttpResponse, JsonResponse
-import random
-import re
+from django.core.files.storage import FileSystemStorage
+from django.contrib.admin.views.decorators import staff_member_required
+from app.models import webpage_dict, Exercise, Course, AnswerType, AnswerDictionary
+
 
 @register.filter
 def get_item(dictionary, key):
@@ -29,7 +35,7 @@ def home_view(request):
 def course_view(request, course_url):
     course = Course.objects.get(url=course_url)
     exercise_url = course.get_first_exercise()
-    return redirect('%s/%s' % (course_url, exercise_url))
+    return redirect('/%s/%s' % (course_url, exercise_url))
 
 def exercise_render(request,title, content, answers,answer_type,course_url=None,exercise_url=None,next_url=None,previous_url=None,points=None,total_points=None):
    
@@ -156,8 +162,6 @@ def exercise_edit_save(request,course_url,exercise_url):
     answers = request.POST['answers']
     points = request.POST['points']
 
-    print(content)
-
     try:
         points = int(points)
     except:
@@ -245,10 +249,7 @@ def exercise_edit_remove(request, course_url, exercise_url):
         url = tab[index]
     return JsonResponse({'url': '/%s/%s' %(course_url, url)}, status=200)
 
-import os
-from tempfile import mkdtemp
-from django.conf import settings
-from django.core.files.storage import FileSystemStorage
+
 
 @staff_member_required
 def add_course(request):
@@ -352,3 +353,13 @@ def course_append(request, course_url):
     course.set_exercises(tab)
     course.save()
     return redirect('/%s/%s/edit' % (course_url, exercise.url))
+
+@staff_member_required
+def add_course2(request):
+    if request.method != 'POST':
+        return HttpResponse(status=500)
+    title = request.POST['title']
+    description = request.POST['description']
+    course = Course.objects.create(title=title, description=description)
+    course.add_exercise()
+    return JsonResponse({'url': course.url}, status=200)
