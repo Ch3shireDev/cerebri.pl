@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
@@ -7,7 +8,6 @@ using OpenQA.Selenium.Support.UI;
 
 namespace Selenium
 {
-
     [TestFixture]
     public class Mock
     {
@@ -40,6 +40,14 @@ namespace Selenium
         public void TearDownTest()
         {
             driver.Close();
+        }
+
+        [Test]
+        public void EditCourse()
+        {
+            Tools.CreateCourse(driver);
+            Tools.EditCourse(driver, "course title2", "course description2");
+            //Thread.Sleep(100000);
         }
 
         [Test]
@@ -122,7 +130,7 @@ namespace Selenium
             var fileDir1 = $@"{dir}\zadanie-001.png";
             var fileDir2 = $@"{dir}\zadanie-002.png";
             var fileDir3 = $@"{dir}\zadanie-003.png";
-            
+
             driver.FindElementById("file").SendKeys(fileDir1);
             driver.FindElementById("file").SendKeys(fileDir2);
             driver.FindElementById("file").SendKeys(fileDir3);

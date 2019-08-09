@@ -22,7 +22,7 @@
         </div>
         <div class="m-2">
             <h3>Opis</h3>
-            <input class="form-control" id="content-input" value="{{course.desciption}}" autocomplete="off"/>
+            <input class="form-control" id="description-input" value="{{course.description}}" autocomplete="off"/>
         </div>
         <div class="m-2">
             <h3>Zadania</h3>
@@ -36,20 +36,19 @@
         </div>
 
 
-
         <script src="{% static 'ace.js' %}" type="text/javascript" charset="utf-8"></script>
 
         <form method="post">{% csrf_token %}</form>
 
         <script>
 
-            $('#quit-button').click(function () { window.location.href = '/'; });
+            $('#quit-button').click(function() { window.location.href = '/'; });
 
             function getPostData() {
                 return {
                     csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
                     title: $('#title-input').val(),
-                    content: $('#content-input').val(),
+                    description: $('#description-input').val(),
                     //answers: answersEditor.getValue(),
                     //answer_type: $('#answer-type').val(),
                     //points: $('#points-input').val(),
@@ -79,13 +78,13 @@
                     });
             });
 
-            $('#delete-button').click(function () {
+            $('#delete-button').click(function() {
                 var conf = confirm("Are you sure you want to delete this course?");
                 if (!conf) return;
                 $.post('delete',
                     getPostData(),
                     function(data) {
-                        document.location.href="/";
+                        document.location.href = "/";
                     });
             });
 
@@ -99,7 +98,7 @@
 
 {% block scripts %}
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script src="/static/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
         tex2jax: {

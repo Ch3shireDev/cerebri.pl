@@ -1,7 +1,7 @@
 label {
-     user-select: none;
-     -moz-user-select: -moz-none;
- }
+    user-select: none;
+    -moz-user-select: -moz-none;
+}
 
 .disabled {
     pointer-events: none;
@@ -61,6 +61,4 @@ ul.list-horizontal li input {
     display: inline !important;
 }
 
-ol.list-inline > li {
-    display: inline-block;
-}
+ol.list-inline > li { display: inline-block; }

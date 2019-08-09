@@ -8,219 +8,219 @@
     </div>
 </div>
 <div class="d-flex flex-fill flex-column border mx-5 mt-5 mb-2 pb-1">
-    <div class="mx-auto mt-1 flex-fill w-100 py-2">
-        <div class="m-2">
-            <h3>Tytuł</h3>
-            <input class="form-control" id="title-input" value="{{exercise_title}}" autocomplete="off">
-        </div>
-        <div class="m-2">
-            <h3>Punkty</h3>
-            <input class="form-control" id="points-input" value="{{exercise_points}}" autocomplete="off"/>
-        </div>
-        <div class="m-2">
-            <h3>Opis</h3>
-            <div id="editor" class="tex2jax_ignore" style="width: 90%; min-height: 100px">{{exercise_content}}</div>
-        </div>
-        <div class="m-2">
-            <h3>Odpowiedzi</h3>
-            <div id="answers-editor" class="tex2jax_ignore" style="width: 90%; min-height: 100px">{{exercise_answers|safe}}</div>
-            <div id="fancypants-editor" style="display: none;">
+<div class="mx-auto mt-1 flex-fill w-100 py-2">
+<div class="m-2">
+    <h3>Tytuł</h3>
+    <input class="form-control" id="title-input" value="{{exercise_title}}" autocomplete="off">
+</div>
+<div class="m-2">
+    <h3>Punkty</h3>
+    <input class="form-control" id="points-input" value="{{exercise_points}}" autocomplete="off"/>
+</div>
+<div class="m-2">
+    <h3>Opis</h3>
+    <div id="editor" class="tex2jax_ignore" style="width: 90%; min-height: 100px">{{exercise_content}}</div>
+</div>
+<div class="m-2">
+    <h3>Odpowiedzi</h3>
+    <div id="answers-editor" class="tex2jax_ignore" style="width: 90%; min-height: 100px">{{exercise_answers|safe}}</div>
+    <div id="fancypants-editor" style="display: none;">
 
-                {% for x in "ABCD"|make_list %}
-                <div class="input-group m-2">
-                    <div class="input-group-prepend">
-                        <div class="input-group-text">
-                            <input type="radio" id="radio-answer-{{x}}" name="answer-radio">
-                        </div>
-                    </div>
-                    <input type="text" class="form-control" id="answer-{{x}}" placeholder="Odpowiedź {{x}}">
+        {% for x in "ABCD"|make_list %}
+        <div class="input-group m-2">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                    <input type="radio" id="radio-answer-{{x}}" name="answer-radio">
                 </div>
-                {% endfor %}
             </div>
-
-            <div class="custom-control custom-checkbox mr-sm-2">
-                <input type="checkbox" class="custom-control-input" id="fancypants" autocomplete="off">
-                <label class="custom-control-label" for="fancypants">Fancypants editor</label>
-            </div>
+            <input type="text" class="form-control" id="answer-{{x}}" placeholder="Odpowiedź {{x}}">
         </div>
-
-        <div class="form-group m-2">
-            <h3>Typ odpowiedzi</h3>
-            <label for="sel1">Select list:</label>
-            <select class="form-control" id="answer-type" autocomplete="off">
-                {% for number, type in answer_types %}
-                <option value="{{number}}" name="{{type}}"
-                        {%ifequal answer_type type %}
-                        selected
-                        {%endifequal%}>
-                    {{type}}
-                </option>
-                {% endfor %}
-            </select>
-        </div>
-
-        <div class="m-2">
-            <button class="btn btn-lg btn-primary text-white" id="render-button">Render</button>
-            <button class="btn btn-lg bg-success text-white" id="save-button">Save</button>
-            <button class="btn btn-lg bg-warning text-white" id="show-button">Save and show</button>
-            <button class="btn btn-lg bg-dark text-white" id="back-button">Close</button>
-            <button class="btn btn-danger btn-lg text-white" id="remove-button">Remove</button>
-        </div>
-        <script>
-
-            var AnswersDict = {};
-        </script>
-        {% for key, value in answer_dict %}
-        <script>
-            AnswersDict['{{key}}'] = `{{value|escapejs}}`;
-        </script>
         {% endfor %}
+    </div>
+
+    <div class="custom-control custom-checkbox mr-sm-2">
+        <input type="checkbox" class="custom-control-input" id="fancypants" autocomplete="off">
+        <label class="custom-control-label" for="fancypants">Fancypants editor</label>
+    </div>
+</div>
+
+<div class="form-group m-2">
+    <h3>Typ odpowiedzi</h3>
+    <label for="sel1">Select list:</label>
+    <select class="form-control" id="answer-type" autocomplete="off">
+        {% for number, type in answer_types %}
+        <option value="{{number}}" name="{{type}}"
+                {%ifequal answer_type type %}
+                selected
+                {%endifequal%}>
+            {{type}}
+        </option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="m-2">
+    <button class="btn btn-lg btn-primary text-white" id="render-button">Render</button>
+    <button class="btn btn-lg bg-success text-white" id="save-button">Save</button>
+    <button class="btn btn-lg bg-warning text-white" id="show-button">Save and show</button>
+    <button class="btn btn-lg bg-dark text-white" id="back-button">Close</button>
+    <button class="btn btn-danger btn-lg text-white" id="remove-button">Remove</button>
+</div>
+<script>
+
+    var AnswersDict = {};
+</script>
+{% for key, value in answer_dict %}
+<script>
+    AnswersDict['{{key}}'] = `{{value|escapejs}}`;
+</script>
+{% endfor %}
 
 
-        <script src="{% static 'ace.js' %}" type="text/javascript" charset="utf-8"></script>
+<script src="{% static 'ace.js' %}" type="text/javascript" charset="utf-8"></script>
 
-        <form method="post">{% csrf_token %}</form>
+<form method="post">{% csrf_token %}</form>
 
-        <script>
+<script>
 
-            var editor = ace.edit("editor");
-            editor.setTheme("ace/theme/monokai");
-            editor.setShowPrintMargin(false);
-            editor.setOption('useWrapMode', true);
-            editor.getSession().setUseWrapMode(true);
-            editor.getSession().setMode("ace/mode/latex");
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/monokai");
+    editor.setShowPrintMargin(false);
+    editor.setOption('useWrapMode', true);
+    editor.getSession().setUseWrapMode(true);
+    editor.getSession().setMode("ace/mode/latex");
 
-            var html = $('#answers-editor').html().replace(/\\\\/g, '\\');
-            $('#answers-editor').html(html);
+    var html = $('#answers-editor').html().replace(/\\\\/g, '\\');
+    $('#answers-editor').html(html);
 
-            var answersEditor = ace.edit("answers-editor");
-            answersEditor.setTheme("ace/theme/monokai");
-            answersEditor.setShowPrintMargin(false);
-            answersEditor.setOption('useWrapMode', true);
-            answersEditor.getSession().setUseWrapMode(true);
-            answersEditor.getSession().setMode("ace/mode/python");
+    var answersEditor = ace.edit("answers-editor");
+    answersEditor.setTheme("ace/theme/monokai");
+    answersEditor.setShowPrintMargin(false);
+    answersEditor.setOption('useWrapMode', true);
+    answersEditor.getSession().setUseWrapMode(true);
+    answersEditor.getSession().setMode("ace/mode/python");
 
-            function Render() {
-                $.post('view',
-                    getPostData(),
-                    function(data) {
-                        $('#rendered').html(data);
-                        var exercise = $('#exercise').last().html();
-                        $('#rendered').html(exercise);
-                        MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-                    });
-            }
-
-            Render();
-
-            function setAnswers(flag=false) {
-                var answerType = $('#answer-type').val();
-                if (answerType !== "0") return;
-                var checked = $('#fancypants')[0].checked;
-                if (!checked || flag) return;
-                var correct = $('input[name=answer-radio]:checked').attr('id');
-                correct = correct[correct.length - 1];
-                var A = $('#answer-A').val();
-                var B = $('#answer-B').val();
-                var C = $('#answer-C').val();
-                var D = $('#answer-D').val();
-                var text = `{'answers':{'A':'${A}', 'B':'${B}', 'C':'${C}', 'D':'${D}'}, 'correct': '${correct}'}`;
-                answersEditor.setValue(text);
-            }
-
-            $('#fancypants').change(function() {
-                var isChecked = $(this)[0].checked;
-                var answerType = $('#answer-type').val();
-                if (answerType !== "0") return;
-                if (isChecked) {
-                    $('#answers-editor').hide();
-                    $('#fancypants-editor').show();
-
-                    var answers = answersEditor.getValue();
-                    var arr = Array.from(answers.matchAll(/'[A-D]'\s*:\s*'([^']*)'/g));
-                    $('#answer-A').val(arr[0][1]);
-                    $('#answer-B').val(arr[1][1]);
-                    $('#answer-C').val(arr[2][1]);
-                    $('#answer-D').val(arr[3][1]);
-
-                    var correct = answers.match(/'correct'\s*:\s*'([A-D])'/)[1];
-                    $(`#radio-answer-${correct}`)[0].checked = true;
-
-                } else {
-                    $('#answers-editor').show();
-                    $('#fancypants-editor').hide();
-
-                    setAnswers(true);
-                }
+    function Render() {
+        $.post('view',
+            getPostData(),
+            function(data) {
+                $('#rendered').html(data);
+                var exercise = $('#exercise').last().html();
+                $('#rendered').html(exercise);
+                MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
             });
+    }
 
-            var answerType = $('#answer-type').val();
-            if (answerType === "0") {
-                $('#fancypants')[0].checked = true;
-                $('#fancypants').change();
-            }
+    Render();
 
-            $('#answer-type').change(function() {
-                $('#fancypants')[0].checked = false;
-                $('#answers-editor').show();
-                $('#fancypants-editor').hide();
-                var name = $('#answer-type option:selected').attr('name');
-                var answer = AnswersDict[name];
-                answersEditor.getSession().setValue(answer);
+    function setAnswers(flag=false) {
+        var answerType = $('#answer-type').val();
+        if (answerType !== "0") return;
+        var checked = $('#fancypants')[0].checked;
+        if (!checked || flag) return;
+        var correct = $('input[name=answer-radio]:checked').attr('id');
+        correct = correct[correct.length - 1];
+        var A = $('#answer-A').val();
+        var B = $('#answer-B').val();
+        var C = $('#answer-C').val();
+        var D = $('#answer-D').val();
+        var text = `{'answers':{'A':'${A}', 'B':'${B}', 'C':'${C}', 'D':'${D}'}, 'correct': '${correct}'}`;
+        answersEditor.setValue(text);
+    }
+
+    $('#fancypants').change(function() {
+        var isChecked = $(this)[0].checked;
+        var answerType = $('#answer-type').val();
+        if (answerType !== "0") return;
+        if (isChecked) {
+            $('#answers-editor').hide();
+            $('#fancypants-editor').show();
+
+            var answers = answersEditor.getValue();
+            var arr = Array.from(answers.matchAll(/'[A-D]'\s*:\s*'([^']*)'/g));
+            $('#answer-A').val(arr[0][1]);
+            $('#answer-B').val(arr[1][1]);
+            $('#answer-C').val(arr[2][1]);
+            $('#answer-D').val(arr[3][1]);
+
+            var correct = answers.match(/'correct'\s*:\s*'([A-D])'/)[1];
+            $(`#radio-answer-${correct}`)[0].checked = true;
+
+        } else {
+            $('#answers-editor').show();
+            $('#fancypants-editor').hide();
+
+            setAnswers(true);
+        }
+    });
+
+    var answerType = $('#answer-type').val();
+    if (answerType === "0") {
+        $('#fancypants')[0].checked = true;
+        $('#fancypants').change();
+    }
+
+    $('#answer-type').change(function() {
+        $('#fancypants')[0].checked = false;
+        $('#answers-editor').show();
+        $('#fancypants-editor').hide();
+        var name = $('#answer-type option:selected').attr('name');
+        var answer = AnswersDict[name];
+        answersEditor.getSession().setValue(answer);
+    });
+
+    function getPostData() {
+        setAnswers();
+        return {
+            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+            title: $('#title-input').val(),
+            content: editor.getValue(),
+            answers: answersEditor.getValue().replace(/\\([A-Za-z])/g, '\\\\$1'),
+            answer_type: $('#answer-type').val(),
+            points: $('#points-input').val(),
+        };
+    }
+
+    $('#render-button').click(Render);
+
+    $('#save-button').click(function() {
+        $.post('save',
+            getPostData(),
+            function(data) {
+                $('#save-button').text("Saved!");
+                setTimeout(function() {
+                        $('#save-button').text("Save");
+                    },
+                    500);
             });
+    });
 
-            function getPostData() {
-                setAnswers();
-                return {
-                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                    title: $('#title-input').val(),
-                    content: editor.getValue(),
-                    answers: answersEditor.getValue().replace(/\\([A-Za-z])/g, '\\\\$1'),
-                    answer_type: $('#answer-type').val(),
-                    points: $('#points-input').val(),
-                };
-            }
-
-            $('#render-button').click(Render);
-
-            $('#save-button').click(function() {
-                $.post('save',
-                    getPostData(),
-                    function(data) {
-                        $('#save-button').text("Saved!");
-                        setTimeout(function() {
-                                $('#save-button').text("Save");
-                            },
-                            500);
-                    });
-            });
-
-            $('#show-button').click(function() {
-                $.post('save',
-                    getPostData(),
-                    function(data) {
-                        var url = window.location.href.split('/');
-                        url.pop();
-                        url = url.join('/');
-                        window.location.href = url;
-                    });
-            });
-
-            $('#remove-button').click(function() {
-                var confirmed = confirm("Are you sure you want to remove exercise?");
-                if (confirmed) {
-                    $.post('remove', getPostData(), function(data) { window.location.href = data.url; });
-                }
-            });
-
-            $('#back-button').click(function() {
+    $('#show-button').click(function() {
+        $.post('save',
+            getPostData(),
+            function(data) {
                 var url = window.location.href.split('/');
                 url.pop();
                 url = url.join('/');
                 window.location.href = url;
             });
-        </script>
-    </div>
+    });
+
+    $('#remove-button').click(function() {
+        var confirmed = confirm("Are you sure you want to remove exercise?");
+        if (confirmed) {
+            $.post('remove', getPostData(), function(data) { window.location.href = data.url; });
+        }
+    });
+
+    $('#back-button').click(function() {
+        var url = window.location.href.split('/');
+        url.pop();
+        url = url.join('/');
+        window.location.href = url;
+    });
+</script>
+</div>
 </div>
 
 
@@ -240,30 +240,4 @@
         {% endif %}
     </div>
 </div>
-
-
-{% endblock %}
-
-
-{% block scripts %}
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        tex2jax: {
-            inlineMath: [['$','$'], ['\\(','\\)']],
-            processEscapes: true,
-            "fast-preview": {disabled: true},
-            tex2jax: {preview: "none"}
-        },
-    TeX:{
-    
-        extensions: ["AMSmath.js"],
-        Macros: {xspace: '', ensuremath: ''}
-    }
-
-    });
-
-</script>
-
 {% endblock %}

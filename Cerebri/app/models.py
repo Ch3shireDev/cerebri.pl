@@ -69,10 +69,13 @@ class Course(models.Model):
         url = tab[0]
         return url
     
-    def add_exercise(self):
+    def add_exercise(self, title=None, content=None):
         tab = self.get_exercises()
-        title = 'Zadanie %d' % (len(tab)+1)
-        exercise = Exercise.objects.create(title=title)
+        if title == None:
+            title = 'Zadanie %d' % (len(tab)+1)
+        if content == None:
+            content = 'Treść zadania'
+        exercise = Exercise.objects.create(title=title, content=content)
         exercise.save()
         tab.append(exercise.url)
         self.set_exercises(tab)

@@ -23,12 +23,12 @@ urlpatterns += [
                 path('add_course', views.add_course),
                 path('add_course2', views.add_course2),
                 
-                
                 path('<course_url>', views.course_view),
                 path('<course_url>/', views.course_view),
 
                 path('<course_url>/edit_course', views.edit_course),
                 path('<course_url>/add_exercise', views.add_exercise),
+                path('<course_url>/add-exercises', views.add_exercises),
 
                 path('<course_url>/edit', views.course_edit_view),
                 path('<course_url>/view', views.course_edit_show),

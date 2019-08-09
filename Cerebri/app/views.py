@@ -4,6 +4,7 @@ Definition of views.
 
 import os
 import re
+import json
 import random
 from tempfile import mkdtemp
 
@@ -12,6 +13,7 @@ from django.shortcuts import render, redirect
 from django.template.defaulttags import register
 from django.http import HttpResponse, JsonResponse
 from django.core.files.storage import FileSystemStorage
+from django.views.decorators.http import require_http_methods
 from django.contrib.admin.views.decorators import staff_member_required
 from app.models import webpage_dict, Exercise, Course, AnswerType, AnswerDictionary
 
@@ -192,7 +194,14 @@ def course_edit_show(request, course_url):
     return HttpResponse(status=200)
 
 @staff_member_required
-def course_edit_save(request,course_url):
+@require_http_methods(["POST"])
+def course_edit_save(request, course_url):
+    title = request.POST['title']
+    description = request.POST['description']
+    course = Course.objects.get(url=course_url)
+    course.title = title
+    course.description = description
+    course.save()
     return HttpResponse(status=200)
 
 @staff_member_required
@@ -298,8 +307,20 @@ def edit_course(request, course_url):
     for file in os.listdir(filesdir):
         filename = filesdir+"/"+file
         text = image_to_string(Image.open(filename), lang="pol")
+        text = ''.join([x for x in text if re.match('[\w\s\.]', x)])
+        text = re.sub('[0-9]', '', text)
+        oldLen = len(text)+1
+        while len(text) != oldLen:
+            oldLen = len(text)
+            text = text.replace('\n\n', '\n')
+            text = re.sub('\s\s', ' ', text)
+
+        text = text.strip()
+        
         url = '/media/%s/%s' % (fname, file)
-        exercise = {'title': 'Zadanie %d' % n, 'content': text, 'url': url, 'number': n-1}
+        text = '<img src="%s" class="my-1 d-block"/>\n\n%s' % (url, text)
+
+        exercise = {'title': 'Zadanie %d' % n, 'content': text, 'url': url, 'number': n-1, 'id': n-1}
         exercises.append(exercise)
         n+=1
     return render(request, 'app/edit_course2.html', context={'exercises': exercises})
@@ -363,3 +384,21 @@ def add_course2(request):
     course = Course.objects.create(title=title, description=description)
     course.add_exercise()
     return JsonResponse({'url': course.url}, status=200)
+
+@staff_member_required
+def add_exercises(request, course_url):
+    if request.method != 'POST':
+        return HttpResponse(status=500)
+
+    exercises = request.POST['exercises']
+    exercises = json.loads(exercises)
+
+    course = Course.objects.get(url=course_url)
+
+    for element in exercises:
+        id = element['id']
+        title = element['title']
+        content = element['content']
+        course.add_exercise(title, content)
+
+    return HttpResponse(status=200)

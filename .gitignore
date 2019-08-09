@@ -19,6 +19,8 @@ Cerebri/*/*/migrations/*
 Cerebri/obj/*
 obj/*
 
+Cerebri/static/MathJax/**
+
 # C extensions
 *.so
 
@@ -177,3 +179,4 @@ $RECYCLE.BIN/
 /CerebriPlatform/static/admin
 /resizer/matury_mat
 /resizer/matury_chem
+/Cerebri/static/font-awesome

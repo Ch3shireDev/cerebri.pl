@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using OpenQA.Selenium;
@@ -48,12 +49,16 @@ namespace Selenium
             var descriptionText = "abc";
 
             driver.FindElementById("title-input").Clear();
+            Thread.Sleep(100);
             driver.FindElementById("title-input").SendKeys(titleText);
 
             driver.FindElementById("points-input").Clear();
+            Thread.Sleep(100);
             driver.FindElementById("points-input").SendKeys(points);
 
             driver.ExecuteScript($"editor.setValue(`{descriptionText}`);");
+
+            Thread.Sleep(500);
 
             switch (answerType)
             {
@@ -111,7 +116,7 @@ namespace Selenium
         }
 
 
-        class AnswerInterval
+        private class AnswerInterval
         {
             public string leftType;
             public string leftValue;
@@ -132,11 +137,14 @@ namespace Selenium
 
             var answerList = new List<AnswerInterval>
             {
-                new AnswerInterval {leftType = "left-inf", leftValue = "-inf", rightType="right-open", rightValue = "4/3"},
-                new AnswerInterval {leftType = "left-open", leftValue = "4", rightType="right-inf", rightValue = "inf"},
+                new AnswerInterval
+                    {leftType = "left-inf", leftValue = "-inf", rightType = "right-open", rightValue = "4/3"},
+                new AnswerInterval
+                    {leftType = "left-open", leftValue = "4", rightType = "right-inf", rightValue = "inf"},
             };
 
-            var answersText = $"{{'num_answers': [0, 1, 2], 'answers': [{answerList[0].GetTab()}, {answerList[1].GetTab()}]}}";
+            var answersText =
+                $"{{'num_answers': [0, 1, 2], 'answers': [{answerList[0].GetTab()}, {answerList[1].GetTab()}]}}";
 
 
             var text = $"answersEditor.setValue(`{answersText}`);";
@@ -155,7 +163,7 @@ namespace Selenium
 
             Assert.AreEqual(Intervals.Count, answerList.Count);
 
-            for(var i=0;i<Intervals.Count;i++)
+            for (var i = 0; i < Intervals.Count; i++)
             {
                 var interval = Intervals[i];
                 var answer = answerList[i];
@@ -172,21 +180,15 @@ namespace Selenium
                 leftSelect.SelectByValue(answer.leftType);
                 rightSelect.SelectByValue(answer.rightType);
 
-                if (answer.leftType != "left-inf")
-                {
-                    fromDiv.SendKeys(answerList[i].leftValue);
-                }
+                if (answer.leftType != "left-inf") fromDiv.SendKeys(answerList[i].leftValue);
 
-                if (answer.rightType != "right-inf")
-                {
-                    toDiv.SendKeys(answerList[i].rightValue);
-                }
+                if (answer.rightType != "right-inf") toDiv.SendKeys(answerList[i].rightValue);
             }
 
             driver.FindElementById("submit-answer").Click();
 
             var numSuccess = driver.FindElementsByClassName("bg-success").Count;
-            Assert.AreEqual(numSuccess, answerList.Count*4+2);
+            Assert.AreEqual(numSuccess, answerList.Count * 4 + 2);
         }
 
         public static void TestManyValues(FirefoxDriver driver)
@@ -207,18 +209,14 @@ namespace Selenium
             numSelect.SelectByValue("3");
 
             var inputs = driver.FindElementsByTagName("input");
-            var answers = new[]{10,20,30};
+            var answers = new[] {10, 20, 30};
 
-            for (var i = 0; i < inputs.Count; i++)
-            {
-                inputs[i].SendKeys(answers[i].ToString());
-            }
+            for (var i = 0; i < inputs.Count; i++) inputs[i].SendKeys(answers[i].ToString());
 
             driver.FindElementById("submit-answer").Submit();
 
             var numSuccess = driver.FindElementsByClassName("bg-success").Count;
-            Assert.AreEqual(2+answers.Length, numSuccess);
-
+            Assert.AreEqual(2 + answers.Length, numSuccess);
         }
 
         private static void TestListOfValues(FirefoxDriver driver)
@@ -245,7 +243,6 @@ namespace Selenium
 
         private static void TestProof(FirefoxDriver driver)
         {
-
             var answerSelect = driver.FindElementById("answer-type");
             var selectElement = new SelectElement(answerSelect);
             selectElement.SelectByValue("2");
@@ -268,7 +265,6 @@ namespace Selenium
             driver.FindElementById("submit-answer").Click();
             var numSuccess = driver.FindElementsByClassName("bg-success").Count;
             Assert.AreEqual(4, numSuccess);
-
         }
 
 
@@ -278,6 +274,7 @@ namespace Selenium
             var url = $"http://localhost:{port}/admin";
             driver.Navigate().GoToUrl(url);
             var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+            wait.Until(x => driver.FindElementsById("id_username").Count != 0);
             driver.FindElementById("id_username").SendKeys(admin_login);
             driver.FindElementById("id_password").SendKeys(admin_pass);
             driver.FindElementByXPath("//input[@type='submit']").Click();
@@ -308,8 +305,25 @@ namespace Selenium
             Assert.IsTrue(driver.FindElementByClassName("course-title").Displayed);
             Assert.IsTrue(driver.FindElementByClassName("course-description").Displayed);
 
-            Assert.AreEqual(driver.FindElementByClassName("course-title").Text, courseTitle);
-            Assert.AreEqual(driver.FindElementByClassName("course-description").Text, courseDescription);
+            Assert.AreEqual(driver.FindElementsByClassName("course-title").Last().Text, courseTitle);
+            Assert.AreEqual(driver.FindElementsByClassName("course-description").Last().Text, courseDescription);
+        }
+
+        public static void EditCourse(FirefoxDriver driver, string courseTitle, string courseDescription)
+        {
+            driver.FindElementByClassName("edit-course").Click();
+            driver.FindElementById("title-input").Clear();
+            driver.FindElementById("title-input").SendKeys(courseTitle);
+            driver.FindElementById("description-input").Clear();
+            driver.FindElementById("description-input").SendKeys(courseDescription);
+            driver.FindElementById("save-button").Click();
+            driver.FindElementById("quit-button").Click();
+
+            var title = driver.FindElementByClassName("course-title").Text;
+            var description = driver.FindElementByClassName("course-description").Text; ;
+
+            Assert.IsTrue(title.Contains(courseTitle));
+            Assert.IsTrue(description.Contains(courseDescription));
         }
     }
 }

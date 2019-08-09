@@ -18,13 +18,13 @@
         {% if user.is_superuser %}
         <a href="/{{course.url}}/edit" class="btn btn-secondary btn-large edit-course">Edytuj</a>
         {% endif %}
-        </p>
+    </p>
 </div>
 {% endfor %}
 
 {% if user.is_superuser %}
 <div class="row px-5">
-<a href="/add_course" class="btn-primary btn-lg m-5" id="add-course">Dodaj kurs</a>
+    <a href="/add_course" class="btn-primary btn-lg m-5" id="add-course">Dodaj kurs</a>
 </div>
 {% endif %}
 

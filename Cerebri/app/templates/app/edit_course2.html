@@ -6,67 +6,46 @@
 <link rel="stylesheet" href="{% static 'exercise.css'%}" type="text/css"/>
 
 <div class="d-flex flex-fill flex-column border mx-5 mt-5 mb-2 pb-1">
-    
-    <button id="send-exercises" class="btn btn-primary btn-lg mx-auto" style="width:200px">Wyślij zadania</button>
+
+    <button id="send-exercises" class="btn btn-primary btn-lg mx-auto" style="width: 200px">Wyślij zadania</button>
 
     <div class="mx-auto mt-1 flex-fill w-100 py-2">
         {% for exercise in exercises %}
-        <div class="m-2 p-2">
-            <input class="form-control exercise-title" num="{{exercise.number}}" value="{{exercise.title}}" />
+        <div class="m-2 p-2 exercise-data" id="{{exercise.id}}">
+            <input class="form-control exercise-title" num="{{exercise.number}}" value="{{exercise.title}}"/>
             <img src="{{exercise.url}}" class="my-1 d-block"/>
-            
+
             <div class="input-group">
                 <textarea class="exercise-content form-control my-2" style="min-width: 600px; height: 300px;">{{exercise.content}}</textarea>
             </div>
-            <button class="btn-lg btn-primary px-2 save-button" num="{{exercise.number}}" style="width:100px">Save</button>
         </div>
         {% endfor %}
     </div>
 </div>
 
 <script>
-    $('.save-button').click(function() {
-        const num = $(this).attr('num');
-        const parent = $(this).parent();
-        const title = parent.find('.exercise-title').val();
-        const content = parent.find('.exercise-content').val();
-        const csrf = $('input[name=csrfmiddlewaretoken]').val();
-        const url = parent.find('img').attr('src');
-        $.post('add_exercise',
-            {
-                csrfmiddlewaretoken: csrf,
-                title: title,
-                content: content,
-                num: num,
-                url: url
-            },
-            function(data) {
-                parent.hide();
-            }
-        );
-    });
-
     $('#send-exercises').click(function() {
-
-        var n = 0;
-        $('.save-button').each(function (index, element) {
-
-            setTimeout(function() {
-                    $(element).click();
-                },
-                50 * index);
-            n = index;
+        var exercises = [];
+        const csrf = $('input[name=csrfmiddlewaretoken]').val();
+        $('.exercise-data').each(function(index, element) {
+            var id = $(element).attr('id');
+            var title = $(element).find('.exercise-title').val();
+            var content = $(element).find('.exercise-content').val();
+            var exercise = { title: title, content: content, id: id };
+            exercises.push(exercise);
         });
 
-        setTimeout(function () {
-            var url = window.location.href;
-            url = url.split('/');
-            url.pop();
-            url = url.join('/');
-            window.location.href = url;
-        },
-            50*(n+1));
-
+        $.post('add-exercises',
+            {
+                csrfmiddlewaretoken: csrf,
+                exercises: JSON.stringify(exercises)
+            },
+            function(data) {
+                var url = window.location.href.split('/');
+                url.pop();
+                url = url.join('/');
+                window.location.href = url;
+            });
     });
 </script>
 
