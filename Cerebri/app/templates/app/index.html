@@ -2,8 +2,15 @@
 
 {% block content %}
 
+<style>
+    .exercise-index {
+        width: 80%;
+        max-width: 600px !important;
+    }
+</style>
+
 {% for course in courses %}
-<div class="jumbotron mx-5 my-2 mx-auto px-5" style="max-width: 800px">
+<div class="exercise-index jumbotron mx-5 my-2 mx-auto px-5" style="max-width: 800px">
     <h3 class="course-title">{{course.title}}</h3>
     <p class="lead course-description">{{course.description}}</p>
     <p>

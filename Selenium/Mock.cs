@@ -7,6 +7,7 @@ using OpenQA.Selenium.Support.UI;
 
 namespace Selenium
 {
+
     [TestFixture]
     public class Mock
     {
@@ -14,11 +15,24 @@ namespace Selenium
         private FirefoxDriver driver;
         private string admin_login = "admin";
         private string admin_pass = "pass1234";
+        private Process resultProcess;
+
+
+        [OneTimeSetUp]
+        public void GlobalSetup()
+        {
+            resultProcess = Tools.RunServer(port, admin_login, admin_pass);
+        }
+
+        [OneTimeTearDown]
+        public void GlobalTeardown()
+        {
+            resultProcess.CloseMainWindow();
+        }
 
         [SetUp]
         public void SetupTest()
         {
-            resultProcess = Tools.RunServer(port, admin_login, admin_pass);
             driver = new FirefoxDriver();
         }
 
@@ -26,10 +40,7 @@ namespace Selenium
         public void TearDownTest()
         {
             driver.Close();
-            resultProcess.CloseMainWindow();
         }
-
-        private Process resultProcess;
 
         [Test]
         public void AddCourseTest()
@@ -78,19 +89,19 @@ namespace Selenium
             Tools.EditExercise(driver, "AnswersType.Intervals");
         }
 
-        [Test]
-        public void ConnectionTest()
-        {
-            Tools.GoHome(driver);
-            Assert.IsTrue(driver.FindElement(By.TagName("body")).Displayed);
-        }
+        //[Test]
+        //public void ConnectionTest()
+        //{
+        //    Tools.GoHome(driver);
+        //    Assert.IsTrue(driver.FindElement(By.TagName("body")).Displayed);
+        //}
 
-        [Test]
-        public void AdminTest()
-        {
-            Tools.AdminLogin(driver, port, admin_login, admin_pass);
-            Assert.IsTrue(driver.FindElementByXPath("//*[text()='Administracja stroną']").Displayed);
-        }
+        //[Test]
+        //public void AdminTest()
+        //{
+        //    Tools.AdminLogin(driver, port, admin_login, admin_pass);
+        //    Assert.IsTrue(driver.FindElementByXPath("//*[text()='Administracja stroną']").Displayed);
+        //}
 
         [Test]
         public void AddManyExercisesOCR()
