@@ -23,71 +23,28 @@
 
 </script>
 
+<div id="exercise" class="d-flex flex-fill flex-column border">
 
-<script>
-
-    function array_remove(array, index) {
-        var newArray = [];
-        for (var i = 0; i < array.length; i++) {
-            if (i === index) continue;
-            newArray.push(array[i]);
-        }
-        return newArray;
-    }
-
-
-    function compare(a, b) {
-        if (typeof a === 'undefined' && typeof b === 'undefined') return true;
-        if (typeof a === 'undefined' || typeof b === 'undefined') return false;
-        if (a === null && b === null) return true;
-        if (a === null || b === null) return false;
-        if (a === b) return true;
-        if (a.includes('inf') && !b.includes('inf')) return false;
-        if (b.includes('inf') && !a.includes('inf')) return false;
-        try {
-            a = a.replace('%', 'percent');
-            b = b.replace('%', 'percent');
-
-            var parser = math.parser();
-            parser.evaluate('percent = 0.01');
-
-            a = parser.evaluate(a);
-            b = parser.evaluate(b);
-
-            if (a === b) return true;
-            if (math.compare(a, b) === 0) return true;
-        } catch (e) {
-            return false;
-        }
-        return false;
-    }
-
-    if (sessionStorage.getItem('points') === null) {
-        sessionStorage.setItem('points', 0);
-    }
-</script>
-
-<div id="exercise" class="d-flex flex-fill flex-column border mx-5 mt-5 mb-2 pb-1">
-
-    <div class="mx-auto mt-1 flex-fill w-100 py-2">
+    <div class="flex-fill">
         {% block description %}
-        <div class="bg-white px-5 py-2 my-2">
-            <h3 id="exercise-title">{{exercise_title}} <small class="mx-5">({{points_text}})</small></h3>
-            <div id="exercise-description" class="py-2 mb-3">{{exercise_content | safe}}</div>
+        <div class="bg-white">
+            <h3 id="exercise-title">{{exercise_title}} </h3>
+            <div>({{points_text}})</div>
+            <div id="exercise-description">{{exercise_content | safe}}</div>
         </div>
         {% endblock %}
         {% block exercise %}
         {% endblock %}
     </div>
     {% block points %}
-    <div class="row container mx-2">
+    <div class="row container" id="points-container">
         <p>Punkty: <span id="points"></span></p>
     </div>
     {% endblock %}
 </div>
 
 
-<div class="mb-3 d-flex">
+<div class="d-flex py-5">
     <div class="flex-fill text-center btn-container">
         {%if previous_url and previous_url != "" %}
         <a href="{{previous_url}}" class="btn-lg btn-danger select-none" id="previous-exercise">Poprzedni</a>
@@ -110,7 +67,7 @@
 </div>
 
 {% if user.is_superuser %}
-<div class="mb-3 d-flex">
+<div class="d-flex">
     <div class="flex-fill text-center btn-container">
         <a href="/{{course_url}}/append" class="btn-lg btn-dark text-white select-none">Dodaj na końcu</a>
     </div>
@@ -125,35 +82,11 @@
     var total_points = parseInt(`{{total_points}}`);
 </script>
 
-<script>
-    $(document).ready(function() {});
-    MathJax.Hub.Queue(function() {
-        $('#exercise').css('visibility', 'initial');
-    });
 
-    function UpdatePoints() {
-        let points = parseInt(sessionStorage.getItem('points'));
-        if (points === NaN) {
-            sessionStorage.setItem('points', 0);
-            points = 0;
-        }
 
-        $('#points').text(points);
-    }
 
-    UpdatePoints();
 
-    $('#end-course').click(function(event) {
-        event.preventDefault();
-        if (confirm("Przechodząc dalej kończysz course. Kontynuować?")) {
-            var points = parseInt(sessionStorage.getItem('points'));
-            var percent = Math.floor(points * 100 / total_points);
-            alert(`Gratulacje! Twój wynik to ${points} punktów z ${total_points} możliwych: ${percent}%.`);
-            window.location = "/";
-        }
-    });
-
-</script>
+<script src="{% static 'exercise-base.js'%}"></script>
 
 
 {% endblock %}

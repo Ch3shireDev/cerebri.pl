@@ -171,7 +171,7 @@ $RECYCLE.BIN/
 /Cerebri/static/highlight.js
 /Cerebri/static/brython
 /Cerebri/static/bootstrap
-*.zip
+# *.zip
 /Fizyka/exercise/migrations
 /CerebriPlatform/static/admin/img
 /CerebriPlatform/static/admin/js

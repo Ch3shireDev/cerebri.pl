@@ -57,6 +57,12 @@
     <Folder Include="system\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="app\static\exercise-base.js">
+      <SubType>Code</SubType>
+    </Content>
+    <Content Include="app\static\exercise-closed.js">
+      <SubType>Code</SubType>
+    </Content>
     <Content Include="app\templates\app\add_course.html" />
     <Content Include="app\templates\app\edit_course.html" />
     <Content Include="app\templates\app\edit_exercise.html">

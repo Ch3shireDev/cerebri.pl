@@ -107,7 +107,26 @@
                 $('#rendered').html(data);
                 var exercise = $('#exercise').last().html();
                 $('#rendered').html(exercise);
-                MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+
+                MathJax.Hub.Config({
+                    tex2jax: {
+                        inlineMath: [['$','$'], ['\\(','\\)']],
+                        processEscapes: true,
+                        "fast-preview": {disabled: true},
+                        tex2jax: {preview: "none"}
+                    },
+                    TeX:{
+    
+                        extensions: ["AMSmath.js"],
+                        Macros: {xspace: '', ensuremath: ''}
+                    }
+
+                });
+
+                MathJax.Hub.Queue(["Typeset", MathJax.Hub, $('#rendered')[0]]);
+                //var math = MathJax.Hub.getAllJax("mathdiv")[0];
+                //MathJax.Hub.Queue(["Text", math, s]);
+                //MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
             });
     }
 
