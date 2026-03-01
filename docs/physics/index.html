@@ -14,11 +14,32 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
 
     <style>
+        :root {
+            --bg-primary: #f6f5fa;
+            --bg-secondary: #ffffff;
+            --text-primary: #2c3e50;
+            --text-secondary: #666666;
+            --accent-color: #6c5ce7;
+            --accent-hover: #5b4bc4;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-primary: #1a1a1a;
+                --bg-secondary: #2d2d2d;
+                --text-primary: #ffffff;
+                --text-secondary: #b0b0b0;
+                --accent-color: #8b7dd1;
+                --accent-hover: #7a6cc0;
+            }
+        }
+
         body {
             font-family: 'Nunito', sans-serif;
-            background-color: #f6f5fa; /* Delikatne tło dla fizyki */
-            color: #2c3e50;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
             padding: 20px;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         
         /* Stylizacja karty z zadaniem */
@@ -26,26 +47,29 @@
             border: none;
             border-radius: 15px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-            border-left: 6px solid #6c5ce7; /* Fioletowy akcent */
-            transition: background-color 0.2s;
+            border-left: 6px solid var(--accent-color);
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: background-color 0.2s, color 0.3s ease;
         }
         
         .quiz-card:hover {
-            background-color: #ffffff;
+            background-color: var(--bg-secondary);
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
         
         .btn-start {
-            background-color: #6c5ce7;
+            background-color: var(--accent-color);
             color: white;
             border-radius: 25px;
             font-weight: 700;
             padding: 10px 25px;
             border: none;
+            transition: background-color 0.3s ease;
         }
         
         .btn-start:hover {
-            background-color: #5b4bc4;
+            background-color: var(--accent-hover);
             color: white;
         }
         

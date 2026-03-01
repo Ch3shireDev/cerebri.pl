@@ -14,11 +14,32 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
 
     <style>
+        :root {
+            --bg-primary: #f0fcfd;
+            --bg-secondary: #ffffff;
+            --text-primary: #2c3e50;
+            --text-secondary: #666666;
+            --accent-color: #0abde3;
+            --accent-hover: #0899cc;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-primary: #1a1a1a;
+                --bg-secondary: #2d2d2d;
+                --text-primary: #ffffff;
+                --text-secondary: #b0b0b0;
+                --accent-color: #2db8e6;
+                --accent-hover: #26a0d1;
+            }
+        }
+
         body {
             font-family: 'Nunito', sans-serif;
-            background-color: #f0fcfd; /* Jasnobłękitne tło dla chemii */
-            color: #2c3e50;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
             padding: 20px;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         
         .header-icon {
@@ -31,31 +52,34 @@
             border: none;
             border-radius: 15px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-            border-left: 6px solid #0abde3; /* Cyjanowy akcent chemiczny */
-            transition: background-color 0.2s;
+            border-left: 6px solid var(--accent-color);
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: background-color 0.2s, color 0.3s ease;
         }
         
         .quiz-card:hover {
-            background-color: #ffffff;
+            background-color: var(--bg-secondary);
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
         
         .btn-start {
-            background-color: #0abde3;
+            background-color: var(--accent-color);
             color: white;
             border-radius: 25px;
             font-weight: 700;
             padding: 10px 25px;
             border: none;
+            transition: background-color 0.3s ease;
         }
         
         .btn-start:hover {
-            background-color: #089bba;
+            background-color: var(--accent-hover);
             color: white;
         }
         
         .chemistry-title {
-            color: #0abde3;
+            color: var(--accent-color);
             font-weight: 800;
         }
     </style>

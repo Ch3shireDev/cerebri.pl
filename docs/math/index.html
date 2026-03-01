@@ -14,11 +14,42 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
 
     <style>
+        :root {
+            --bg-primary: #fdf5f6;
+            --bg-secondary: #ffffff;
+            --text-primary: #2c3e50;
+            --text-secondary: #666666;
+            --accent-color: #e84393;
+            --accent-hover: #d81b60;
+            --form-border: #e2e8f0;
+            --success-color: #27ae60;
+            --error-color: #c0392b;
+            --fire-color: #d35400;
+            --explanation-border: #e84393;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-primary: #1a1a1a;
+                --bg-secondary: #2d2d2d;
+                --text-primary: #ffffff;
+                --text-secondary: #b0b0b0;
+                --accent-color: #cc5555;
+                --accent-hover: #b34444;
+                --form-border: #444444;
+                --success-color: #4a9f6e;
+                --error-color: #d63031;
+                --fire-color: #e67e22;
+                --explanation-border: #cc5555;
+            }
+        }
+
         body {
             font-family: 'Nunito', sans-serif;
-            background-color: #fdf5f6; /* Delikatne tło dla matematyki */
-            color: #2c3e50;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
             padding: 20px;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         
         /* Stylizacja karty z zadaniem */
@@ -26,31 +57,34 @@
             border: none;
             border-radius: 15px;
             box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-            border-left: 6px solid #e84393; /* Ciemnoróżowy/bordowy akcent */
-            transition: background-color 0.2s;
+            border-left: 6px solid var(--accent-color);
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: background-color 0.2s, color 0.3s ease;
         }
         
         .quiz-card:hover {
-            background-color: #ffffff;
+            background-color: var(--bg-secondary);
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
         
         .btn-start {
-            background-color: #e84393;
+            background-color: var(--accent-color);
             color: white;
             border-radius: 25px;
             font-weight: 700;
             padding: 10px 25px;
             border: none;
+            transition: background-color 0.3s ease;
         }
         
         .btn-start:hover {
-            background-color: #d81b60;
+            background-color: var(--accent-hover);
             color: white;
         }
         
         .math-title {
-            color: #e84393;
+            color: var(--accent-color);
             font-weight: 800;
         }
         
@@ -60,26 +94,26 @@
             text-align: left;
             padding: 15px 20px;
             margin-bottom: 10px;
-            border: 2px solid #e2e8f0;
+            border: 2px solid var(--form-border);
             border-radius: 12px;
-            background: white;
+            background: var(--bg-secondary);
             font-weight: 700;
-            color: #2c3e50;
+            color: var(--text-primary);
             transition: all 0.2s;
         }
         .option-btn:hover:not(:disabled) {
-            border-color: #e84393;
-            background: #fdf5f6;
+            border-color: var(--accent-color);
+            background: var(--bg-primary);
             transform: translateX(5px);
         }
         .option-btn.correct {
-            background: #27ae60;
-            border-color: #27ae60;
+            background: var(--success-color);
+            border-color: var(--success-color);
             color: white;
         }
         .option-btn.incorrect {
-            background: #c0392b;
-            border-color: #c0392b;
+            background: var(--error-color);
+            border-color: var(--error-color);
             color: white;
         }
         .option-btn:disabled {
@@ -87,31 +121,35 @@
             opacity: 0.9;
         }
         .stats-bar {
-            background: white;
+            background: var(--bg-secondary);
             border-radius: 15px;
             padding: 15px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             margin-bottom: 20px;
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         .streak-fire {
-            color: #d35400;
+            color: var(--fire-color);
             font-weight: bold;
         }
         .combo-multiplier {
             font-size: 0.9rem;
-            color: #e84393;
+            color: var(--accent-color);
             font-weight: bold;
         }
         .explanation-box {
             display: none;
-            background: #ffffff;
-            border-left: 5px solid #e84393;
+            background: var(--bg-secondary);
+            border-left: 5px solid var(--explanation-border);
             border-radius: 10px;
             padding: 20px;
             margin-top: 20px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             text-align: left;
             animation: fadeIn 0.4s;
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-10px); }

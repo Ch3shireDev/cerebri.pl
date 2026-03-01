@@ -1,371 +1,228 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Biologia - Cerebri.pl</title>
-
-    <!-- Bootstrap 5.3 CSS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap"
-      rel="stylesheet"
-    />
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
 
     <style>
-      body {
-        font-family: "Nunito", sans-serif;
-        background-color: #f4fbf7; /* Delikatnie zielonkawe tło dopasowane do biologii */
-        color: #2c3e50;
-        padding: 20px;
-      }
-
-      .header-icon {
-        font-size: 4rem;
-        margin-bottom: 10px;
-      }
-
-      /* Stylizacja karty z zadaniem */
-      .quiz-card {
-        border: none;
-        border-radius: 15px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
-        border-left: 6px solid #10ac84; /* Wyraźny biologiczny akcent */
-        transition: background-color 0.2s;
-      }
-
-      .quiz-card:hover {
-        background-color: #ffffff;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-      }
-
-      .btn-start {
-        background-color: #10ac84;
-        color: white;
-        border-radius: 25px;
-        font-weight: 700;
-        padding: 10px 25px;
-        border: none;
-      }
-
-      .btn-start:hover {
-        background-color: #0d8a6a;
-        color: white;
-      }
-
-      .biology-title {
-        color: #10ac84;
-        font-weight: 800;
-      }
-
-      /* Gamifikacja i UI Quizu */
-      .option-btn {
-        width: 100%;
-        text-align: left;
-        padding: 15px 20px;
-        margin-bottom: 10px;
-        border: 2px solid #e2e8f0;
-        border-radius: 12px;
-        background: white;
-        font-weight: 700;
-        color: #2c3e50;
-        transition: all 0.2s;
-      }
-      .option-btn:hover:not(:disabled) {
-        border-color: #10ac84;
-        background: #f0fdf4;
-        transform: translateX(5px);
-      }
-      .option-btn.correct {
-        background: #10ac84;
-        border-color: #10ac84;
-        color: white;
-      }
-      .option-btn.incorrect {
-        background: #e74c3c;
-        border-color: #e74c3c;
-        color: white;
-      }
-      .option-btn:disabled {
-        cursor: not-allowed;
-        opacity: 0.8;
-      }
-      .stats-bar {
-        background: white;
-        border-radius: 15px;
-        padding: 15px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        margin-bottom: 20px;
-      }
-      .streak-fire {
-        color: #e67e22;
-        font-weight: bold;
-        animation: pulse 1s infinite;
-      }
-      @keyframes pulse {
-        0% {
-          transform: scale(1);
+        :root {
+            --bg-main: #f4fbf7;
+            --text-main: #2c3e50;
+            --bg-card: #ffffff;
+            --border-card: #e2e8f0;
+            --hover-opt: #f0fdf4;
         }
-        50% {
-          transform: scale(1.1);
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-main: #111814;
+                --text-main: #e2e8f0;
+                --bg-card: #1e293b;
+                --border-card: #334155;
+                --hover-opt: #064e3b;
+            }
+            .text-muted, .text-secondary { color: #94a3b8 !important; }
         }
-        100% {
-          transform: scale(1);
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            padding: 20px;
         }
-      }
+        
+        .quiz-card {
+            border: none;
+            border-radius: 15px;
+            background-color: var(--bg-card);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            border-left: 6px solid #10ac84;
+            transition: all 0.2s;
+        }
+        
+        .quiz-card:hover {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+        
+        .btn-start {
+            background-color: #10ac84;
+            color: white;
+            border-radius: 25px;
+            font-weight: 700;
+            padding: 10px 25px;
+            border: none;
+        }
+        
+        .btn-start:hover {
+            background-color: #0d8a6a;
+            color: white;
+        }
+        
+        .biology-title {
+            color: #10ac84;
+            font-weight: 800;
+        }
+
+        .option-btn {
+            width: 100%;
+            text-align: left;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border: 2px solid var(--border-card);
+            border-radius: 12px;
+            background: var(--bg-card);
+            font-weight: 700;
+            color: var(--text-main);
+            transition: all 0.2s;
+        }
+        .option-btn:hover:not(:disabled) {
+            border-color: #10ac84;
+            background: var(--hover-opt);
+            transform: translateX(5px);
+        }
+        .option-btn.correct {
+            background: #10ac84;
+            border-color: #10ac84;
+            color: white;
+        }
+        .option-btn.incorrect {
+            background: #e74c3c;
+            border-color: #e74c3c;
+            color: white;
+        }
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.9;
+        }
+        .stats-bar {
+            background: var(--bg-card);
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+        .streak-fire {
+            color: #e67e22;
+            font-weight: bold;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        .explanation-box {
+            display: none;
+            background: var(--bg-card);
+            border-left: 5px solid #10ac84;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-align: left;
+            animation: fadeIn 0.4s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
-  </head>
-  <body>
-    <div
-      class="container text-center mx-auto"
-      id="main-content"
-      style="max-width: 800px"
-    >
-      <!-- Sekcja powitalna -->
-      <div class="py-4">
-        <h1 class="biology-title mb-3">Witaj w dziale Biologia!</h1>
-        <p class="lead text-muted mb-5">
-          Odkrywaj tajemnice życia, komórek i ekosystemów na
-          <strong>cerebri.pl</strong>. Wybierz zestaw zadań z listy poniżej i
-          sprawdź swoją wiedzę!
-        </p>
-      </div>
+</head>
+<body>
 
-      <!-- Lista dostępnych zestawów -->
-      <div class="card quiz-card text-start mb-4">
-        <div
-          class="card-body p-4 d-flex flex-column flex-md-row align-items-center justify-content-between"
-        >
-          <div>
-            <h4 class="fw-bold mb-2">Zestaw 1: Podstawy Biologii</h4>
-            <p class="text-muted mb-md-0 me-md-4">
-              Sprawdź się w szybkim quizie! Przed Tobą
-              <strong>20 pytań jednokrotnego wyboru (A, B, C, D)</strong>. Po
-              zaznaczeniu odpowiedzi od razu otrzymasz informację zwrotną, czy
-              udało Ci się trafić poprawnie.
+    <div class="container text-center mx-auto" id="main-content" style="max-width: 800px;">
+        
+        <div class="py-4">
+            <h1 class="biology-title mb-3">Witaj w dziale Biologia!</h1>
+            <p class="lead text-muted mb-5">
+                Odkrywaj tajemnice życia, komórek i ekosystemów na <strong>cerebri.pl</strong>. 
+                Wybierz zestaw zadań z listy poniżej i sprawdź swoją wiedzę!
             </p>
-          </div>
-          <div class="mt-3 mt-md-0">
-            <button id="start-quiz-btn" class="btn btn-start text-nowrap">
-              Rozpocznij quiz 🚀
-            </button>
-          </div>
         </div>
-      </div>
 
-      <!-- Miejsce na kolejne zestawy w przyszłości -->
-      <div
-        class="card quiz-card text-start mb-4"
-        style="border-left-color: #b2bec3; opacity: 0.7"
-      >
-        <div
-          class="card-body p-4 d-flex flex-column flex-md-row align-items-center justify-content-between"
-        >
-          <div>
-            <h4 class="fw-bold mb-2 text-secondary">
-              Zestaw 2: Ciało Człowieka
-            </h4>
-            <p class="text-muted mb-0">Moduł w trakcie przygotowywania...</p>
-          </div>
-          <div class="mt-3 mt-md-0">
-            <button id="start-quiz-btn" class="btn btn-start text-nowrap">
-              Rozpocznij quiz
-            </button>
-          </div>
+        <div class="card quiz-card text-start mb-4">
+            <div class="card-body p-4 d-flex flex-column flex-md-row align-items-center justify-content-between">
+                <div>
+                    <h4 class="fw-bold mb-2">Zestaw 1: Podstawy Biologii</h4>
+                    <p class="text-muted mb-md-0 me-md-4">
+                        Sprawdź się w szybkim quizie! Przed Tobą <strong>20 pytań jednokrotnego wyboru (A, B, C, D)</strong>.
+                    </p>
+                </div>
+                <div class="mt-3 mt-md-0">
+                    <button id="start-quiz-btn" class="btn btn-start text-nowrap">Rozpocznij quiz</button>
+                </div>
+            </div>
         </div>
-      </div>
-
-      <!-- Miejsce na kolejne zestawy w przyszłości -->
-      <div
-        class="card quiz-card text-start mb-4"
-        style="border-left-color: #b2bec3; opacity: 0.7"
-      >
-        <div
-          class="card-body p-4 d-flex flex-column flex-md-row align-items-center justify-content-between"
-        >
-          <div>
-            <h4 class="fw-bold mb-2 text-secondary">
-              Zestaw 2: Ciało Człowieka
-            </h4>
-            <p class="text-muted mb-0">Moduł w trakcie przygotowywania...</p>
-          </div>
-          <div class="mt-3 mt-md-0">
-            <button
-              class="btn btn-secondary rounded-pill fw-bold px-4"
-              disabled
-            >
-              Zablokowane
-            </button>
-          </div>
+        
+        <div class="card quiz-card text-start mb-4" style="border-left-color: #b2bec3; opacity: 0.7;">
+            <div class="card-body p-4 d-flex flex-column flex-md-row align-items-center justify-content-between">
+                <div>
+                    <h4 class="fw-bold mb-2 text-secondary">Zestaw 2: Ciało Człowieka</h4>
+                    <p class="text-muted mb-0">Moduł w trakcie przygotowywania...</p>
+                </div>
+                <div class="mt-3 mt-md-0">
+                    <button class="btn btn-secondary rounded-pill fw-bold px-4" disabled>Zablokowane</button>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
 
-    <!-- Skrypt obsługujący quiz i logikę gamifikacji -->
     <script>
-      const quizData = [
-        {
-          q: "Jaka jest podstawowa jednostka strukturalna i funkcjonalna organizmów żywych?",
-          options: ["Tkanka", "Komórka", "Narząd", "Białko"],
-          answer: 1,
-        },
-        {
-          q: "Proces, w którym rośliny wytwarzają związki organiczne przy udziale światła, to:",
-          options: [
-            "Oddychanie komórkowe",
-            "Chemosynteza",
-            "Fotosynteza",
-            "Transpiracja",
-          ],
-          answer: 2,
-        },
-        {
-          q: "Który związek odpowiada za transport tlenu we krwi człowieka?",
-          options: ["Insulina", "Hemoglobina", "Keratyna", "Miozyna"],
-          answer: 1,
-        },
-        {
-          q: "Gdzie w komórce eukariotycznej zachodzi oddychanie tlenowe?",
-          options: [
-            "W jądrze komórkowym",
-            "W chloroplastach",
-            "W rybosomach",
-            "W mitochondriach",
-          ],
-          answer: 3,
-        },
-        {
-          q: "Ile par chromosomów występuje w komórkach somatycznych człowieka?",
-          options: ["21", "22", "23", "46"],
-          answer: 2,
-        },
-        {
-          q: "Który kwas nukleinowy jest głównym nośnikiem informacji genetycznej w komórkach?",
-          options: ["RNA", "DNA", "ATP", "NADH"],
-          answer: 1,
-        },
-        {
-          q: "Jaki jest największy narząd w ciele człowieka?",
-          options: ["Wątroba", "Skóra", "Płuca", "Jelito cienkie"],
-          answer: 1,
-        },
-        {
-          q: "Która tkanka roślinna przewodzi wodę i sole mineralne od korzeni ku górze rośliny?",
-          options: ["Łyko", "Drewno (ksylem)", "Miękisz", "Skórka"],
-          answer: 1,
-        },
-        {
-          q: "Kto sformułował teorię ewolucji przez dobór naturalny?",
-          options: [
-            "Gregor Mendel",
-            "Ludwik Pasteur",
-            "Karol Darwin",
-            "Oswald Avery",
-          ],
-          answer: 2,
-        },
-        {
-          q: "Która z wymienionych grup nie jest zaliczana do królestw organizmów żywych?",
-          options: ["Zwierzęta", "Rośliny", "Grzyby", "Wirusy"],
-          answer: 3,
-        },
-        {
-          q: "Co jest głównym produktem limfocytów B?",
-          options: ["Erytrocyty", "Przeciwciała", "Płytki krwi", "Antygeny"],
-          answer: 1,
-        },
-        {
-          q: "Który hormon obniża poziom glukozy we krwi?",
-          options: ["Adrenalina", "Glukagon", "Insulina", "Tyroksyna"],
-          answer: 2,
-        },
-        {
-          q: "W której części oka powstaje obraz wzrokowy?",
-          options: ["Na rogówce", "W soczewce", "Na siatkówce", "W tęczówce"],
-          answer: 2,
-        },
-        {
-          q: "Która z wymienionych tkanek jest tkanką łączną płynną?",
-          options: [
-            "Tkanka tłuszczowa",
-            "Krew",
-            "Tkanka kostna",
-            "Tkanka chrzęstna",
-          ],
-          answer: 1,
-        },
-        {
-          q: "Jaki gaz jest pobierany przez rośliny podczas fotosyntezy?",
-          options: ["Tlen", "Dwutlenek węgla", "Azot", "Wodór"],
-          answer: 1,
-        },
-        {
-          q: "Jakie białko jest głównym składnikiem budulcowym włosów i paznokci?",
-          options: ["Kolagen", "Elastyna", "Keratyna", "Fibryna"],
-          answer: 2,
-        },
-        {
-          q: "Jak nazywa się proces podziału komórki, w którym powstają dwie identyczne komórki potomne?",
-          options: ["Mitoza", "Mejoza", "Zapłodnienie", "Koniugacja"],
-          answer: 0,
-        },
-        {
-          q: "Do zwierząt stałocieplnych należą:",
-          options: [
-            "Płazy i gady",
-            "Ryby i ssaki",
-            "Ptaki i ssaki",
-            "Owady i ptaki",
-          ],
-          answer: 2,
-        },
-        {
-          q: "Jaki jest główny narząd wymiany gazowej u ryb?",
-          options: ["Płuca", "Tchawki", "Skrzela", "Skóra"],
-          answer: 2,
-        },
-        {
-          q: "Która witamina może być syntetyzowana w skórze człowieka pod wpływem promieniowania UV?",
-          options: ["Witamina A", "Witamina C", "Witamina D", "Witamina K"],
-          answer: 2,
-        },
-      ];
+        const quizData = [
+            { q: "Jaka jest podstawowa jednostka strukturalna i funkcjonalna każdego organizmu?", options: ["Tkanka", "Komórka", "Narząd", "Białko"], answer: 1, explanation: "Komórka to najmniejsza zdolna do życia i w pełni funkcjonująca jednostka organizmów." },
+            { q: "Proces, w którym rośliny wytwarzają pokarm przy udziale światła to:", options: ["Oddychanie", "Chemosynteza", "Fotosynteza", "Transpiracja"], answer: 2, explanation: "Fotosynteza pozwala roślinom przekształcać energię świetlną w energię chemiczną zmagazynowaną w pokarmie." },
+            { q: "Który związek odpowiada za transport tlenu we krwi?", options: ["Insulina", "Hemoglobina", "Keratyna", "Miozyna"], answer: 1, explanation: "Hemoglobina to czerwony barwnik w erytrocytach (krwinkach czerwonych), który wiąże i transportuje tlen." },
+            { q: "Gdzie w komórce eukariotycznej zachodzi oddychanie tlenowe?", options: ["W jądrze komórkowym", "W chloroplastach", "W rybosomach", "W mitochondriach"], answer: 3, explanation: "Mitochondria pełnią funkcję 'elektrowni' komórki, uwalniając energię (ATP) w procesie oddychania tlenowego." },
+            { q: "Ile par chromosomów występuje w komórkach somatycznych człowieka?", options: ["21", "22", "23", "46"], answer: 2, explanation: "Zdrowy człowiek posiada w komórkach somatycznych 23 pary chromosomów, co daje łącznie 46 chromosomów." },
+            { q: "Który kwas nukleinowy jest głównym nośnikiem informacji genetycznej?", options: ["RNA", "DNA", "ATP", "NADH"], answer: 1, explanation: "DNA (kwas deoksyrybonukleinowy) jest głównym nośnikiem informacji genetycznej w komórkach." },
+            { q: "Co jest największym narządem w ciele człowieka?", options: ["Wątroba", "Skóra", "Płuca", "Jelito cienkie"], answer: 1, explanation: "Skóra to największy narząd pokrywający całe ciało, pełniący funkcje ochronne i termoregulacyjne." },
+            { q: "Jaka tkanka roślinna przewodzi wodę i sole mineralne od korzeni w górę?", options: ["Łyko", "Drewno (ksylem)", "Miękisz", "Skórka"], answer: 1, explanation: "Drewno (ksylem) transportuje wodę wraz z rozpuszczonymi solami mineralnymi od korzeni do pozostałych części rośliny." },
+            { q: "Kto sformułował teorię ewolucji poprzez dobór naturalny?", options: ["Gregor Mendel", "Ludwik Pasteur", "Karol Darwin", "Oswald Avery"], answer: 2, explanation: "Karol Darwin w swoim dziele 'O powstawaniu gatunków' opisał mechanizm ewolucji poprzez dobór naturalny." },
+            { q: "Która z wymienionych grup NIE jest królestwem organizmów żywych?", options: ["Zwierzęta", "Rośliny", "Grzyby", "Wirusy"], answer: 3, explanation: "Wirusy nie mają budowy komórkowej i nie przejawiają samodzielnie funkcji życiowych, dlatego nie zaliczamy ich do organizmów." },
+            { q: "Co jest głównym produktem limfocytów B (część układu odpornościowego)?", options: ["Erytrocyty", "Przeciwciała", "Płytki krwi", "Antygeny"], answer: 1, explanation: "Limfocyty B produkują specyficzne białka zwane przeciwciałami, które neutralizują antygeny (patogeny)." },
+            { q: "Jaki hormon obniża poziom glukozy we krwi?", options: ["Adrenalina", "Glukagon", "Insulina", "Tyroksyna"], answer: 2, explanation: "Insulina, produkowana przez trzustkę, odpowiada za obniżanie stężenia glukozy we krwi." },
+            { q: "W której części oka powstaje obraz wzrokowy?", options: ["Na rogówce", "W soczewce", "Na siatkówce", "W tęczówce"], answer: 2, explanation: "Siatkówka to wewnętrzna błona oka zawierająca komórki światłoczułe, na której powstaje odwrócony obraz." },
+            { q: "Która z wymienionych tkanek jest tkanką łączną płynną?", options: ["Tkanka tłuszczowa", "Krew", "Tkanka kostna", "Tkanka chrzęstna"], answer: 1, explanation: "Krew to wyjątkowa tkanka łączna, której substancją międzykomórkową jest płynne osocze." },
+            { q: "Jaki gaz jest pobierany przez rośliny podczas fotosyntezy?", options: ["Tlen", "Dwutlenek węgla", "Azot", "Wodór"], answer: 1, explanation: "Rośliny pobierają z powietrza dwutlenek węgla (CO2) i wykorzystują go do produkcji związków organicznych." },
+            { q: "Jakie białko jest głównym budulcem włosów i paznokci?", options: ["Kolagen", "Elastyna", "Keratyna", "Fibryna"], answer: 2, explanation: "Keratyna to twarde, wytrzymałe białko strukturalne budujące włosy, paznokcie i naskórek." },
+            { q: "Jak nazywa się proces podziału komórki, w którym powstają dwie identyczne komórki potomne?", options: ["Mitoza", "Mejoza", "Zapłodnienie", "Koniugacja"], answer: 0, explanation: "Mitoza prowadzi do powstania dwóch identycznych genetycznie komórek o takiej samej liczbie chromosomów." },
+            { q: "Do zwierząt stałocieplnych należą:", options: ["Płazy i gady", "Ryby i ssaki", "Ptaki i ssaki", "Owady i ptaki"], answer: 2, explanation: "Tylko ptaki i ssaki posiadają fizjologiczne mechanizmy pozwalające na utrzymanie stałej temperatury ciała." },
+            { q: "Co jest głównym narządem wymiany gazowej u ryb?", options: ["Płuca", "Tchawki", "Skrzela", "Skóra"], answer: 2, explanation: "Skrzela są przystosowane do pobierania tlenu rozpuszczonego w środowisku wodnym." },
+            { q: "Która witamina może być syntetyzowana w skórze człowieka pod wpływem promieniowania UV?", options: ["Witamina A", "Witamina C", "Witamina D", "Witamina K"], answer: 2, explanation: "Witamina D (D3) jest syntetyzowana w naskórku z pochodnej cholesterolu pod wpływem światła słonecznego." }
+        ];
 
-      let currentQuestion = 0;
-      let score = 0;
-      let streak = 0;
-      let maxStreak = 0;
+        let currentQuestion = 0;
+        let score = 0;
+        let streak = 0;
+        let maxStreak = 0;
 
-      document
-        .getElementById("start-quiz-btn")
-        .addEventListener("click", startQuiz);
+        document.getElementById('start-quiz-btn').addEventListener('click', startQuiz);
 
-      function startQuiz() {
-        currentQuestion = 0;
-        score = 0;
-        streak = 0;
-        maxStreak = 0;
-        renderQuestion();
-      }
-
-      function renderQuestion() {
-        const content = document.getElementById("main-content");
-        if (currentQuestion >= quizData.length) {
-          endQuiz();
-          return;
+        function startQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            streak = 0;
+            maxStreak = 0;
+            renderQuestion();
         }
 
-        const q = quizData[currentQuestion];
-        const progress = (currentQuestion / quizData.length) * 100;
+        function renderQuestion() {
+            const content = document.getElementById('main-content');
+            if (currentQuestion >= quizData.length) {
+                endQuiz();
+                return;
+            }
 
-        content.innerHTML = `
+            const q = quizData[currentQuestion];
+            const progress = ((currentQuestion) / quizData.length) * 100;
+
+            content.innerHTML = `
                 <div class="stats-bar d-flex justify-content-between align-items-center text-start">
                     <div><span class="text-muted">Punkty:</span> <strong class="fs-5 text-success">${score}</strong></div>
                     <div class="text-center">
@@ -374,7 +231,7 @@
                             <div class="progress-bar bg-success" role="progressbar" style="width: ${progress}%"></div>
                         </div>
                     </div>
-                    <div class="${streak >= 3 ? "streak-fire" : "text-muted"}">
+                    <div class="${streak >= 3 ? 'streak-fire' : 'text-muted'}">
                         Seria: <strong>${streak}</strong>
                     </div>
                 </div>
@@ -383,64 +240,69 @@
                     <div class="card-body p-4 p-md-5">
                         <h3 class="fw-bold mb-4">${q.q}</h3>
                         <div class="options-container">
-                            ${q.options
-                              .map(
-                                (opt, index) => `
+                            ${q.options.map((opt, index) => `
                                 <button class="option-btn" onclick="checkAnswer(${index}, this)">
                                     <span class="fw-bold me-2 text-secondary">${String.fromCharCode(65 + index)}.</span> ${opt}
                                 </button>
-                            `,
-                              )
-                              .join("")}
+                            `).join('')}
                         </div>
                     </div>
                 </div>
-                <div id="feedback-area" class="text-center" style="min-height: 80px;"></div>
+                <div id="explanation-container" class="explanation-box"></div>
+                <div id="action-area" class="text-center mt-3"></div>
             `;
-      }
-
-      window.checkAnswer = function (selectedIndex, btnElement) {
-        const q = quizData[currentQuestion];
-        const allBtns = document.querySelectorAll(".option-btn");
-        const feedbackArea = document.getElementById("feedback-area");
-
-        allBtns.forEach((btn) => (btn.disabled = true));
-
-        if (selectedIndex === q.answer) {
-          btnElement.classList.add("correct");
-          let earnedPoints = 10 + streak * 2;
-          score += earnedPoints;
-          streak++;
-          if (streak > maxStreak) maxStreak = streak;
-
-          let feedbackText = "Dobrze!";
-          if (streak >= 3) feedbackText = "Świetna seria!";
-
-          feedbackArea.innerHTML = `<h4 class="text-success fw-bold mb-3">${feedbackText} +${earnedPoints} pkt</h4>`;
-        } else {
-          btnElement.classList.add("incorrect");
-          allBtns[q.answer].classList.add("correct");
-          streak = 0;
-          feedbackArea.innerHTML = `<h4 class="text-danger fw-bold mb-3">Zła odpowiedź.</h4>`;
         }
 
-        feedbackArea.innerHTML += `
-                <button class="btn btn-start px-5 mt-2" onclick="nextQuestion()">Następne pytanie</button>
+        window.checkAnswer = function(selectedIndex, btnElement) {
+            const q = quizData[currentQuestion];
+            const allBtns = document.querySelectorAll('.option-btn');
+            const explanationContainer = document.getElementById('explanation-container');
+            const actionArea = document.getElementById('action-area');
+            
+            allBtns.forEach(btn => btn.disabled = true);
+
+            let isCorrect = selectedIndex === q.answer;
+            let earnedPoints = 0;
+
+            if (isCorrect) {
+                btnElement.classList.add('correct');
+                earnedPoints = 10 + (streak * 2);
+                score += earnedPoints;
+                streak++;
+                if (streak > maxStreak) maxStreak = streak;
+            } else {
+                btnElement.classList.add('incorrect');
+                allBtns[q.answer].classList.add('correct');
+                streak = 0;
+            }
+
+            let feedbackHeader = isCorrect 
+                ? `<h4 class="text-success fw-bold mb-2">Poprawna odpowiedź! (+${earnedPoints} pkt)</h4>` 
+                : `<h4 class="text-danger fw-bold mb-2">Błędna odpowiedź.</h4>`;
+
+            explanationContainer.innerHTML = `
+                ${feedbackHeader}
+                <p class="mb-0" style="font-size: 1.05rem; color: var(--secondary-text);">${q.explanation}</p>
             `;
-      };
+            explanationContainer.style.display = 'block';
 
-      window.nextQuestion = function () {
-        currentQuestion++;
-        renderQuestion();
-      };
+            actionArea.innerHTML = `
+                <button class="btn btn-start px-5 py-2 fs-5" onclick="nextQuestion()">Następne pytanie</button>
+            `;
+        };
 
-      function endQuiz() {
-        const content = document.getElementById("main-content");
-        let rank = "Początkujący Biolog";
-        if (score > 150) rank = "Odkrywca";
-        if (score > 250) rank = "Mistrz Biologii";
+        window.nextQuestion = function() {
+            currentQuestion++;
+            renderQuestion();
+        };
 
-        content.innerHTML = `
+        function endQuiz() {
+            const content = document.getElementById('main-content');
+            let rank = "Początkujący Biolog";
+            if (score > 150) rank = "Odkrywca";
+            if (score > 250) rank = "Mistrz Biologii";
+
+            content.innerHTML = `
                 <div class="card quiz-card text-center p-5">
                     <h2 class="biology-title mb-4">Koniec quizu!</h2>
                     <div class="row mb-4">
@@ -453,11 +315,11 @@
                             <h1 class="text-warning fw-bold">${maxStreak}</h1>
                         </div>
                     </div>
-                    <h4 class="mb-4">Zdobyta ranga: <strong class="text-primary">${rank}</strong></h4>
-                    <button onclick="location.reload()" class="btn btn-outline-secondary rounded-pill fw-bold px-5 mt-3">Wróć do menu</button>
+                    <h4 class="mb-4">Zdobyta ranga: <strong class="text-success">${rank}</strong></h4>
+                    <button onclick="location.reload()" class="btn btn-outline-secondary rounded-pill fw-bold px-5 mt-3" style="color: var(--text-main);">Wróć do menu</button>
                 </div>
             `;
-      }
+        }
     </script>
-  </body>
+</body>
 </html>
