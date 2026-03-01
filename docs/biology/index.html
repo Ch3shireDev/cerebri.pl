@@ -51,6 +51,7 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.06);
             border-left: 6px solid #10ac84;
             transition: all 0.2s;
+            margin-bottom: 12px !important;
         }
         
         .quiz-card:hover {
@@ -80,13 +81,14 @@
         .option-btn {
             width: 100%;
             text-align: left;
-            padding: 15px 20px;
-            margin-bottom: 10px;
+            padding: 10px 12px;
+            margin-bottom: 6px;
             border: 2px solid var(--border-card);
-            border-radius: 12px;
+            border-radius: 8px;
             background: var(--bg-card);
             font-weight: 700;
             color: var(--text-main);
+            font-size: 0.9rem;
             transition: all 0.2s;
         }
         .option-btn:hover:not(:disabled) {
@@ -110,15 +112,17 @@
         }
         .stats-bar {
             background: var(--bg-card);
-            border-radius: 15px;
-            padding: 15px;
+            border-radius: 12px;
+            padding: 10px 12px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
         }
         .streak-fire {
             color: #e67e22;
             font-weight: bold;
             animation: pulse 1s infinite;
+            font-size: 0.9rem;
         }
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
@@ -128,16 +132,76 @@
             display: none;
             background: var(--bg-card);
             border-left: 5px solid #10ac84;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 20px;
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin-top: 10px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             text-align: left;
             animation: fadeIn 0.4s;
+            font-size: 0.9rem;
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding: 0 !important;
+            }
+            body {
+                padding: 10px !important;
+            }
+            .quiz-card {
+                border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            }
+            .quiz-card .card-body {
+                padding: 12px !important;
+            }
+            h1 {
+                font-size: 1.5rem !important;
+            }
+            h3 {
+                font-size: 1rem !important;
+                line-height: 1.3;
+            }
+            h4 {
+                font-size: 0.95rem !important;
+            }
+            p {
+                font-size: 0.9rem !important;
+                margin-bottom: 0.5rem !important;
+            }
+            .py-4 {
+                padding: 0.75rem 0 !important;
+            }
+            .mb-3 {
+                margin-bottom: 0.75rem !important;
+            }
+            .mb-4 {
+                margin-bottom: 1rem !important;
+            }
+            .mt-1 {
+                margin-top: 0.25rem !important;
+            }
+            .btn-start {
+                padding: 6px 16px !important;
+                font-size: 0.9rem !important;
+            }
+            .stats-bar {
+                flex-direction: column !important;
+                text-align: center;
+            }
+            .stats-bar div {
+                margin-bottom: 8px;
+            }
+            .stats-bar div:last-child {
+                margin-bottom: 0;
+            }
+            .progress {
+                width: 100% !important;
+            }
         }
     </style>
 </head>
@@ -231,21 +295,21 @@
 
             content.innerHTML = `
                 <div class="stats-bar d-flex justify-content-between align-items-center text-start">
-                    <div><span class="text-body-secondary">Punkty:</span> <strong class="fs-5 text-success">${score}</strong></div>
-                    <div class="text-center">
+                    <div style="font-size: 0.85rem;"><span class="text-body-secondary">Punkty:</span> <strong class="fs-5 text-success">${score}</strong></div>
+                    <div class="text-center" style="font-size: 0.8rem;">
                         <span class="text-body-secondary small">Pytanie ${currentQuestion + 1} z ${quizData.length}</span>
-                        <div class="progress mt-1" style="height: 6px; width: 120px; margin: 0 auto;">
+                        <div class="progress mt-1" style="height: 4px; width: 100px; margin: 0 auto;">
                             <div class="progress-bar bg-success" role="progressbar" style="width: ${progress}%"></div>
                         </div>
                     </div>
-                    <div class="${streak >= 3 ? 'streak-fire' : 'text-body-secondary'}">
+                    <div class="${streak >= 3 ? 'streak-fire' : 'text-body-secondary'}" style="font-size: 0.85rem;">
                         Seria: <strong>${streak}</strong>
                     </div>
                 </div>
                 
                 <div class="card quiz-card mb-4 text-start">
-                    <div class="card-body p-4 p-md-5">
-                        <h3 class="fw-bold mb-4">${q.q}</h3>
+                    <div class="card-body p-3 p-md-4">
+                        <h3 class="fw-bold mb-3">${q.q}</h3>
                         <div class="options-container">
                             ${q.options.map((opt, index) => `
                                 <button class="option-btn" onclick="checkAnswer(${index}, this)">
@@ -284,17 +348,17 @@
             }
 
             let feedbackHeader = isCorrect 
-                ? `<h4 class="text-success fw-bold mb-2">Poprawna odpowiedź! (+${earnedPoints} pkt)</h4>` 
-                : `<h4 class="text-danger fw-bold mb-2">Błędna odpowiedź.</h4>`;
+                ? `<h4 class="text-success fw-bold mb-2" style="font-size: 0.95rem;">Poprawna odpowiedź! (+${earnedPoints} pkt)</h4>` 
+                : `<h4 class="text-danger fw-bold mb-2" style="font-size: 0.95rem;">Błędna odpowiedź.</h4>`;
 
             explanationContainer.innerHTML = `
                 ${feedbackHeader}
-                <p class="mb-0" style="font-size: 1.05rem; color: var(--secondary-text);">${q.explanation}</p>
+                <p class="mb-0" style="font-size: 0.9rem; color: var(--text-main);">${q.explanation}</p>
             `;
             explanationContainer.style.display = 'block';
 
             actionArea.innerHTML = `
-                <button class="btn btn-start px-5 py-2 fs-5" onclick="nextQuestion()">Następne pytanie</button>
+                <button class="btn btn-start px-4 py-1 fs-6" style="font-size: 0.9rem !important;" onclick="nextQuestion()">Następne pytanie</button>
             `;
         };
 
@@ -310,20 +374,20 @@
             if (score > 250) rank = "Mistrz Biologii";
 
             content.innerHTML = `
-                <div class="card quiz-card text-center p-5">
-                    <h2 class="biology-title mb-4">Koniec quizu!</h2>
-                    <div class="row mb-4">
+                <div class="card quiz-card text-center p-3 p-md-4">
+                    <h2 class="biology-title mb-3" style="font-size: 1.3rem;">Koniec quizu!</h2>
+                    <div class="row mb-3">
                         <div class="col-6">
-                            <h5 class="text-body-secondary">Twój wynik</h5>
-                            <h1 class="text-success fw-bold">${score}</h1>
+                            <h5 class="text-body-secondary" style="font-size: 0.85rem;">Twój wynik</h5>
+                            <h1 class="text-success fw-bold" style="font-size: 1.8rem;">${score}</h1>
                         </div>
                         <div class="col-6">
-                            <h5 class="text-body-secondary">Najlepsza seria</h5>
-                            <h1 class="text-warning fw-bold">${maxStreak}</h1>
+                            <h5 class="text-body-secondary" style="font-size: 0.85rem;">Najlepsza seria</h5>
+                            <h1 class="text-warning fw-bold" style="font-size: 1.8rem;">${maxStreak}</h1>
                         </div>
                     </div>
-                    <h4 class="mb-4">Zdobyta ranga: <strong class="text-success">${rank}</strong></h4>
-                    <button onclick="location.reload()" class="btn btn-outline-secondary rounded-pill fw-bold px-5 mt-3" style="color: var(--text-main);">Wróć do menu</button>
+                    <h4 class="mb-3" style="font-size: 0.95rem;">Zdobyta ranga: <strong class="text-success">${rank}</strong></h4>
+                    <button onclick="location.reload()" class="btn btn-outline-secondary rounded-pill fw-bold px-4 py-1" style="color: var(--text-main); font-size: 0.9rem;">Wróć do menu</button>
                 </div>
             `;
         }
