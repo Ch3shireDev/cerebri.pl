@@ -3,11 +3,329 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cerebri.pl</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <title>Cerebri.pl - Edukacja na wesoło</title>
+    
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* Zmienne CSS dla obsługi motywu */
+        :root {
+            --bg-primary: #f4f9f9;
+            --bg-secondary: white;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --navbar-gradient: linear-gradient(135deg, #ff6b6b, #feca57);
+            --navbar-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-primary: #1a1a1a;
+                --bg-secondary: #2d2d2d;
+                --text-primary: #ffffff;
+                --text-secondary: #b0b0b0;
+                --navbar-gradient: linear-gradient(135deg, #cc5555, #cc9933);
+                --navbar-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            }
+        }
+
+        /* Wesoły styl globalny */
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Zapobiega przewijaniu głównej strony, przewijamy tylko iframe */
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Stylizacja paska nawigacji */
+        .navbar {
+            background: var(--navbar-gradient) !important;
+            box-shadow: var(--navbar-shadow);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .navbar-brand {
+            font-weight: 900;
+            font-size: 1.5rem;
+            color: white !important;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+        }
+
+        @media (min-width: 768px) {
+            .navbar-brand {
+                font-size: 1.8rem;
+            }
+        }
+
+        .nav-link {
+            color: white !important;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin: 2px 5px;
+            padding: 8px 15px !important;
+            border-radius: 10px;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Główny kontener i obszar iframe */
+        .main-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .iframe-wrapper {
+            flex-grow: 1;
+            border: none;
+            overflow: hidden;
+            display: flex;
+            position: relative;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background-color: var(--bg-secondary);
+        }
+        
+        /* Styl dla przycisku toggle na telefonach */
+        .navbar-toggler {
+            border: 2px solid white;
+            padding: 4px 8px;
+        }
+        
+        .navbar-toggler-icon {
+            filter: brightness(0) invert(1);
+            width: 1.2em;
+            height: 1.2em;
+        }
+    </style>
 </head>
 <body>
-    <p>Hello, cerebri.pl!</p> 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+    <!-- Nawigacja -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top py-2 py-md-3 px-2 px-md-4">
+        <div class="container-fluid p-0">
+            <a class="navbar-brand" href="#" id="home-btn">Cerebri.pl</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Przełącz nawigację">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav ms-auto text-center mt-2 mt-lg-0">
+                    <!-- Główne działy - ładują podstrony z folderów do iframe -->
+                    <li class="nav-item">
+                        <a class="nav-link module-link" href="#" data-src="math/index.html">🧮 Matematyka</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link module-link" href="#" data-src="biology/index.html">🧬 Biologia</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link module-link" href="#" data-src="chemistry/index.html">🧪 Chemia</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link module-link" href="#" data-src="informatics/index.html">💻 Informatyka</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Główny obszar roboczy z iframe. Użycie responsywnych paddingów Bootstrapa -->
+    <main class="main-container p-0 p-md-2">
+        <div class="iframe-wrapper">
+            <!-- Iframe ładujący zewnętrzne pliki -->
+            <iframe id="content-frame" title="Okno Modułu Edukacyjnego"></iframe>
+        </div>
+    </main>
+
+    <!-- Bootstrap 5.3 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Skrypt sterujący -->
+    <script>
+        const iframe = document.getElementById('content-frame');
+
+        // Mapa modułów: ścieżka -> data-src
+        const modules = {
+            'math': { src: 'math/index.html', name: 'Matematyka' },
+            'biology': { src: 'biology/index.html', name: 'Biologia' },
+            'chemistry': { src: 'chemistry/index.html', name: 'Chemia' },
+            'informatics': { src: 'informatics/index.html', name: 'Informatyka' }
+        };
+
+        // Powitalny ekran generowany w locie (wyświetlany, gdy żaden plik nie jest załadowany)
+        const welcomeHTML = `
+            <!DOCTYPE html>
+            <html lang="pl">
+            <head>
+                <meta charset="UTF-8">
+                <!-- Kluczowy tag viewport dla urządzeń mobilnych wewnątrz iframe -->
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+                <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;800&display=swap" rel="stylesheet">
+                <style>
+                    :root {
+                        --bg-color: #f4f9f9;
+                        --text-color: #333333;
+                        --accent-color: #4ecdc4;
+                        --secondary-text: #666666;
+                    }
+
+                    @media (prefers-color-scheme: dark) {
+                        :root {
+                            --bg-color: #1a1a1a;
+                            --text-color: #ffffff;
+                            --accent-color: #6dd5d1;
+                            --secondary-text: #b0b0b0;
+                        }
+                    }
+
+                    body {
+                        font-family: 'Nunito', sans-serif;
+                        background-color: var(--bg-color);
+                        color: var(--text-color);
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        height: 100vh;
+                        margin: 0;
+                        text-align: center;
+                        padding: 1rem;
+                        transition: background-color 0.3s ease, color 0.3s ease;
+                    }
+                    
+                    h1 { 
+                        color: var(--accent-color); 
+                        font-weight: 800; 
+                    }
+                    
+                    p {
+                        color: var(--secondary-text);
+                    }
+                    
+                    .icon { 
+                        font-size: 5rem; 
+                        margin-bottom: 15px; 
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="icon">👋</div>
+                <h1 class="fs-2 fs-md-1">Witaj w SuperNauce!</h1>
+                <p class="lead mt-3 fs-6 fs-md-5">Wybierz dział z górnego menu, aby rozpocząć odkrywanie.</p>
+            </body>
+            </html>
+        `;
+
+        // Funkcja resetująca do ekranu startowego
+        function showWelcomeScreen() {
+            iframe.removeAttribute('src'); // Czyścimy ścieżkę do pliku
+            iframe.srcdoc = welcomeHTML;   // Wstrzykujemy ekran startowy
+            
+            // Usuwamy klasę 'active' ze wszystkich linków
+            document.querySelectorAll('.module-link').forEach(l => l.classList.remove('active'));
+        }
+
+        // Funkcja ładująca moduł na podstawie identyfikatora (np. 'math')
+        function loadModule(moduleId) {
+            const module = modules[moduleId];
+            if (!module) return false;
+
+            // Zaznaczanie aktywnego linku
+            document.querySelectorAll('.module-link').forEach(l => l.classList.remove('active'));
+            const activeLink = document.querySelector(`[data-src="${module.src}"]`);
+            if (activeLink) activeLink.classList.add('active');
+
+            // Podmieniamy zawartość iframe
+            iframe.removeAttribute('srcdoc'); // Usuwamy wstrzyknięty ekran startowy
+            iframe.src = module.src;           // Ładujemy plik z odpowiedniego folderu
+
+            // Aktualizujemy URL bez przeładowania strony
+            window.history.pushState({ module: moduleId }, module.name, `#!/${moduleId}`);
+
+            // Ukrywanie menu na telefonach po kliknięciu
+            const navbarCollapse = document.getElementById('navbarNavDropdown');
+            if (navbarCollapse.classList.contains('show')) {
+                const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse);
+                bsCollapse.hide();
+            }
+
+            return true;
+        }
+
+        // Obsługa zmian URL (przycisk wstecz/naprzód)
+        window.addEventListener('popstate', function(e) {
+            if (e.state && e.state.module) {
+                loadModule(e.state.module);
+            } else {
+                showWelcomeScreen();
+                window.history.pushState(null, '', '#!/');
+            }
+        });
+
+        // Inicjalizacja na starcie - sprawdzenie URL i załadowanie odpowiedniej strony
+        function initializeFromUrl() {
+            const hash = window.location.hash;
+            
+            if (hash.startsWith('#!/')) {
+                const moduleId = hash.substring(3); // Wyodrębniamy ID modułu (np. 'math' z '#!/math')
+                
+                if (modules[moduleId]) {
+                    // Zamiast push state, używamy replace state na start
+                    loadModule(moduleId);
+                    // Zastąp historię, aby nie przewijać wstecz na stronę startową
+                    window.history.replaceState({ module: moduleId }, modules[moduleId].name, hash);
+                    return;
+                }
+            }
+            
+            // Domyślnie pokaż ekran powitalny
+            showWelcomeScreen();
+            window.history.replaceState(null, '', '#!/');
+        }
+
+        // Uruchom inicjalizację
+        initializeFromUrl();
+
+        // Obsługa kliknięć w menu
+        document.querySelectorAll('.module-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Pobieranie ścieżki (np. math/index.html)
+                const targetSrc = this.getAttribute('data-src');
+                
+                // Znalezienie ID modułu na podstawie data-src
+                const moduleId = Object.keys(modules).find(key => modules[key].src === targetSrc);
+                
+                if (moduleId) {
+                    loadModule(moduleId);
+                }
+            });
+        });
+
+        // Powrót do startu po kliknięciu w logo
+        document.getElementById('home-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            showWelcomeScreen();
+            window.history.pushState(null, '', '#!/');
+        });
+    </script>
 </body>
 </html>

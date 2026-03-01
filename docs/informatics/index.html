@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informatyka - Cerebri.pl</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&family=Fira+Code:wght@500&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f4f6f9;
+            color: #2c3e50;
+            padding: 20px;
+        }
+        
+        .header-icon {
+            font-family: 'Fira Code', monospace;
+            font-size: 3.5rem;
+            color: #2980b9;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .quiz-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            border-left: 6px solid #2980b9;
+            transition: background-color 0.2s;
+        }
+        
+        .quiz-card:hover {
+            background-color: #ffffff;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .btn-start {
+            background-color: #2980b9;
+            color: white;
+            border-radius: 25px;
+            font-weight: 700;
+            padding: 10px 25px;
+            border: none;
+        }
+        
+        .btn-start:hover {
+            background-color: #1f6391;
+            color: white;
+        }
+        
+        .informatics-title {
+            color: #2980b9;
+            font-weight: 800;
+        }
+
+        /* UI Quizu */
+        .option-btn {
+            width: 100%;
+            text-align: left;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            background: white;
+            font-weight: 700;
+            color: #2c3e50;
+            transition: all 0.2s;
+        }
+        .option-btn:hover:not(:disabled) {
+            border-color: #2980b9;
+            background: #eef5f9;
+            transform: translateX(5px);
+        }
+        .option-btn.correct {
+            background: #27ae60;
+            border-color: #27ae60;
+            color: white;
+        }
+        .option-btn.incorrect {
+            background: #c0392b;
+            border-color: #c0392b;
+            color: white;
+        }
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.9;
+        }
+        .stats-bar {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+        .streak-fire {
+            color: #d35400;
+            font-weight: bold;
+        }
+        .combo-multiplier {
+            font-size: 0.9rem;
+            color: #e67e22;
+            font-weight: bold;
+        }
+        
+        /* Panel wyjaśnień */
+        .explanation-box {
+            display: none;
+            background: #ffffff;
+            border-left: 5px solid #34495e;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-align: left;
+            animation: fadeIn 0.4s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container text-center mx-auto" id="main-content" style="max-width: 800px;">
+        <div class="py-4">
+            <div class="header-icon">&lt;/&gt;</div>
+            <h1 class="informatics-title mb-3">Witaj w dziale Informatyka!</h1>
+            <p class="lead text-muted mb-5">
+                Odkrywaj tajniki programowania, algorytmów i budowy komputerów na <strong>cerebri.pl</strong>. 
+                Wybierz zestaw zadań z listy poniżej i sprawdź swoją wiedzę.
+            </p>
+        </div>
+
+        <div class="card quiz-card text-start mb-4">
+            <div class="card-body p-4 d-flex flex-column flex-md-row align-items-center justify-content-between">
+                <div>
+                    <h4 class="fw-bold mb-2">Zestaw 1: Podstawy Informatyki</h4>
+                    <p class="text-muted mb-md-0 me-md-4">
+                        Sprawdź się w szybkim quizie. Przed Tobą <strong>20 pytań jednokrotnego wyboru (A, B, C, D)</strong>. 
+                        Włączono system mnożników punktowych za poprawne serie.
+                    </p>
+                </div>
+                <div class="mt-3 mt-md-0">
+                    <button id="start-quiz-btn" class="btn btn-start text-nowrap">Rozpocznij quiz</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card quiz-card text-start mb-4" style="border-left-color: #b2bec3; opacity: 0.7;">
+            <div class="card-body p-4 d-flex flex-column flex-md-row align-items-center justify-content-between">
+                <div>
+                    <h4 class="fw-bold mb-2 text-secondary">Zestaw 2: Algorytmy</h4>
+                    <p class="text-muted mb-0">Moduł w trakcie przygotowywania...</p>
+                </div>
+                <div class="mt-3 mt-md-0">
+                    <button class="btn btn-secondary rounded-pill fw-bold px-4" disabled>Zablokowane</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            { q: "Czym jest algorytm?", options: ["Szyfrowaną wiadomością", "Ciągiem kroków rozwiązujących dany problem", "Podzespołem procesora", "Językiem programowania"], answer: 1, explanation: "Algorytm to ściśle określony zestaw instrukcji lub kroków, które należy wykonać, aby rozwiązać konkretne zadanie lub problem logiczny." },
+            { q: "Z ilu bitów składa się jeden bajt?", options: ["4", "8", "16", "32"], answer: 1, explanation: "Powszechnie przyjętym standardem w informatyce jest to, że 1 bajt (B) równa się 8 bitom (b). Pozwala to na zakodowanie 256 różnych wartości." },
+            { q: "Co oznacza skrót RAM?", options: ["Read Access Memory", "Random Access Memory", "Run Application Memory", "Real Action Memory"], answer: 1, explanation: "Random Access Memory (Pamięć o swobodnym dostępie) to pamięć operacyjna komputera, używana do przechowywania danych aktualnie wykonywanych programów. Kasuje się po wyłączeniu zasilania." },
+            { q: "Który język służy przede wszystkim do nadawania wyglądu stronom WWW?", options: ["HTML", "Python", "CSS", "Java"], answer: 2, explanation: "CSS (Cascading Style Sheets) to język arkuszy stylów, który odpowiada za układ, kolory, fonty i ogólny wygląd elementów strukturalnych stworzonych w HTML." },
+            { q: "Co to jest adres IP?", options: ["Rodzaj złącza na płycie głównej", "Unikalny identyfikator urządzenia w sieci", "Program antywirusowy", "Karta graficzna serwera"], answer: 1, explanation: "Adres IP (Internet Protocol) to unikalny numer przypisywany urządzeniom w sieci komputerowej, służący do ich identyfikacji i komunikacji między nimi." },
+            { q: "System binarny (dwójkowy) opiera się wyłącznie na cyfrach:", options: ["0 i 1", "1 i 2", "0 do 9", "Znakach alfabetu"], answer: 0, explanation: "System binarny wykorzystuje tylko cyfry 0 i 1. Jest to podstawa działania elektroniki cyfrowej, gdzie stany te odpowiadają brakowi lub obecności napięcia." },
+            { q: "Jakie jest główne zadanie kompilatora?", options: ["Zabezpiecza sieć przed atakiem", "Tworzy grafikę 3D", "Wyszukuje błędy na dysku twardym", "Tłumaczy kod źródłowy na język maszynowy"], answer: 3, explanation: "Kompilator to program, który analizuje kod napisany w języku wysokiego poziomu (np. C++) i tłumaczy go w całości na kod zrozumiały dla procesora (język maszynowy)." },
+            { q: "Co kryje się pod skrótem CPU?", options: ["Central Processing Unit", "Computer Personal Unit", "Control Program Utility", "Central Power Unit"], answer: 0, explanation: "Central Processing Unit to jednostka centralna, potocznie nazywana procesorem. Jest to 'mózg' komputera, wykonujący operacje arytmetyczne i logiczne." },
+            { q: "Jaki port sieciowy jest domyślnie wykorzystywany przez protokół HTTPS?", options: ["21", "80", "443", "8080"], answer: 2, explanation: "HTTPS (szyfrowana wersja HTTP) standardowo komunikuje się na porcie 443. Port 80 jest zarezerwowany dla nieszyfrowanego połączenia HTTP." },
+            { q: "W jakiej strukturze danych elementy działają zgodnie z zasadą LIFO (Last In, First Out)?", options: ["Kolejka", "Drzewo", "Stos", "Lista wiązana"], answer: 2, explanation: "Stos (Stack) to struktura, w której ostatni dodany element jest zdejmowany jako pierwszy (jak stos talerzy). Kolejka z kolei działa na zasadzie FIFO (First In, First Out)." },
+            { q: "Do czego służy język SQL?", options: ["Do tworzenia interfejsów graficznych", "Do pisania sterowników sprzętowych", "Do zarządzania i zapytań w relacyjnych bazach danych", "Do animacji postaci w grach"], answer: 2, explanation: "SQL (Structured Query Language) to standaryzowany język używany do pobierania, wstawiania, modyfikowania i usuwania danych w relacyjnych bazach danych (np. MySQL, PostgreSQL)." },
+            { q: "Który protokół służy do dynamicznego i automatycznego przydzielania adresów IP urządzeniom w sieci?", options: ["DNS", "FTP", "DHCP", "SMTP"], answer: 2, explanation: "DHCP (Dynamic Host Configuration Protocol) automatycznie konfiguruje parametry sieciowe urządzeń, przydzielając im m.in. adres IP, maskę podsieci czy adres bramy domyślnej." },
+            { q: "Który z poniższych systemów operacyjnych posiada w pełni otwarty kod źródłowy (open source)?", options: ["Windows 11", "macOS", "iOS", "Linux"], answer: 3, explanation: "Linux to darmowy, otwartoźródłowy system operacyjny. Jego jądro jest rozwijane przez społeczność programistów na całym świecie, co odróżnia go od zamkniętych systemów komercyjnych." },
+            { q: "Typ danych przyjmujący wyłącznie wartości Prawda (True) lub Fałsz (False) to:", options: ["Integer", "String", "Boolean", "Float"], answer: 2, explanation: "Typ logiczny (Boolean) to podstawowy typ danych w informatyce i algebrze Boole'a. Posiada tylko dwa możliwe stany." },
+            { q: "Podstawowym znacznikiem HTML używanym do wstawienia hiperłącza (linku) jest:", options: ["<link>", "<a>", "<href>", "<url>"], answer: 1, explanation: "Znacznik <a> (od 'anchor') służy do definiowania odnośników w dokumencie HTML. Atrybut 'href' wewnątrz tego znacznika określa docelowy adres URL." },
+            { q: "Które pojęcie jest integralną częścią programowania obiektowego (OOP)?", options: ["Rekurencja", "Polimorfizm", "Wskaźnik instrukcji", "Pętla while"], answer: 1, explanation: "Polimorfizm, dziedziczenie, hermetyzacja i abstrakcja to cztery główne filary programowania zorientowanego obiektowo." },
+            { q: "Jaka jest złożoność obliczeniowa wyszukiwania binarnego w posortowanej tablicy?", options: ["O(1)", "O(n)", "O(log n)", "O(n^2)"], answer: 2, explanation: "Wyszukiwanie binarne w każdym kroku dzieli przeszukiwany zbiór o połowę. Dlatego jego czas działania rośnie logarytmicznie w stosunku do liczby elementów (O(log n))." },
+            { q: "Czym jest atak typu 'Phishing'?", options: ["Odmową dostępu (DDoS)", "Zainfekowaniem plików wirusem szyfrującym", "Próbą wyłudzenia poufnych danych poprzez podszywanie się pod zaufany podmiot", "Fizycznym włamaniem do serwerowni"], answer: 2, explanation: "Phishing polega najczęściej na wysyłaniu fałszywych e-maili (np. przypominających wiadomość z banku), które skłaniają użytkownika do wpisania loginu i hasła na spreparowanej stronie." },
+            { q: "Gdzie przeglądarka internetowa zapisuje małe porcje danych (np. o logowaniu lub koszyku) po stronie klienta?", options: ["W plikach konfiguracyjnych systemu", "W plikach cookies (ciasteczkach)", "W pamięci ROM komputera", "W BIOS-ie"], answer: 1, explanation: "Ciasteczka (cookies) oraz pamięć lokalna (Local Storage) to mechanizmy pozwalające stronom WWW 'zapamiętywać' informacje o użytkowniku i jego sesji w obrębie przeglądarki." },
+            { q: "Jak nazywa się struktura danych w kształcie drzewa, w której każdy węzeł ma co najwyżej dwóch potomków?", options: ["Drzewo binarne", "Graf skierowany", "Drzewo rozpinające", "Lista dwukierunkowa"], answer: 0, explanation: "Drzewo binarne (Binary Tree) to struktura, w której wyróżniamy korzeń, a z każdego elementu mogą wychodzić maksymalnie dwa odgałęzienia: lewe i prawe dziecko." }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let streak = 0;
+        let maxStreak = 0;
+
+        document.getElementById('start-quiz-btn').addEventListener('click', startQuiz);
+
+        function startQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            streak = 0;
+            maxStreak = 0;
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const content = document.getElementById('main-content');
+            if (currentQuestion >= quizData.length) {
+                endQuiz();
+                return;
+            }
+
+            const q = quizData[currentQuestion];
+            const progress = ((currentQuestion) / quizData.length) * 100;
+            
+            // Logika mnożnika punktów
+            let multiplier = 1 + (streak * 0.5);
+            let multiplierText = streak > 1 ? `<span class="combo-multiplier">(Mnożnik x${multiplier})</span>` : "";
+
+            content.innerHTML = `
+                <div class="stats-bar d-flex justify-content-between align-items-center text-start mb-4">
+                    <div>
+                        <span class="text-muted">Punkty:</span> <strong class="fs-5 text-primary">${score}</strong> 
+                        ${multiplierText}
+                    </div>
+                    <div class="text-center">
+                        <span class="text-muted small">Pytanie ${currentQuestion + 1} z ${quizData.length}</span>
+                        <div class="progress mt-1" style="height: 6px; width: 120px; margin: 0 auto;">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: ${progress}%"></div>
+                        </div>
+                    </div>
+                    <div class="${streak >= 3 ? 'streak-fire' : 'text-muted'}">
+                        Seria: <strong>${streak}</strong>
+                    </div>
+                </div>
+                
+                <div class="card quiz-card text-start mb-3">
+                    <div class="card-body p-4 p-md-5">
+                        <h3 class="fw-bold mb-4">${q.q}</h3>
+                        <div class="options-container" id="options-container">
+                            ${q.options.map((opt, index) => `
+                                <button class="option-btn" onclick="checkAnswer(${index}, this)">
+                                    <span class="fw-bold me-2 text-secondary">${String.fromCharCode(65 + index)}.</span> ${opt}
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+
+                <div id="explanation-container" class="explanation-box"></div>
+                
+                <div id="action-area" class="text-center mt-4"></div>
+            `;
+        }
+
+        window.checkAnswer = function(selectedIndex, btnElement) {
+            const q = quizData[currentQuestion];
+            const allBtns = document.querySelectorAll('.option-btn');
+            const explanationContainer = document.getElementById('explanation-container');
+            const actionArea = document.getElementById('action-area');
+            
+            allBtns.forEach(btn => btn.disabled = true);
+
+            let isCorrect = selectedIndex === q.answer;
+            let earnedPoints = 0;
+
+            if (isCorrect) {
+                btnElement.classList.add('correct');
+                streak++;
+                if (streak > maxStreak) maxStreak = streak;
+                
+                let multiplier = 1 + ((streak - 1) * 0.5);
+                earnedPoints = Math.round(10 * multiplier);
+                score += earnedPoints;
+            } else {
+                btnElement.classList.add('incorrect');
+                allBtns[q.answer].classList.add('correct');
+                streak = 0;
+            }
+
+            // Konstruowanie panelu wyjaśnienia
+            let feedbackHeader = isCorrect 
+                ? `<h4 class="text-success fw-bold mb-2">Poprawna odpowiedź! (+${earnedPoints} pkt)</h4>` 
+                : `<h4 class="text-danger fw-bold mb-2">Błędna odpowiedź.</h4>`;
+
+            explanationContainer.innerHTML = `
+                ${feedbackHeader}
+                <p class="mb-0 text-secondary" style="font-size: 1.05rem;">${q.explanation}</p>
+            `;
+            explanationContainer.style.display = 'block';
+
+            actionArea.innerHTML = `
+                <button class="btn btn-start px-5 py-2 fs-5" onclick="nextQuestion()">Następne pytanie</button>
+            `;
+        };
+
+        window.nextQuestion = function() {
+            currentQuestion++;
+            renderQuestion();
+        };
+
+        function endQuiz() {
+            const content = document.getElementById('main-content');
+            let maxPossible = 0;
+            for(let i=0; i<20; i++) maxPossible += Math.round(10 * (1 + (i * 0.5)));
+            
+            let accuracy = Math.round((score / maxPossible) * 100);
+            
+            let rank = "Użytkownik (Guest)";
+            if (accuracy > 40) rank = "Junior Developer";
+            if (accuracy > 70) rank = "Mid Developer";
+            if (accuracy > 90) rank = "Senior Architekt";
+
+            content.innerHTML = `
+                <div class="card quiz-card text-center p-5">
+                    <h2 class="informatics-title mb-4">Koniec testu</h2>
+                    <div class="row mb-4">
+                        <div class="col-6">
+                            <h5 class="text-muted">Zdobyte punkty</h5>
+                            <h1 class="text-primary fw-bold">${score}</h1>
+                        </div>
+                        <div class="col-6">
+                            <h5 class="text-muted">Najlepsza seria</h5>
+                            <h1 class="text-warning fw-bold">${maxStreak}</h1>
+                        </div>
+                    </div>
+                    <h4 class="mb-4">Twoja ranga końcowa:<br><strong class="text-success fs-2">${rank}</strong></h4>
+                    <button onclick="location.reload()" class="btn btn-outline-secondary rounded-pill fw-bold px-5 mt-3">Wróć do wyboru zestawu</button>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
