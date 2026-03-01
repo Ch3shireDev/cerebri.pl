@@ -3,6 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        (function () {
+            const media = window.matchMedia('(prefers-color-scheme: dark)');
+            const applyTheme = (isDark) => document.documentElement.setAttribute('data-bs-theme', isDark ? 'dark' : 'light');
+            applyTheme(media.matches);
+            media.addEventListener('change', (e) => applyTheme(e.matches));
+        })();
+    </script>
     <title>Chemia - Cerebri.pl</title>
     
     <!-- Bootstrap 5.3 CSS -->
@@ -23,15 +31,13 @@
             --accent-hover: #0899cc;
         }
 
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg-primary: #1a1a1a;
-                --bg-secondary: #2d2d2d;
-                --text-primary: #ffffff;
-                --text-secondary: #b0b0b0;
-                --accent-color: #2db8e6;
-                --accent-hover: #26a0d1;
-            }
+        [data-bs-theme="dark"] {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --accent-color: #2db8e6;
+            --accent-hover: #26a0d1;
         }
 
         body {
@@ -91,7 +97,7 @@
         <!-- Sekcja powitalna -->
         <div class="py-4"> 
             <h1 class="chemistry-title mb-3">Witaj w dziale Chemia!</h1>
-            <p class="lead text-muted mb-5">
+            <p class="lead text-body-secondary mb-5">
                 Odkrywaj tajemnice pierwiastków, reakcji i cząsteczek na <strong>cerebri.pl</strong>. 
                 Wybierz zestaw zadań z listy poniżej i sprawdź swoją wiedzę!
             </p>
@@ -102,7 +108,7 @@
             <div class="card-body p-4 d-flex flex-column flex-md-row align-items-center justify-content-between">
                 <div>
                     <h4 class="fw-bold mb-2">Zestaw 1: Podstawy Chemii</h4>
-                    <p class="text-muted mb-md-0 me-md-4">
+                    <p class="text-body-secondary mb-md-0 me-md-4">
                         Sprawdź się w szybkim quizie! Przed Tobą <strong>20 pytań jednokrotnego wyboru (A, B, C, D)</strong>. 
                         Po zaznaczeniu odpowiedzi od razu otrzymasz informację zwrotną, czy udało Ci się trafić poprawnie.
                     </p>
@@ -117,8 +123,8 @@
         <div class="card quiz-card text-start mb-4" style="border-left-color: #b2bec3; opacity: 0.7;">
             <div class="card-body p-4 d-flex flex-column flex-md-row align-items-center justify-content-between">
                 <div>
-                    <h4 class="fw-bold mb-2 text-secondary">Zestaw 2: Kwasy i Zasady</h4>
-                    <p class="text-muted mb-0">Moduł w trakcie przygotowywania...</p>
+                    <h4 class="fw-bold mb-2 text-body-secondary">Zestaw 2: Kwasy i Zasady</h4>
+                    <p class="text-body-secondary mb-0">Moduł w trakcie przygotowywania...</p>
                 </div>
                 <div class="mt-3 mt-md-0">
                     <button class="btn btn-secondary rounded-pill fw-bold px-4" disabled>Zablokowane 🔒</button>
@@ -136,7 +142,7 @@
                 <div class="text-center py-5">
                     <div style="font-size: 4rem; margin-bottom: 20px;">🚧</div>
                     <h2 class="chemistry-title mb-3">Quiz przygotowany do wdrożenia!</h2>
-                    <p class="lead text-muted">Tutaj za chwilę pojawi się logika 20 pytań ABCD oraz natychmiastowe sprawdzanie poprawności z chemii.</p>
+                    <p class="lead text-body-secondary">Tutaj za chwilę pojawi się logika 20 pytań ABCD oraz natychmiastowe sprawdzanie poprawności z chemii.</p>
                     <button onclick="location.reload()" class="btn btn-outline-secondary mt-4 rounded-pill fw-bold px-4">Wróć do listy zadań</button>
                 </div>
             `;

@@ -3,12 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        (function () {
+            const media = window.matchMedia('(prefers-color-scheme: dark)');
+            const applyTheme = (isDark) => document.documentElement.setAttribute('data-bs-theme', isDark ? 'dark' : 'light');
+            applyTheme(media.matches);
+            media.addEventListener('change', (e) => applyTheme(e.matches));
+        })();
+    </script>
     <title>Fizyka - Cerebri.pl</title>
-    
-    <!-- Bootstrap 5.3 CSS -->
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
@@ -18,20 +23,24 @@
             --bg-primary: #f6f5fa;
             --bg-secondary: #ffffff;
             --text-primary: #2c3e50;
-            --text-secondary: #666666;
             --accent-color: #6c5ce7;
             --accent-hover: #5b4bc4;
+            --form-border: #e2e8f0;
+            --success-color: #27ae60;
+            --error-color: #c0392b;
+            --fire-color: #d35400;
         }
 
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg-primary: #1a1a1a;
-                --bg-secondary: #2d2d2d;
-                --text-primary: #ffffff;
-                --text-secondary: #b0b0b0;
-                --accent-color: #8b7dd1;
-                --accent-hover: #7a6cc0;
-            }
+        [data-bs-theme="dark"] {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --text-primary: #ffffff;
+            --accent-color: #8b7dd1;
+            --accent-hover: #7a6cc0;
+            --form-border: #444444;
+            --success-color: #4a9f6e;
+            --error-color: #d63031;
+            --fire-color: #e67e22;
         }
 
         body {
@@ -41,8 +50,7 @@
             padding: 20px;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
-        
-        /* Stylizacja karty z zadaniem */
+
         .quiz-card {
             border: none;
             border-radius: 15px;
@@ -52,12 +60,12 @@
             color: var(--text-primary);
             transition: background-color 0.2s, color 0.3s ease;
         }
-        
+
         .quiz-card:hover {
             background-color: var(--bg-secondary);
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
-        
+
         .btn-start {
             background-color: var(--accent-color);
             color: white;
@@ -67,75 +75,84 @@
             border: none;
             transition: background-color 0.3s ease;
         }
-        
+
         .btn-start:hover {
             background-color: var(--accent-hover);
             color: white;
         }
-        
+
         .physics-title {
-            color: #6c5ce7;
+            color: var(--accent-color);
             font-weight: 800;
         }
 
-        /* Gamifikacja i UI Quizu */
         .option-btn {
             width: 100%;
             text-align: left;
             padding: 15px 20px;
             margin-bottom: 10px;
-            border: 2px solid #e2e8f0;
+            border: 2px solid var(--form-border);
             border-radius: 12px;
-            background: white;
+            background: var(--bg-secondary);
             font-weight: 700;
-            color: #2c3e50;
+            color: var(--text-primary);
             transition: all 0.2s;
         }
+
         .option-btn:hover:not(:disabled) {
-            border-color: #6c5ce7;
-            background: #f6f5fa;
+            border-color: var(--accent-color);
+            background: var(--bg-primary);
             transform: translateX(5px);
         }
+
         .option-btn.correct {
-            background: #27ae60;
-            border-color: #27ae60;
+            background: var(--success-color);
+            border-color: var(--success-color);
             color: white;
         }
+
         .option-btn.incorrect {
-            background: #c0392b;
-            border-color: #c0392b;
+            background: var(--error-color);
+            border-color: var(--error-color);
             color: white;
         }
+
         .option-btn:disabled {
             cursor: not-allowed;
             opacity: 0.9;
         }
+
         .stats-bar {
-            background: white;
+            background: var(--bg-secondary);
             border-radius: 15px;
             padding: 15px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             margin-bottom: 20px;
+            color: var(--text-primary);
         }
+
         .streak-fire {
-            color: #d35400;
+            color: var(--fire-color);
             font-weight: bold;
             animation: pulse 1s infinite;
         }
+
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.1); }
             100% { transform: scale(1); }
         }
+
         .combo-multiplier {
             font-size: 0.9rem;
-            color: #6c5ce7;
+            color: var(--accent-color);
             font-weight: bold;
         }
+
         .explanation-box {
             display: none;
-            background: #ffffff;
-            border-left: 5px solid #6c5ce7;
+            background: var(--bg-secondary);
+            border-left: 5px solid var(--accent-color);
             border-radius: 10px;
             padding: 20px;
             margin-top: 20px;
@@ -143,6 +160,7 @@
             text-align: left;
             animation: fadeIn 0.4s;
         }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -152,141 +170,42 @@
 <body>
 
     <div class="container text-center mx-auto" id="main-content" style="max-width: 800px;">
-        
-        <!-- Sekcja powitalna -->
         <div class="py-4">
             <h1 class="physics-title mb-3">Witaj w dziale Fizyka!</h1>
-            <p class="lead text-muted mb-5">
-                Poznawaj prawa natury, zasady dynamiki i tajemnice wszechświata na <strong>cerebri.pl</strong>. 
+            <p class="lead text-body-secondary mb-5">
+                Poznawaj prawa natury, zasady dynamiki i tajemnice wszechświata na <strong>cerebri.pl</strong>.
                 Wybierz zestaw zadań z listy poniżej i sprawdź swoją wiedzę.
             </p>
         </div>
 
-        <!-- Lista dostępnych zestawów --><!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matematyka - Cerebri.pl</title>
-    
-    <!-- Bootstrap 5.3 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
-
-    <style>
-        body {
-            font-family: 'Nunito', sans-serif;
-            background-color: #fdf5f6; /* Delikatne tło dla matematyki */
-            color: #2c3e50;
-            padding: 20px;
-        }
-        
-        /* Stylizacja karty z zadaniem */
-        .quiz-card {
-            border: none;
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-            border-left: 6px solid #e84393; /* Ciemnoróżowy/bordowy akcent */
-            transition: background-color 0.2s;
-        }
-        
-        .quiz-card:hover {
-            background-color: #ffffff;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-        
-        .btn-start {
-            background-color: #e84393;
-            color: white;
-            border-radius: 25px;
-            font-weight: 700;
-            padding: 10px 25px;
-            border: none;
-        }
-        
-        .btn-start:hover {
-            background-color: #d81b60;
-            color: white;
-        }
-        
-        .math-title {
-            color: #e84393;
-            font-weight: 800;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="container text-center mx-auto" id="main-content" style="max-width: 800px;">
-        
-        <!-- Sekcja powitalna -->
-        <div class="py-4">
-            <h1 class="math-title mb-3">Witaj w dziale Matematyka!</h1>
-            <p class="lead text-muted mb-5">
-                Rozwiązuj równania, poznawaj geometrię i trenuj logiczne myślenie na <strong>cerebri.pl</strong>. 
-                Wybierz zestaw zadań z listy poniżej i sprawdź swoją wiedzę.
-            </p>
-        </div>
-
-        <!-- Lista dostępnych zestawów -->
         <div class="card quiz-card text-start mb-4">
             <div class="card-body p-4 d-flex flex-column flex-md-row align-items-center justify-content-between">
                 <div>
-                    <h4 class="fw-bold mb-2">Zestaw 1: Podstawy Matematyki</h4>
-                    <p class="text-muted mb-md-0 me-md-4">
-                        Sprawdź się w szybkim quizie. Przed Tobą <strong>20 pytań jednokrotnego wyboru (A, B, C, D)</strong>. 
-                        Po zaznaczeniu odpowiedzi od razu otrzymasz informację zwrotną.
+                    <h4 class="fw-bold mb-2">Trening: Ruch jednostajny</h4>
+                    <p class="text-body-secondary mb-md-0 me-md-4">
+                        Zadania generowane automatycznie z obliczeń prędkości, drogi i czasu (v, s, t).
+                        Trenuj serię poprawnych odpowiedzi i zdobywaj więcej punktów.
                     </p>
                 </div>
                 <div class="mt-3 mt-md-0">
-                    <button id="start-quiz-btn" class="btn btn-start text-nowrap">Rozpocznij quiz</button>
+                    <button id="start-quiz-btn" class="btn btn-start text-nowrap">Uruchom automat</button>
                 </div>
             </div>
         </div>
-        
-        <!-- Miejsce na kolejne zestawy w przyszłości -->
+
         <div class="card quiz-card text-start mb-4" style="border-left-color: #b2bec3; opacity: 0.7;">
             <div class="card-body p-4 d-flex flex-column flex-md-row align-items-center justify-content-between">
                 <div>
-                    <h4 class="fw-bold mb-2 text-secondary">Zestaw 2: Ułamki i Procenty</h4>
-                    <p class="text-muted mb-0">Moduł w trakcie przygotowywania...</p>
+                    <h4 class="fw-bold mb-2 text-body-secondary">Zestaw 2: Dynamika</h4>
+                    <p class="text-body-secondary mb-0">Moduł w trakcie przygotowywania...</p>
                 </div>
                 <div class="mt-3 mt-md-0">
                     <button class="btn btn-secondary rounded-pill fw-bold px-4" disabled>Zablokowane</button>
                 </div>
             </div>
         </div>
-
     </div>
 
-    <!-- Skrypt obsługujący kliknięcie przycisku -->
-    <script>
-        document.getElementById('start-quiz-btn').addEventListener('click', function() {
-            const content = document.getElementById('main-content');
-            content.innerHTML = `
-                <div class="text-center py-5">
-                    <h2 class="math-title mb-3">Quiz przygotowany do wdrożenia.</h2>
-                    <p class="lead text-muted">Tutaj wkrótce pojawi się logika 20 pytań ABCD oraz natychmiastowe sprawdzanie poprawności z matematyki.</p>
-                    <button onclick="location.reload()" class="btn btn-outline-secondary mt-4 rounded-pill fw-bold px-4">Wróć do listy zadań</button>
-                </div>
-            `;
-        });
-    </script>
-
-</body>
-</html>
-                    <button class="btn btn-secondary rounded-pill fw-bold px-4" disabled>Zablokowane</button>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Skrypt obsługujący kliknięcie przycisku -->
     <script>
         let score = 0;
         let streak = 0;
@@ -302,10 +221,10 @@
             let v, s, t, questionText, unitResult, explanation, correctAnswer;
 
             if (type === 'v') {
-                v = Math.floor(Math.random() * 25) + 2; 
-                t = Math.floor(Math.random() * 10) + 2; 
+                v = Math.floor(Math.random() * 25) + 2;
+                t = Math.floor(Math.random() * 10) + 2;
                 s = v * t;
-                const units = Math.random() > 0.5 ? {s: 'km', t: 'h', v: 'km/h'} : {s: 'm', t: 's', v: 'm/s'};
+                const units = Math.random() > 0.5 ? { s: 'km', t: 'h', v: 'km/h' } : { s: 'm', t: 's', v: 'm/s' };
                 questionText = `Obiekt pokonał drogę <strong>${s} ${units.s}</strong> w czasie <strong>${t} ${units.t}</strong>. Jaka była jego średnia prędkość?`;
                 correctAnswer = v;
                 unitResult = units.v;
@@ -313,10 +232,10 @@
                                <strong>Krok 2:</strong> Podstawiamy dane: <span class="font-monospace">v = ${s} / ${t}</span><br>
                                <strong class="text-success fs-5">Wynik: v = ${v} ${unitResult}</strong>`;
             } else if (type === 's') {
-                v = Math.floor(Math.random() * 90) + 10; 
-                t = Math.floor(Math.random() * 8) + 2; 
+                v = Math.floor(Math.random() * 90) + 10;
+                t = Math.floor(Math.random() * 8) + 2;
                 s = v * t;
-                const units = Math.random() > 0.5 ? {s: 'km', t: 'h', v: 'km/h'} : {s: 'm', t: 's', v: 'm/s'};
+                const units = Math.random() > 0.5 ? { s: 'km', t: 'h', v: 'km/h' } : { s: 'm', t: 's', v: 'm/s' };
                 questionText = `Pojazd porusza się ze stałą prędkością <strong>${v} ${units.v}</strong> przez <strong>${t} ${units.t}</strong>. Jaką drogę w tym czasie pokonał?`;
                 correctAnswer = s;
                 unitResult = units.s;
@@ -327,7 +246,7 @@
                 v = Math.floor(Math.random() * 15) + 2;
                 t = Math.floor(Math.random() * 15) + 2;
                 s = v * t;
-                const units = Math.random() > 0.5 ? {s: 'km', t: 'h', v: 'km/h'} : {s: 'm', t: 's', v: 'm/s'};
+                const units = Math.random() > 0.5 ? { s: 'km', t: 'h', v: 'km/h' } : { s: 'm', t: 's', v: 'm/s' };
                 questionText = `Rowerzysta ma do przejechania <strong>${s} ${units.s}</strong>. Porusza się z prędkością <strong>${v} ${units.v}</strong>. Ile czasu zajmie mu ta trasa?`;
                 correctAnswer = t;
                 unitResult = units.t;
@@ -336,20 +255,17 @@
                                <strong class="text-success fs-5">Wynik: t = ${t} ${unitResult}</strong>`;
             }
 
-            // Generowanie błędnych odpowiedzi
             let options = new Set([correctAnswer]);
-            while(options.size < 4) {
+            while (options.size < 4) {
                 let fake = correctAnswer + (Math.floor(Math.random() * 20) - 10);
-                // typowe błędy obliczeniowe (np. mnożenie zamiast dzielenia)
                 if (options.size === 1 && type === 'v') fake = s * t;
                 if (options.size === 2 && type === 's') fake = Math.floor(s / t);
                 if (options.size === 3 && type === 't') fake = s * v;
-                
-                if(fake > 0 && fake !== correctAnswer) options.add(fake);
+                if (fake > 0 && fake !== correctAnswer) options.add(fake);
             }
-            let shuffledOptions = Array.from(options).sort(() => Math.random() - 0.5);
-            let answerIndex = shuffledOptions.indexOf(correctAnswer);
 
+            const shuffledOptions = Array.from(options).sort(() => Math.random() - 0.5);
+            const answerIndex = shuffledOptions.indexOf(correctAnswer);
             return { questionText, options: shuffledOptions, answerIndex, explanation, unitResult };
         }
 
@@ -364,33 +280,33 @@
         function renderNextProblem() {
             currentProblem = generatePhysicsProblem();
             const content = document.getElementById('main-content');
-            
-            let multiplier = 1 + (streak * 0.5);
-            let multiplierText = streak > 1 ? `<span class="combo-multiplier">(Mnożnik x${multiplier})</span>` : "";
-            let level = Math.floor(solvedCount / 5) + 1;
+
+            const multiplier = 1 + (streak * 0.5);
+            const multiplierText = streak > 1 ? `<span class="combo-multiplier">(Mnożnik x${multiplier})</span>` : '';
+            const level = Math.floor(solvedCount / 5) + 1;
 
             content.innerHTML = `
                 <div class="stats-bar d-flex justify-content-between align-items-center text-start mb-4">
                     <div>
-                        <span class="text-muted">Punkty:</span> <strong class="fs-5" style="color: #6c5ce7;">${score}</strong> 
+                        <span class="text-body-secondary">Punkty:</span> <strong class="fs-5" style="color: var(--accent-color);">${score}</strong>
                         ${multiplierText}
                     </div>
                     <div class="text-center">
-                        <span class="text-muted small fw-bold">Poziom ${level}</span><br>
-                        <span class="text-muted small">Rozwiązane: ${solvedCount}</span>
+                        <span class="text-body-secondary small fw-bold">Poziom ${level}</span><br>
+                        <span class="text-body-secondary small">Rozwiązane: ${solvedCount}</span>
                     </div>
-                    <div class="${streak >= 3 ? 'streak-fire' : 'text-muted'}">
+                    <div class="${streak >= 3 ? 'streak-fire' : 'text-body-secondary'}">
                         Seria: <strong>${streak} 🔥</strong>
                     </div>
                 </div>
-                
+
                 <div class="card quiz-card text-start mb-3">
                     <div class="card-body p-4 p-md-5">
                         <h4 class="fw-bold mb-4 lh-base" style="font-size: 1.5rem;">${currentProblem.questionText}</h4>
                         <div class="options-container text-start" id="options-container">
                             ${currentProblem.options.map((opt, index) => `
                                 <button class="option-btn" onclick="checkPhysicsAnswer(${index}, this)">
-                                    <span class="fw-bold me-2 text-secondary">${String.fromCharCode(65 + index)}.</span> ${opt} ${currentProblem.unitResult}
+                                    <span class="fw-bold me-2 text-body-secondary">${String.fromCharCode(65 + index)}.</span> ${opt} ${currentProblem.unitResult}
                                 </button>
                             `).join('')}
                         </div>
@@ -402,14 +318,14 @@
             `;
         }
 
-        window.checkPhysicsAnswer = function(selectedIndex, btnElement) {
+        window.checkPhysicsAnswer = function (selectedIndex, btnElement) {
             const allBtns = document.querySelectorAll('.option-btn');
             const explanationContainer = document.getElementById('explanation-container');
             const actionArea = document.getElementById('action-area');
-            
+
             allBtns.forEach(btn => btn.disabled = true);
 
-            let isCorrect = selectedIndex === currentProblem.answerIndex;
+            const isCorrect = selectedIndex === currentProblem.answerIndex;
             let earnedPoints = 0;
 
             if (isCorrect) {
@@ -417,8 +333,8 @@
                 streak++;
                 solvedCount++;
                 if (streak > maxStreak) maxStreak = streak;
-                
-                let multiplier = 1 + ((streak - 1) * 0.5);
+
+                const multiplier = 1 + ((streak - 1) * 0.5);
                 earnedPoints = Math.round(10 * multiplier);
                 score += earnedPoints;
             } else {
@@ -427,13 +343,13 @@
                 streak = 0;
             }
 
-            let feedbackHeader = isCorrect 
-                ? `<h4 class="text-success fw-bold mb-3">Znakomicie! (+${earnedPoints} pkt)</h4>` 
+            const feedbackHeader = isCorrect
+                ? `<h4 class="text-success fw-bold mb-3">Znakomicie! (+${earnedPoints} pkt)</h4>`
                 : `<h4 class="text-danger fw-bold mb-3">Pudło! Sprawdź rozwiązanie:</h4>`;
 
             explanationContainer.innerHTML = `
                 ${feedbackHeader}
-                <p class="mb-0 text-secondary" style="font-size: 1.1rem; line-height: 1.6;">${currentProblem.explanation}</p>
+                <p class="mb-0 text-body-secondary" style="font-size: 1.1rem; line-height: 1.6;">${currentProblem.explanation}</p>
             `;
             explanationContainer.style.display = 'block';
 
@@ -443,6 +359,5 @@
             `;
         };
     </script>
-
 </body>
 </html>

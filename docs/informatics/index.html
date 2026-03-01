@@ -3,6 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        (function () {
+            const media = window.matchMedia('(prefers-color-scheme: dark)');
+            const applyTheme = (isDark) => document.documentElement.setAttribute('data-bs-theme', isDark ? 'dark' : 'light');
+            applyTheme(media.matches);
+            media.addEventListener('change', (e) => applyTheme(e.matches));
+        })();
+    </script>
     <title>Informatyka - Cerebri.pl</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -26,21 +34,19 @@
             --explanation-border: #34495e;
         }
 
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --bg-primary: #1a1a1a;
-                --bg-secondary: #2d2d2d;
-                --text-primary: #ffffff;
-                --text-secondary: #b0b0b0;
-                --accent-color: #4a9fd8;
-                --accent-hover: #3a84c2;
-                --form-border: #444444;
-                --success-color: #4a9f6e;
-                --error-color: #d63031;
-                --fire-color: #e67e22;
-                --combo-color: #e67e22;
-                --explanation-border: #5a7f96;
-            }
+        [data-bs-theme="dark"] {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --accent-color: #4a9fd8;
+            --accent-hover: #3a84c2;
+            --form-border: #444444;
+            --success-color: #4a9f6e;
+            --error-color: #d63031;
+            --fire-color: #e67e22;
+            --combo-color: #e67e22;
+            --explanation-border: #5a7f96;
         }
 
         body {
@@ -168,10 +174,9 @@
 <body>
 
     <div class="container text-center mx-auto" id="main-content" style="max-width: 800px;">
-        <div class="py-4">
-            <div class="header-icon">&lt;/&gt;</div>
+        <div class="py-4"> 
             <h1 class="informatics-title mb-3">Witaj w dziale Informatyka!</h1>
-            <p class="lead text-muted mb-5">
+            <p class="lead text-body-secondary mb-5">
                 Odkrywaj tajniki programowania, algorytmów i budowy komputerów na <strong>cerebri.pl</strong>. 
                 Wybierz zestaw zadań z listy poniżej i sprawdź swoją wiedzę.
             </p>
@@ -181,7 +186,7 @@
             <div class="card-body p-4 d-flex flex-column flex-md-row align-items-center justify-content-between">
                 <div>
                     <h4 class="fw-bold mb-2">Zestaw 1: Podstawy Informatyki</h4>
-                    <p class="text-muted mb-md-0 me-md-4">
+                    <p class="text-body-secondary mb-md-0 me-md-4">
                         Sprawdź się w szybkim quizie. Przed Tobą <strong>20 pytań jednokrotnego wyboru (A, B, C, D)</strong>. 
                         Włączono system mnożników punktowych za poprawne serie.
                     </p>
@@ -195,8 +200,8 @@
         <div class="card quiz-card text-start mb-4" style="border-left-color: #b2bec3; opacity: 0.7;">
             <div class="card-body p-4 d-flex flex-column flex-md-row align-items-center justify-content-between">
                 <div>
-                    <h4 class="fw-bold mb-2 text-secondary">Zestaw 2: Algorytmy</h4>
-                    <p class="text-muted mb-0">Moduł w trakcie przygotowywania...</p>
+                    <h4 class="fw-bold mb-2 text-body-secondary">Zestaw 2: Algorytmy</h4>
+                    <p class="text-body-secondary mb-0">Moduł w trakcie przygotowywania...</p>
                 </div>
                 <div class="mt-3 mt-md-0">
                     <button class="btn btn-secondary rounded-pill fw-bold px-4" disabled>Zablokowane</button>
@@ -261,16 +266,16 @@
             content.innerHTML = `
                 <div class="stats-bar d-flex justify-content-between align-items-center text-start mb-4">
                     <div>
-                        <span class="text-muted">Punkty:</span> <strong class="fs-5 text-primary">${score}</strong> 
+                        <span class="text-body-secondary">Punkty:</span> <strong class="fs-5 text-primary">${score}</strong> 
                         ${multiplierText}
                     </div>
                     <div class="text-center">
-                        <span class="text-muted small">Pytanie ${currentQuestion + 1} z ${quizData.length}</span>
+                        <span class="text-body-secondary small">Pytanie ${currentQuestion + 1} z ${quizData.length}</span>
                         <div class="progress mt-1" style="height: 6px; width: 120px; margin: 0 auto;">
                             <div class="progress-bar bg-primary" role="progressbar" style="width: ${progress}%"></div>
                         </div>
                     </div>
-                    <div class="${streak >= 3 ? 'streak-fire' : 'text-muted'}">
+                    <div class="${streak >= 3 ? 'streak-fire' : 'text-body-secondary'}">
                         Seria: <strong>${streak}</strong>
                     </div>
                 </div>
@@ -281,7 +286,7 @@
                         <div class="options-container" id="options-container">
                             ${q.options.map((opt, index) => `
                                 <button class="option-btn" onclick="checkAnswer(${index}, this)">
-                                    <span class="fw-bold me-2 text-secondary">${String.fromCharCode(65 + index)}.</span> ${opt}
+                                    <span class="fw-bold me-2 text-body-secondary">${String.fromCharCode(65 + index)}.</span> ${opt}
                                 </button>
                             `).join('')}
                         </div>
@@ -326,7 +331,7 @@
 
             explanationContainer.innerHTML = `
                 ${feedbackHeader}
-                <p class="mb-0 text-secondary" style="font-size: 1.05rem;">${q.explanation}</p>
+                <p class="mb-0 text-body-secondary" style="font-size: 1.05rem;">${q.explanation}</p>
             `;
             explanationContainer.style.display = 'block';
 
@@ -357,11 +362,11 @@
                     <h2 class="informatics-title mb-4">Koniec testu</h2>
                     <div class="row mb-4">
                         <div class="col-6">
-                            <h5 class="text-muted">Zdobyte punkty</h5>
+                            <h5 class="text-body-secondary">Zdobyte punkty</h5>
                             <h1 class="text-primary fw-bold">${score}</h1>
                         </div>
                         <div class="col-6">
-                            <h5 class="text-muted">Najlepsza seria</h5>
+                            <h5 class="text-body-secondary">Najlepsza seria</h5>
                             <h1 class="text-warning fw-bold">${maxStreak}</h1>
                         </div>
                     </div>
