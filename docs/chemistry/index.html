@@ -180,6 +180,18 @@
             width: 100%;
             margin-top: 15px;
             border: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-next-loader {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background-color: rgba(128, 128, 128, 0.3);
+            width: 0%;
+            z-index: 1;
         }
 
         @keyframes fadeIn {
@@ -242,7 +254,10 @@
             <div id="feedback-container" class="feedback-box">
                 <h5 id="feedback-title" class="fw-bold mb-2"></h5>
                 <p id="feedback-text" class="mb-0 text-body-secondary"></p>
-                <button id="next-btn" class="btn-next">Następne pytanie</button>
+                <button id="next-btn" class="btn-next">
+                    <div id="next-btn-loader" class="btn-next-loader"></div>
+                    <span id="next-btn-text" style="position: relative; z-index: 2;">Następne pytanie</span>
+                </button>
             </div>
 
         </div>
@@ -394,7 +409,7 @@
         let score = 0;
         let streak = 0;
         let maxStreak = 0;
-        let countdownInterval = null;
+        let countdownTimeout = null;
 
         // Elementy DOM
         const views = {
@@ -414,6 +429,8 @@
             fbTitle: document.getElementById('feedback-title'),
             fbText: document.getElementById('feedback-text'),
             nextBtn: document.getElementById('next-btn'),
+            nextBtnText: document.getElementById('next-btn-text'),
+            nextBtnLoader: document.getElementById('next-btn-loader'),
             restartQuizBtn: document.getElementById('restart-quiz-btn')
         };
 
@@ -448,7 +465,7 @@
         }
 
         function startQuiz() {
-            if (countdownInterval) clearInterval(countdownInterval);
+            if (countdownTimeout) clearTimeout(countdownTimeout);
             shuffleArray(questions);
             currentQuestion = 0;
             score = 0;
@@ -525,27 +542,27 @@
                 MathJax.typesetPromise();
             }
             
-            // Blokada przycisku "następne"
+            // Logika paska ładowania i blokady
             ui.nextBtn.disabled = true;
-            let timeLeft = 3;
+            const waitTime = 1500; // 1.5 sekundy
             
-            const updateBtnText = () => {
-                const baseText = currentQuestion === questions.length - 1 ? "Pokaż wyniki" : "Następne pytanie";
-                ui.nextBtn.textContent = timeLeft > 0 ? `${baseText} (${timeLeft}s)` : baseText;
-            };
+            ui.nextBtnLoader.style.transition = 'none';
+            ui.nextBtnLoader.style.width = '0%';
+            ui.nextBtnText.textContent = currentQuestion === questions.length - 1 ? "Ładowanie wyników..." : "Ładowanie zadania...";
             
-            updateBtnText();
+            // Wymuszenie reflow dla restartu animacji
+            void ui.nextBtnLoader.offsetWidth;
             
-            if (countdownInterval) clearInterval(countdownInterval);
-            countdownInterval = setInterval(() => {
-                timeLeft--;
-                updateBtnText();
-                
-                if (timeLeft <= 0) {
-                    clearInterval(countdownInterval);
-                    ui.nextBtn.disabled = false;
-                }
-            }, 1000);
+            ui.nextBtnLoader.style.transition = `width ${waitTime}ms linear`;
+            ui.nextBtnLoader.style.width = '100%';
+            
+            if (countdownTimeout) clearTimeout(countdownTimeout);
+            countdownTimeout = setTimeout(() => {
+                ui.nextBtn.disabled = false;
+                ui.nextBtnText.textContent = currentQuestion === questions.length - 1 ? "Pokaż wyniki" : "Następne pytanie";
+                ui.nextBtnLoader.style.transition = 'none';
+                ui.nextBtnLoader.style.width = '0%';
+            }, waitTime);
         }
 
         function handleNext() {
