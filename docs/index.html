@@ -165,6 +165,9 @@
             'math': { src: 'math/index.html', name: 'Matematyka' },
             'biology': { src: 'biology/index.html', name: 'Biologia' },
             'chemistry': { src: 'chemistry/index.html', name: 'Chemia' },
+            'chemistry/hydroacids': { src: 'chemistry/hydroacids.html', name: 'Kwasy Beztlenowe' },
+            'chemistry/oxyacids': { src: 'chemistry/oxyacids.html', name: 'Kwasy Tlenowe' },
+            'chemistry/acids': { src: 'chemistry/acids.html', name: 'Kwasy' },
             'informatics': { src: 'informatics/index.html', name: 'Informatyka' }
         };
 
@@ -227,7 +230,7 @@
             </head>
             <body>
                 <div class="icon">👋</div>
-                <h1 class="fs-2 fs-md-1">Witaj w SuperNauce!</h1>
+                <h1 class="fs-2 fs-md-1">Witaj w Cerebri.pl!</h1>
                 <p class="lead mt-3 fs-6 fs-md-5">Wybierz dział z górnego menu, aby rozpocząć odkrywanie.</p>
             </body>
             </html>
@@ -242,22 +245,25 @@
             document.querySelectorAll('.module-link').forEach(l => l.classList.remove('active'));
         }
 
-        // Funkcja ładująca moduł na podstawie identyfikatora (np. 'math')
-        function loadModule(moduleId) {
-            const module = modules[moduleId];
-            if (!module) return false;
+        // Funkcja ładująca treść (moduł lub podstronę) na podstawie ścieżki
+        function loadContent(routePath) {
+            const route = modules[routePath];
+            if (!route) return false;
 
-            // Zaznaczanie aktywnego linku
+            // Zaznaczanie aktywnego linku (dla głównych modułów)
             document.querySelectorAll('.module-link').forEach(l => l.classList.remove('active'));
-            const activeLink = document.querySelector(`[data-src="${module.src}"]`);
+            
+            // Jeśli to główny moduł (bez slasha), zaznacz go jako aktywny
+            const mainModule = routePath.split('/')[0];
+            const activeLink = document.querySelector(`[data-src="${modules[mainModule]?.src}"]`);
             if (activeLink) activeLink.classList.add('active');
 
             // Podmieniamy zawartość iframe
             iframe.removeAttribute('srcdoc'); // Usuwamy wstrzyknięty ekran startowy
-            iframe.src = module.src;           // Ładujemy plik z odpowiedniego folderu
+            iframe.src = route.src;           // Ładujemy plik z odpowiedniej ścieżki
 
             // Aktualizujemy URL bez przeładowania strony
-            window.history.pushState({ module: moduleId }, module.name, `#!/${moduleId}`);
+            window.history.pushState({ route: routePath }, route.name, `#!/${routePath}`);
 
             // Ukrywanie menu na telefonach po kliknięciu
             const navbarCollapse = document.getElementById('navbarNavDropdown');
@@ -271,8 +277,8 @@
 
         // Obsługa zmian URL (przycisk wstecz/naprzód)
         window.addEventListener('popstate', function(e) {
-            if (e.state && e.state.module) {
-                loadModule(e.state.module);
+            if (e.state && e.state.route) {
+                loadContent(e.state.route);
             } else {
                 showWelcomeScreen();
                 window.history.pushState(null, '', '#!/');
@@ -284,13 +290,13 @@
             const hash = window.location.hash;
             
             if (hash.startsWith('#!/')) {
-                const moduleId = hash.substring(3); // Wyodrębniamy ID modułu (np. 'math' z '#!/math')
+                const routePath = hash.substring(3); // Wyodrębniamy ścieżkę (np. 'chemistry/hydroacids' z '#!/chemistry/hydroacids')
                 
-                if (modules[moduleId]) {
+                if (modules[routePath]) {
                     // Zamiast push state, używamy replace state na start
-                    loadModule(moduleId);
+                    loadContent(routePath);
                     // Zastąp historię, aby nie przewijać wstecz na stronę startową
-                    window.history.replaceState({ module: moduleId }, modules[moduleId].name, hash);
+                    window.history.replaceState({ route: routePath }, modules[routePath].name, hash);
                     return;
                 }
             }
@@ -314,8 +320,8 @@
                 // Znalezienie ID modułu na podstawie data-src
                 const moduleId = Object.keys(modules).find(key => modules[key].src === targetSrc);
                 
-                if (moduleId) {
-                    loadModule(moduleId);
+                if (moduleId && !moduleId.includes('/')) {
+                    loadContent(moduleId);
                 }
             });
         });

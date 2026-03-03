@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script>
+        (function () {
+            const media = window.matchMedia('(prefers-color-scheme: dark)');
+            const applyTheme = (isDark) => document.documentElement.setAttribute('data-bs-theme', isDark ? 'dark' : 'light');
+            applyTheme(media.matches);
+            media.addEventListener('change', (e) => applyTheme(e.matches));
+        })();
+    </script>
+    <title>Test: Kwasy Beztlenowe - Cerebri.pl</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['\\(', '\\)']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        :root {
+            --bg-primary: #f0fcfd;
+            --bg-secondary: #ffffff;
+            --text-primary: #2c3e50;
+            --text-secondary: #666666;
+            --accent-color: #0abde3;
+            --accent-hover: #0899cc;
+            --correct-color: #2ecc71;
+            --wrong-color: #e74c3c;
+            --streak-color: #f39c12;
+            --card-border: rgba(0,0,0,0.1);
+        }
+
+        [data-bs-theme="dark"] {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --accent-color: #2db8e6;
+            --accent-hover: #26a0d1;
+            --correct-color: #27ae60;
+            --wrong-color: #c0392b;
+            --streak-color: #f1c40f;
+            --card-border: rgba(255,255,255,0.1);
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            padding: 15px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        .quiz-card {
+            border: 1px solid var(--card-border);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-left: 6px solid var(--accent-color);
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+        
+        .btn-start {
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 25px;
+            font-weight: 700;
+            padding: 10px 25px;
+            border: none;
+            width: 100%;
+        }
+        
+        .quiz-header {
+            background-color: var(--bg-secondary);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .progress {
+            height: 12px;
+            border-radius: 6px;
+            background-color: var(--bg-primary);
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            background-color: var(--accent-color);
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .stats-badge {
+            font-size: 0.9rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .stats-correct { background-color: rgba(46, 204, 113, 0.15); color: var(--correct-color); }
+        .stats-wrong { background-color: rgba(231, 76, 60, 0.15); color: var(--wrong-color); }
+        .stats-points { background-color: rgba(10, 189, 227, 0.15); color: var(--accent-color); }
+
+        .streak-badge {
+            color: var(--streak-color);
+            font-weight: 800;
+            font-size: 1.1rem;
+            transition: transform 0.2s;
+        }
+        .streak-badge.pop {
+            transform: scale(1.3);
+        }
+        
+        .points-display {
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 25px;
+        }
+
+        .option-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            padding: 15px 20px;
+            border: 2px solid var(--card-border);
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            font-weight: 700;
+            transition: all 0.2s;
+            font-size: 1.05rem;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .option-btn.correct {
+            background-color: var(--correct-color) !important;
+            color: white !important;
+            border-color: var(--correct-color);
+        }
+
+        .option-btn.wrong {
+            background-color: var(--wrong-color) !important;
+            color: white !important;
+            border-color: var(--wrong-color);
+        }
+
+        .option-btn:disabled {
+            cursor: default;
+            opacity: 0.9;
+        }
+
+        .feedback-box {
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 20px;
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+
+        .feedback-box.correct {
+            background-color: rgba(46, 204, 113, 0.1);
+            border-left: 4px solid var(--correct-color);
+        }
+
+        .feedback-box.wrong {
+            background-color: rgba(231, 76, 60, 0.1);
+            border-left: 4px solid var(--wrong-color);
+        }
+
+        .btn-next {
+            background-color: var(--text-primary);
+            color: var(--bg-primary);
+            border-radius: 25px;
+            font-weight: 700;
+            padding: 12px;
+            width: 100%;
+            margin-top: 15px;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-next-loader {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background-color: rgba(128, 128, 128, 0.3);
+            width: 0%;
+            z-index: 1;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .suggestion-box {
+            background-color: rgba(10, 189, 227, 0.05);
+            border: 1px dashed var(--accent-color);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container mx-auto" style="max-width: 600px; padding-bottom: 40px;">
+        
+        <div id="view-quiz">
+            <div class="quiz-header">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="fw-bold">Pytanie <span id="current-q-num">1</span>/20</div>
+                    <div class="d-flex gap-2 align-items-center">
+                        <div class="stats-badge stats-points">⭐ <span id="count-points">0</span></div>
+                        <div class="streak-badge ms-2" id="streak-container">🔥 <span id="streak-count">0</span></div>
+                    </div>
+                </div>
+                <div class="w-100">
+                    <div class="progress">
+                        <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mt-2">
+                    <div class="d-flex gap-2">
+                        <div class="stats-badge stats-correct">✓ <span id="count-correct">0</span></div>
+                        <div class="stats-badge stats-wrong">✗ <span id="count-wrong">0</span></div>
+                    </div>
+                    <button id="exit-quiz-btn" class="btn btn-sm btn-link text-secondary p-0 text-decoration-none">Zakończ test</button>
+                </div>
+            </div>
+
+            <div id="question-container" class="mt-4">
+                <h3 id="question-text" class="question-text">Ładowanie pytania...</h3>
+                <div id="options-container"></div>
+            </div>
+
+            <div id="feedback-container" class="feedback-box">
+                <h5 id="feedback-title" class="fw-bold mb-2"></h5>
+                <p id="feedback-text" class="mb-0 text-body-secondary"></p>
+                <button id="next-btn" class="btn-next">
+                    <div id="next-btn-loader" class="btn-next-loader"></div>
+                    <span id="next-btn-text" style="position: relative; z-index: 2;">Następne pytanie</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="view-results" class="d-none text-center py-5">
+            <h1 id="res-emoji" style="font-size: 4rem;">🏆</h1>
+            <h2 class="fw-bold mb-3" id="res-title" style="color: var(--accent-color);">Koniec testu!</h2>
+            
+            <div class="card quiz-card mb-4 text-start">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold border-bottom pb-2 mb-3">Twoje statystyki</h4>
+                    <p class="fs-5 mb-2">Wynik punktowy: <strong id="res-points" style="color: var(--accent-color);">0</strong></p>
+                    <p class="fs-5 mb-2">Poprawne odpowiedzi: <strong id="res-score" style="color: var(--correct-color);">0/20</strong></p>
+                    <p class="fs-5 mb-2">Poprawność: <strong id="res-percent">0%</strong></p>
+                    <p class="fs-5 mb-0">Najdłuższa seria: <strong id="res-streak" style="color: var(--streak-color);">🔥 0</strong></p>
+                </div>
+            </div>
+
+            <div id="suggestion-container" class="suggestion-box mb-4">
+                <p id="suggestion-text" class="mb-0 fw-bold"></p>
+            </div>
+
+            <button id="restart-btn" class="btn btn-start w-100 py-3 fs-5">Spróbuj ponownie</button>
+            <button id="home-btn" class="btn btn-outline-secondary w-100 py-3 mt-3 rounded-pill fw-bold">Wróć do strony głównej</button>
+        </div>
+
+    </div>
+
+    <script>
+        const questions = [
+            {
+                q: "Jaki jest wzór sumaryczny kwasu chlorowodorowego (solnego)?",
+                options: ["\\(HCl\\)", "\\(H_2S\\)", "\\(HClO\\)", "\\(NaCl\\)"],
+                correct: 0,
+                explanation: "Kwas chlorowodorowy to wodny roztwór chlorowodoru (\\(HCl\\)). Jest to klasyczny kwas beztlenowy."
+            },
+            {
+                q: "Jak nazywają się sole kwasu siarkowodorowego?",
+                options: ["Siarczany(VI)", "Siarczyny", "Siarczki", "Siarczany(IV)"],
+                correct: 2,
+                explanation: "Sole kwasów beztlenowych mają końcówkę '-ek'. Dlatego sole kwasu siarkowodorowego to siarczki."
+            },
+            {
+                q: "Który kwas ma zdolność trawienia szkła?",
+                options: ["Kwas solny", "Kwas fluorowodorowy", "Kwas siarkowodorowy", "Kwas bromowodorowy"],
+                correct: 1,
+                explanation: "Kwas fluorowodorowy (\\(HF\\)) reaguje z krzemionką zawartą w szkle, dlatego przechowuje się go w naczyniach z tworzyw sztucznych."
+            },
+            {
+                q: "Wzór sumaryczny kwasu siarkowodorowego to:",
+                options: ["\\(H_2SO_4\\)", "\\(H_2SO_3\\)", "\\(HS\\)", "\\(H_2S\\)"],
+                correct: 3,
+                explanation: "Kwas siarkowodorowy to wodny roztwór siarkowodoru, gazu o wzorze \\(H_2S\\). Reszta kwasowa to S(II)."
+            },
+            {
+                q: "Jaką wartościowość ma reszta kwasowa w kwasie jodowodorowym?",
+                options: ["I", "II", "III", "IV"],
+                correct: 0,
+                explanation: "Kwas jodowodorowy to \\(HI\\). Ponieważ w cząsteczce jest jeden atom wodoru, reszta kwasowa (-I) jest jednowartościowa."
+            },
+            {
+                q: "Jak otrzymuje się kwasy beztlenowe?",
+                options: ["Reakcja tlenku niemetalu z wodą", "Rozpuszczenie odpowiedniego wodorku niemetalu w wodzie", "Reakcja metalu z wodą", "Reakcja kwasu z zasadą"],
+                correct: 1,
+                explanation: "Kwasy beztlenowe powstają przez rozpuszczenie gazowych wodorków niemetali (np. \\(HCl\\), \\(H_2S\\)) w wodzie."
+            },
+            {
+                q: "Gaz o ostrym, duszącym zapachu, który po rozpuszczeniu w wodzie tworzy kwas solny to:",
+                options: ["Chlorowodór", "Chlor", "Dwutlenek chloru", "Siarkowodór"],
+                correct: 0,
+                explanation: "Chlorowodór (\\(HCl\\)) w warunkach normalnych jest gazem. Dopiero jego wodny roztwór nazywamy kwasem chlorowodorowym."
+            },
+            {
+                q: "Kwas cyjanowodorowy ma wzór:",
+                options: ["\\(HCN\\)", "\\(HCNO\\)", "\\(H_2CN\\)", "\\(HNC\\)"],
+                correct: 0,
+                explanation: "Kwas cyjanowodorowy (tzw. kwas pruski) to bardzo słaby i silnie trujący kwas o wzorze \\(HCN\\)."
+            },
+            {
+                q: "Jak brzmi nazwa systematyczna soli o wzorze \\(KF\\)?",
+                options: ["Fluorowodór potasu", "Fluorek potasu", "Fluorian potasu", "Kwas fluorowodorowy"],
+                correct: 1,
+                explanation: "Sole kwasu fluorowodorowego to fluorki. Sól potasu to fluorek potasu."
+            },
+            {
+                q: "Który kwas beztlenowy jest składnikiem soków żołądkowych człowieka?",
+                options: ["Kwas siarkowodorowy", "Kwas bromowodorowy", "Kwas solny", "Kwas fluorowodorowy"],
+                correct: 2,
+                explanation: "Kwas solny (\\(HCl\\)) występuje w żołądku. Ułatwia trawienie białek i niszczy drobnoustroje."
+            },
+            {
+                q: "Kwas, który charakteryzuje się zapachem zgniłych jaj to:",
+                options: ["Kwas fluorowodorowy", "Kwas siarkowodorowy", "Kwas solny", "Kwas cyjanowodorowy"],
+                correct: 1,
+                explanation: "Siarkowodór (\\(H_2S\\)), tworzący kwas siarkowodorowy, to silnie trujący gaz o bardzo charakterystycznym zapachu zgniłych jaj."
+            },
+            {
+                q: "Wartościowość chloru w kwasie solnym wynosi:",
+                options: ["I", "III", "V", "VII"],
+                correct: 0,
+                explanation: "W kwasach beztlenowych reszta kwasowa, czyli atom niemetalu (tutaj chlor), ma najniższą możliwą wartościowość. Dla chlorowców jest to I."
+            },
+            {
+                q: "Jaki jest produkt gazowy reakcji magnezu z kwasem solnym?",
+                options: ["Tlen", "Chlor", "Wodór", "Dwutlenek węgla"],
+                correct: 2,
+                explanation: "Metale aktywne wypierają wodór z kwasów. Równanie: \\(Mg + 2HCl \\rightarrow MgCl_2 + H_2\\) (gaz)."
+            },
+            {
+                q: "Jakiego koloru nabierze uniwersalny papierek wskaźnikowy zanurzony w kwasie bromowodorowym?",
+                options: ["Niebieskiego", "Żółtego", "Zielonego", "Czerwonego"],
+                correct: 3,
+                explanation: "Kwas bromowodorowy, jak każdy roztwór o odczynie silnie kwasowym (pH < 7), barwi papierek uniwersalny na czerwono."
+            },
+            {
+                q: "Z jakich pierwiastków składa się kwas siarkowodorowy?",
+                options: ["Wodór, siarka, tlen", "Wodór, siarka", "Siarka, tlen", "Wodór, węgiel, siarka"],
+                correct: 1,
+                explanation: "Kwas siarkowodorowy ma wzór \\(H_2S\\). Jest kwasem beztlenowym, więc składa się tylko z wodoru i siarki."
+            },
+            {
+                q: "Nazwa soli \\(Ag_2S\\) to:",
+                options: ["Siarczan(VI) srebra", "Siarczyn srebra(I)", "Siarczek srebra(I)", "Srebrzan siarki"],
+                correct: 2,
+                explanation: "Sól ta pochodzi od kwasu siarkowodorowego (\\(H_2S\\)), więc jest to siarczek. Srebro w związkach jest jednowartościowe."
+            },
+            {
+                q: "Który z poniższych kwasów pachnie gorzkimi migdałami?",
+                options: ["\\(H_2S\\)", "\\(HCl\\)", "\\(HCN\\)", "\\(HF\\)"],
+                correct: 2,
+                explanation: "Kwas cyjanowodorowy (\\(HCN\\)) to silnie trująca substancja charakteryzująca się zapachem gorzkich migdałów."
+            },
+            {
+                q: "Jakiej wartościowości resztę kwasową posiadają kwasy fluorowcowodorowe (\\(HF\\), \\(HCl\\), \\(HBr\\), \\(HI\\))?",
+                options: ["I", "II", "III", "IV"],
+                correct: 0,
+                explanation: "We wszystkich tych kwasach występuje jeden atom wodoru, więc reszta kwasowa jest jednowartościowa."
+            },
+            {
+                q: "Co jest wspólną cechą wszystkich kwasów beztlenowych?",
+                options: ["Są bardzo słabe", "Brak atomów tlenu w cząsteczce", "Są gazami w temperaturze pokojowej", "Mają zapach zgniłych jaj"],
+                correct: 1,
+                explanation: "Zgodnie z nazwą, kwasy beztlenowe to roztwory wodne wodorków niemetali, które nie zawierają tlenu w swojej budowie."
+            },
+            {
+                q: "Wzór kwasu bromowodorowego to:",
+                options: ["\\(HBrO\\)", "\\(HBr\\)", "\\(H_2Br\\)", "\\(HBrO_3\\)"],
+                correct: 1,
+                explanation: "Kwas bromowodorowy (wodny roztwór bromowodoru) nie zawiera tlenu i posiada jeden atom wodoru połączony z atomem bromu: \\(HBr\\)."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let points = 0;
+        let wrong = 0;
+        let streak = 0;
+        let maxStreak = 0;
+        let countdownTimeout = null;
+
+        const BASE_POINTS = 100;
+        const STREAK_BONUS = 20;
+
+        const ui = {
+            viewQuiz: document.getElementById('view-quiz'),
+            viewResults: document.getElementById('view-results'),
+            qNum: document.getElementById('current-q-num'),
+            progressBar: document.getElementById('progress-bar'),
+            streakCount: document.getElementById('streak-count'),
+            countCorrect: document.getElementById('count-correct'),
+            countWrong: document.getElementById('count-wrong'),
+            countPoints: document.getElementById('count-points'),
+            streakContainer: document.getElementById('streak-container'),
+            qText: document.getElementById('question-text'),
+            optsContainer: document.getElementById('options-container'),
+            feedback: document.getElementById('feedback-container'),
+            fbTitle: document.getElementById('feedback-title'),
+            fbText: document.getElementById('feedback-text'),
+            nextBtn: document.getElementById('next-btn'),
+            nextBtnText: document.getElementById('next-btn-text'),
+            nextBtnLoader: document.getElementById('next-btn-loader'),
+            exitBtn: document.getElementById('exit-quiz-btn')
+        };
+
+        const res = {
+            emoji: document.getElementById('res-emoji'),
+            title: document.getElementById('res-title'),
+            score: document.getElementById('res-score'),
+            points: document.getElementById('res-points'),
+            percent: document.getElementById('res-percent'),
+            streak: document.getElementById('res-streak'),
+            suggestion: document.getElementById('suggestion-text')
+        };
+
+        const goBack = () => {
+            window.parent.history.pushState({ route: 'chemistry' }, 'Chemia', '#!/chemistry');
+            window.parent.document.getElementById('content-frame').src = 'chemistry/index.html';
+        };
+        ui.exitBtn.onclick = goBack;
+        document.getElementById('home-btn').onclick = goBack;
+
+        document.getElementById('restart-btn').onclick = startQuiz;
+        ui.nextBtn.onclick = handleNext;
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function startQuiz() {
+            if (countdownTimeout) clearTimeout(countdownTimeout);
+            shuffleArray(questions);
+            currentQuestion = 0;
+            score = 0;
+            points = 0;
+            wrong = 0;
+            streak = 0;
+            maxStreak = 0;
+            updateStats();
+            
+            ui.viewResults.classList.add('d-none');
+            ui.viewQuiz.classList.remove('d-none');
+            window.scrollTo(0, 0);
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            ui.feedback.style.display = 'none';
+            ui.qNum.textContent = currentQuestion + 1;
+            ui.progressBar.style.width = `${(currentQuestion / questions.length) * 100}%`;
+            
+            const q = questions[currentQuestion];
+            ui.qText.textContent = q.q;
+            
+            ui.optsContainer.innerHTML = '';
+            q.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                const letter = String.fromCharCode(65 + index);
+                btn.innerHTML = `<strong>${letter}.</strong> ${opt}`;
+                btn.onclick = () => checkAnswer(index, btn);
+                ui.optsContainer.appendChild(btn);
+            });
+
+            if (window.MathJax) MathJax.typesetPromise();
+        }
+
+        function checkAnswer(selectedIndex, selectedBtn) {
+            const buttons = ui.optsContainer.querySelectorAll('.option-btn');
+            buttons.forEach(btn => btn.disabled = true);
+
+            const q = questions[currentQuestion];
+            const isCorrect = selectedIndex === q.correct;
+
+            ui.feedback.classList.remove('correct', 'wrong');
+
+            if (isCorrect) {
+                selectedBtn.classList.add('correct');
+                score++;
+                streak++;
+                if (streak > maxStreak) maxStreak = streak;
+                
+                const pointsEarned = BASE_POINTS + (streak > 1 ? (streak - 1) * STREAK_BONUS : 0);
+                points += pointsEarned;
+
+                ui.feedback.classList.add('correct');
+                ui.fbTitle.innerHTML = `✅ Poprawnie! <span class="badge bg-success">+${pointsEarned} pkt</span>`;
+                ui.fbTitle.style.color = "var(--correct-color)";
+                ui.streakContainer.classList.add('pop');
+                setTimeout(() => ui.streakContainer.classList.remove('pop'), 300);
+            } else {
+                selectedBtn.classList.add('wrong');
+                buttons[q.correct].classList.add('correct');
+                wrong++;
+                streak = 0;
+                ui.feedback.classList.add('wrong');
+                ui.fbTitle.textContent = "❌ Błąd";
+                ui.fbTitle.style.color = "var(--wrong-color)";
+            }
+
+            updateStats();
+            ui.fbText.innerHTML = q.explanation;
+            ui.feedback.style.display = 'block';
+
+            if (window.MathJax) MathJax.typesetPromise();
+            
+            ui.nextBtn.disabled = true;
+            const waitTime = 1200;
+            ui.nextBtnLoader.style.transition = 'none';
+            ui.nextBtnLoader.style.width = '0%';
+            ui.nextBtnText.textContent = "Czekaj...";
+            void ui.nextBtnLoader.offsetWidth;
+            ui.nextBtnLoader.style.transition = `width ${waitTime}ms linear`;
+            ui.nextBtnLoader.style.width = '100%';
+            
+            if (countdownTimeout) clearTimeout(countdownTimeout);
+            countdownTimeout = setTimeout(() => {
+                ui.nextBtn.disabled = false;
+                ui.nextBtnText.textContent = currentQuestion === questions.length - 1 ? "Pokaż wyniki" : "Następne pytanie";
+                ui.nextBtnLoader.style.transition = 'none';
+                ui.nextBtnLoader.style.width = '0%';
+            }, waitTime);
+        }
+
+        function handleNext() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function updateStats() {
+            ui.streakCount.textContent = streak;
+            ui.countCorrect.textContent = score;
+            ui.countWrong.textContent = wrong;
+            ui.countPoints.textContent = points;
+            ui.streakContainer.style.color = streak > 2 ? "var(--streak-color)" : "inherit";
+        }
+
+        function showResults() {
+            ui.progressBar.style.width = "100%";
+            setTimeout(() => {
+                const percent = Math.round((score / questions.length) * 100);
+                res.score.textContent = `${score}/${questions.length}`;
+                res.points.textContent = points;
+                res.percent.textContent = `${percent}%`;
+                res.streak.textContent = `🔥 ${maxStreak}`;
+                
+                if (percent === 100) {
+                    res.emoji.textContent = "💎";
+                    res.title.textContent = "Mistrzostwo!";
+                    res.percent.style.color = "var(--correct-color)";
+                    res.suggestion.textContent = "Perfekcyjny wynik! Jesteś ekspertem od kwasów beztlenowych.";
+                } else if (percent >= 80) {
+                    res.emoji.textContent = "🏆";
+                    res.title.textContent = "Świetny wynik!";
+                    res.percent.style.color = "var(--correct-color)";
+                    res.suggestion.textContent = "Brakuje Ci bardzo niewiele do 100%. Spróbuj jeszcze raz, aby wyeliminować ostatnie błędy!";
+                } else if (percent >= 50) {
+                    res.emoji.textContent = "🥈";
+                    res.title.textContent = "Dobry początek!";
+                    res.percent.style.color = "var(--streak-color)";
+                    res.suggestion.textContent = "Masz solidne podstawy, ale możesz uzyskać znacznie lepszy wynik. Rozwiąż test ponownie, by utrwalić wiedzę.";
+                } else {
+                    res.emoji.textContent = "📖";
+                    res.title.textContent = "Wymaga powtórki";
+                    res.percent.style.color = "var(--wrong-color)";
+                    res.suggestion.textContent = "Kwasy beztlenowe wymagają jeszcze trochę nauki. Przeczytaj wyjaśnienia i spróbuj uzyskać lepszy wynik w kolejnym podejściu.";
+                }
+
+                ui.viewQuiz.classList.add('d-none');
+                ui.viewResults.classList.remove('d-none');
+                window.scrollTo(0, 0);
+            }, 300);
+        }
+
+        window.onload = startQuiz;
+    </script>
+</body>
+</html>
