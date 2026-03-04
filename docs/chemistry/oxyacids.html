@@ -187,7 +187,7 @@
         ];
 
         // Mechanizm include frontend-only
-        fetch('quiz.html')
+        fetch('../templates/quiz.html')
             .then(response => response.text())
             .then(html => {
                 const parser = new DOMParser();
