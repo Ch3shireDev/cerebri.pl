@@ -421,7 +421,7 @@
             if (window.MathJax) MathJax.typesetPromise();
             
             ui.nextBtn.disabled = true;
-            const waitTime = 1200;
+            const waitTime = cfg.waitTime || 1200;
             ui.nextBtnLoader.style.transition = 'none';
             ui.nextBtnLoader.style.width = '0%';
             ui.nextBtnText.textContent = "Czekaj...";

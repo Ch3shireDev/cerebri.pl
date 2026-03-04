@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script>
+        (function () {
+            const media = window.matchMedia('(prefers-color-scheme: dark)');
+            const applyTheme = (isDark) => document.documentElement.setAttribute('data-bs-theme', isDark ? 'dark' : 'light');
+            applyTheme(media.matches);
+            media.addEventListener('change', (e) => applyTheme(e.matches));
+        })();
+    </script>
+    <title>Test: Podstawy Informatyki - Cerebri.pl</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['\\(', '\\)']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+    <div id="quiz-container">
+        <p class="text-center mt-5">Ładowanie mechanizmu quizu...</p>
+    </div>
+
+    <script>
+        // Konfiguracja nawigacji
+        window.quizConfig = {
+            backRoute: 'informatics',
+            backTitle: 'Informatyka',
+            backUrl: '#!/informatics',
+            backIndex: 'informatics/index.html',
+            waitTime: 2000  // Czas oczekiwania przed kolejnym pytaniem (w milisekundach)
+        };
+
+        // Konfiguracja wyników quizu
+        window.quizResults = {
+            perfect: {
+                emoji: "🚀",
+                title: "Senior Architekt!",
+                suggestion: "Bezbłędnie! Architektura systemów i kod nie mają przed Tobą tajemnic."
+            },
+            great: {
+                emoji: "💻",
+                title: "Mid Developer",
+                suggestion: "Świetny wynik, posiadasz szeroką wiedzę o technologiach i sprzęcie."
+            },
+            good: {
+                emoji: "⌨️",
+                title: "Junior Developer",
+                suggestion: "Dobre podstawy, ale warto jeszcze trochę poćwiczyć i zgłębić teorię."
+            },
+            poor: {
+                emoji: "🐛",
+                title: "Znaleziono bugi (Stażysta)",
+                suggestion: "W Twojej wiedzy wystąpiło kilka błędów (bugów). Przeczytaj wyjaśnienia i zrób debugowanie wiedzy w kolejnym podejściu."
+            }
+        };
+
+        // Dane quizu
+        window.questions = [
+            { q: "Czym jest algorytm?", options: ["Szyfrowaną wiadomością", "Ciągiem kroków rozwiązujących dany problem", "Podzespołem procesora", "Językiem programowania"], correct: 1, explanation: "Algorytm to ściśle określony zestaw instrukcji lub kroków, które należy wykonać, aby rozwiązać konkretne zadanie lub problem logiczny." },
+            { q: "Z ilu bitów składa się jeden bajt?", options: ["4", "8", "16", "32"], correct: 1, explanation: "Powszechnie przyjętym standardem w informatyce jest to, że 1 bajt (B) równa się 8 bitom (b). Pozwala to na zakodowanie 256 różnych wartości." },
+            { q: "Co oznacza skrót RAM?", options: ["Read Access Memory", "Random Access Memory", "Run Application Memory", "Real Action Memory"], correct: 1, explanation: "Random Access Memory (Pamięć o swobodnym dostępie) to pamięć operacyjna komputera, używana do przechowywania danych aktualnie wykonywanych programów. Kasuje się po wyłączeniu zasilania. " },
+            { q: "Który język służy przede wszystkim do nadawania wyglądu stronom WWW?", options: ["HTML", "Python", "CSS", "Java"], correct: 2, explanation: "CSS (Cascading Style Sheets) to język arkuszy stylów, który odpowiada za układ, kolory, fonty i ogólny wygląd elementów strukturalnych stworzonych w HTML." },
+            { q: "Co to jest adres IP?", options: ["Rodzaj złącza na płycie głównej", "Unikalny identyfikator urządzenia w sieci", "Program antywirusowy", "Karta graficzna serwera"], correct: 1, explanation: "Adres IP (Internet Protocol) to unikalny numer przypisywany urządzeniom w sieci komputerowej, służący do ich identyfikacji i komunikacji między nimi." },
+            { q: "System binarny (dwójkowy) opiera się wyłącznie na cyfrach:", options: ["0 i 1", "1 i 2", "0 do 9", "Znakach alfabetu"], correct: 0, explanation: "System binarny wykorzystuje tylko cyfry 0 i 1. Jest to podstawa działania elektroniki cyfrowej, gdzie stany te odpowiadają brakowi lub obecności napięcia." },
+            { q: "Jakie jest główne zadanie kompilatora?", options: ["Zabezpiecza sieć przed atakiem", "Tworzy grafikę 3D", "Wyszukuje błędy na dysku twardym", "Tłumaczy kod źródłowy na język maszynowy"], correct: 3, explanation: "Kompilator to program, który analizuje kod napisany w języku wysokiego poziomu (np. C++) i tłumaczy go w całości na kod zrozumiały dla procesora (język maszynowy)." },
+            { q: "Co kryje się pod skrótem CPU?", options: ["Central Processing Unit", "Computer Personal Unit", "Control Program Utility", "Central Power Unit"], correct: 0, explanation: "Central Processing Unit to jednostka centralna, potocznie nazywana procesorem. Jest to 'mózg' komputera, wykonujący operacje arytmetyczne i logiczne." },
+            { q: "Jaki port sieciowy jest domyślnie wykorzystywany przez protokół HTTPS?", options: ["21", "80", "443", "8080"], correct: 2, explanation: "HTTPS (szyfrowana wersja HTTP) standardowo komunikuje się na porcie 443. Port 80 jest zarezerwowany dla nieszyfrowanego połączenia HTTP." },
+            { q: "W jakiej strukturze danych elementy działają zgodnie z zasadą LIFO (Last In, First Out)?", options: ["Kolejka", "Drzewo", "Stos", "Lista wiązana"], correct: 2, explanation: "Stos (Stack) to struktura, w której ostatni dodany element jest zdejmowany jako pierwszy (jak stos talerzy). Kolejka z kolei działa na zasadzie FIFO (First In, First Out)." },
+            { q: "Do czego służy język SQL?", options: ["Do tworzenia interfejsów graficznych", "Do pisania sterowników sprzętowych", "Do zarządzania i zapytań w relacyjnych bazach danych", "Do animacji postaci w grach"], correct: 2, explanation: "SQL (Structured Query Language) to standaryzowany język używany do pobierania, wstawiania, modyfikowania i usuwania danych w relacyjnych bazach danych (np. MySQL, PostgreSQL)." },
+            { q: "Który protokół służy do dynamicznego i automatycznego przydzielania adresów IP urządzeniom w sieci?", options: ["DNS", "FTP", "DHCP", "SMTP"], correct: 2, explanation: "DHCP (Dynamic Host Configuration Protocol) automatycznie konfiguruje parametry sieciowe urządzeń, przydzielając im m.in. adres IP, maskę podsieci czy adres bramy domyślnej." },
+            { q: "Który z poniższych systemów operacyjnych posiada w pełni otwarty kod źródłowy (open source)?", options: ["Windows 11", "macOS", "iOS", "Linux"], correct: 3, explanation: "Linux to darmowy, otwartoźródłowy system operacyjny. Jego jądro jest rozwijane przez społeczność programistów na całym świecie, co odróżnia go od zamkniętych systemów komercyjnych." },
+            { q: "Typ danych przyjmujący wyłącznie wartości Prawda (True) lub Fałsz (False) to:", options: ["Integer", "String", "Boolean", "Float"], correct: 2, explanation: "Typ logiczny (Boolean) to podstawowy typ danych w informatyce i algebrze Boole'a. Posiada tylko dwa możliwe stany." },
+            { q: "Podstawowym znacznikiem HTML używanym do wstawienia hiperłącza (linku) jest:", options: ["<link>", "<a>", "<href>", "<url>"], correct: 1, explanation: "Znacznik <a> (od 'anchor') służy do definiowania odnośników w dokumencie HTML. Atrybut 'href' wewnątrz tego znacznika określa docelowy adres URL." },
+            { q: "Które pojęcie jest integralną częścią programowania obiektowego (OOP)?", options: ["Rekurencja", "Polimorfizm", "Wskaźnik instrukcji", "Pętla while"], correct: 1, explanation: "Polimorfizm, dziedziczenie, hermetyzacja i abstrakcja to cztery główne filary programowania zorientowanego obiektowo." },
+            { q: "Jaka jest złożoność obliczeniowa wyszukiwania binarnego w posortowanej tablicy?", options: ["\\(O(1)\\)", "\\(O(n)\\)", "\\(O(\\log n)\\)", "\\(O(n^2)\\)"], correct: 2, explanation: "Wyszukiwanie binarne w każdym kroku dzieli przeszukiwany zbiór o połowę. Dlatego jego czas działania rośnie logarytmicznie w stosunku do liczby elementów." },
+            { q: "Czym jest atak typu 'Phishing'?", options: ["Odmową dostępu (DDoS)", "Zainfekowaniem plików wirusem szyfrującym", "Próbą wyłudzenia poufnych danych poprzez podszywanie się pod zaufany podmiot", "Fizycznym włamaniem do serwerowni"], correct: 2, explanation: "Phishing polega najczęściej na wysyłaniu fałszywych e-maili (np. przypominających wiadomość z banku), które skłaniają użytkownika do wpisania loginu i hasła na spreparowanej stronie." },
+            { q: "Gdzie przeglądarka internetowa zapisuje małe porcje danych (np. o logowaniu lub koszyku) po stronie klienta?", options: ["W plikach konfiguracyjnych systemu", "W plikach cookies (ciasteczkach)", "W pamięci ROM komputera", "W BIOS-ie"], correct: 1, explanation: "Ciasteczka (cookies) oraz pamięć lokalna (Local Storage) to mechanizmy pozwalające stronom WWW 'zapamiętywać' informacje o użytkowniku i jego sesji w obrębie przeglądarki." },
+            { q: "Jak nazywa się struktura danych w kształcie drzewa, w której każdy węzeł ma co najwyżej dwóch potomków?", options: ["Drzewo binarne", "Graf skierowany", "Drzewo rozpinające", "Lista dwukierunkowa"], correct: 0, explanation: "Drzewo binarne (Binary Tree) to struktura, w której wyróżniamy korzeń, a z każdego elementu mogą wychodzić maksymalnie dwa odgałęzienia: lewe i prawe dziecko." }
+        ];
+
+        // Mechanizm include frontend-only
+        fetch('../templates/quiz.html')
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                // Dołącz style
+                doc.querySelectorAll('style').forEach(s => document.head.appendChild(s));
+                
+                // Dołącz strukture DOM (DOMParser umieszcza divy z top-level wewnątrz <body>)
+                const container = document.getElementById('quiz-container');
+                container.innerHTML = doc.body.innerHTML;
+                
+                // Wstrzyknij i wykonaj JS (innerHTML ignoruje tagi <script>)
+                doc.querySelectorAll('script').forEach(oldScript => {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = oldScript.textContent;
+                    document.body.appendChild(newScript);
+                });
+            })
+            .catch(err => {
+                document.getElementById('quiz-container').innerHTML = `<p class="text-danger text-center">Błąd ładowania quizu. Upewnij się, że używasz serwera HTTP.</p>`;
+            });
+    </script>
+</body>
+</html>
