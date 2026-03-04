@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script>
+        (function () {
+            const media = window.matchMedia('(prefers-color-scheme: dark)');
+            const applyTheme = (isDark) => document.documentElement.setAttribute('data-bs-theme', isDark ? 'dark' : 'light');
+            applyTheme(media.matches);
+            media.addEventListener('change', (e) => applyTheme(e.matches));
+        })();
+    </script>
+    <title>Test: Zasady i Wodorotlenki - Cerebri.pl</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['\\(', '\\)']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+    <div id="quiz-container">
+        <p class="text-center mt-5">Ładowanie mechanizmu quizu...</p>
+    </div>
+
+    <script>
+        window.quizConfig = {
+            backRoute: 'chemistry',
+            backTitle: 'Chemia',
+            backUrl: '#!/chemistry',
+            backIndex: 'chemistry/index.html',
+            correctFeedback: "✅ Poprawnie!",
+            wrongFeedback: "❌ Błąd!"
+        };
+
+        window.quizResults = {
+            perfect: {
+                emoji: "💎",
+                title: "Mistrzostwo!",
+                suggestion: "Perfekcyjny wynik! Wodorotlenki i zasady nie mają przed Tobą tajemnic."
+            },
+            great: {
+                emoji: "🏆",
+                title: "Świetny wynik!",
+                suggestion: "Brakuje Ci bardzo niewiele do 100%. Spróbuj jeszcze raz, aby wyeliminować ostatnie błędy!"
+            },
+            good: {
+                emoji: "🥈",
+                title: "Dobry początek!",
+                suggestion: "Masz solidne podstawy, ale możesz uzyskać znacznie lepszy wynik. Rozwiąż test ponownie, by utrwalić wiedzę."
+            },
+            poor: {
+                emoji: "📖",
+                title: "Wymaga powtórki",
+                suggestion: "Ten dział wymaga jeszcze trochę nauki. Przeczytaj wyjaśnienia i spróbuj uzyskać lepszy wynik w kolejnym podejściu."
+            }
+        };
+
+        window.questions = [
+            {
+                q: "Co to są wodorotlenki?",
+                options: ["Związki węgla i tlenu", "Związki metali (lub grupy amonowej) z grupą wodorotlenową", "Sole kwasów beztlenowych", "Roztwory tlenków niemetali w wodzie"],
+                correct: 1,
+                explanation: "Wodorotlenki to związki chemiczne zbudowane z kationów metalu (lub kationu amonu) i anionów wodorotlenowych (\\(OH^-\\))."
+            },
+            {
+                q: "Każda zasada jest wodorotlenkiem, ale czy każdy wodorotlenek jest zasadą?",
+                options: ["Tak, to synonimy", "Nie, zasadami są tylko wodorotlenki dobrze rozpuszczalne w wodzie", "Nie, zasadami są tylko wodorotlenki nierozpuszczalne w wodzie", "Zasady to wyłącznie wodorotlenki metali ciężkich"],
+                correct: 1,
+                explanation: "Zasadami nazywamy tylko te wodorotlenki, które dobrze rozpuszczają się w wodzie (głównie wodorotlenki metali 1 i 2 grupy układu okresowego)."
+            },
+            {
+                q: "Jakiego koloru nabiera fenoloftaleina w roztworze o odczynie zasadowym?",
+                options: ["Pozostaje bezbarwna", "Zmienia kolor na żółty", "Zmienia kolor na malinowy", "Zmienia kolor na niebieski"],
+                correct: 2,
+                explanation: "Fenoloftaleina to wskaźnik, który w środowisku zasadowym (pH > 7) zabarwia się na charakterystyczny malinowy kolor."
+            },
+            {
+                q: "Wzór sumaryczny wodorotlenku sodu to:",
+                options: ["\\(Na(OH)_2\\)", "\\(Na_2OH\\)", "\\(NaOH\\)", "\\(SOH\\)"],
+                correct: 2,
+                explanation: "Sód (Na) jest w pierwszej grupie układu okresowego, więc jest jednowartościowy. Grupa wodorotlenowa (OH) również jest jednowartościowa, stąd wzór \\(NaOH\\)."
+            },
+            {
+                q: "Wodorotlenek wapnia w postaci zawiesiny w wodzie jest potocznie nazywany:",
+                options: ["Wodą wapienną", "Mlekiem wapiennym", "Wapnem gaszonym", "Wapnem palonym"],
+                correct: 1,
+                explanation: "Zawiesina wodorotlenku wapnia (\\(Ca(OH)_2\\)) w wodzie to mleko wapienne. Klarowny roztwór nad osadem to woda wapienna."
+            },
+            {
+                q: "Jaka jest wartościowość grupy wodorotlenowej (\\(-OH\\)) w wodorotlenkach?",
+                options: ["I", "II", "III", "IV"],
+                correct: 0,
+                explanation: "Grupa wodorotlenowa pochodzi od cząsteczki wody, od której oderwano jeden atom wodoru. Zawsze jest jednowartościowa (I)."
+            },
+            {
+                q: "Odczyn zasadowy roztworów wodnych jest spowodowany obecnością:",
+                options: ["Kationów wodoru (\\(H^+\\))", "Anionów wodorotlenowych (\\(OH^-\\))", "Atomów tlenu", "Cząsteczek wody"],
+                correct: 1,
+                explanation: "Zgodnie z teorią Arrheniusa, zasady to substancje, które w roztworze wodnym dysocjują z wytworzeniem anionów wodorotlenowych (\\(OH^-\\))."
+            },
+            {
+                q: "Wodorotlenek potasu (\\(KOH\\)) ma właściwości:",
+                options: ["Silnie żrące", "Wybuchowe", "Kwasowe", "Bielące"],
+                correct: 0,
+                explanation: "\\(KOH\\), podobnie jak \\(NaOH\\), to silna zasada o właściwościach silnie żrących. Niszczy tkanki i wiele materiałów."
+            },
+            {
+                q: "Który z poniższych wodorotlenków jest praktycznie nierozpuszczalny w wodzie (nie tworzy zasady)?",
+                options: ["\\(NaOH\\)", "\\(KOH\\)", "\\(Ba(OH)_2\\)", "\\(Cu(OH)_2\\)"],
+                correct: 3,
+                explanation: "Wodorotlenek miedzi(II) (\\(Cu(OH)_2\\)) to niebieski, galaretowaty osad, który nie rozpuszcza się w wodzie."
+            },
+            {
+                q: "Reakcja zobojętniania zachodzi między:",
+                options: ["Kwasem a metalem", "Zasadą a wodą", "Kwasem a zasadą", "Dwoma różnymi kwasami"],
+                correct: 2,
+                explanation: "W reakcji zobojętniania kwas reaguje z zasadą, tworząc sól i wodę (kationy \\(H^+\\) łączą się z anionami \\(OH^-\\))."
+            },
+            {
+                q: "pH roztworów o odczynie zasadowym przyjmuje wartości:",
+                options: ["Mniejsze od 7", "Równe 7", "Większe od 7", "Zawsze równe 14"],
+                correct: 2,
+                explanation: "Skala pH dla roztworów wodnych wynosi od 0 do 14. Wartości powyżej 7 oznaczają odczyn zasadowy."
+            },
+            {
+                q: "Wzór wodorotlenku glinu to:",
+                options: ["\\(AlOH\\)", "\\(Al_2(OH)_3\\)", "\\(Al(OH)_3\\)", "\\(Al_3OH\\)"],
+                correct: 2,
+                explanation: "Glin leży w 13. grupie układu okresowego i w związkach jest trójwartościowy. Wymaga połączenia z trzema jednowartościowymi grupami \\(-OH\\)."
+            },
+            {
+                q: "Jakie właściwości fizyczne wykazują wodne roztwory zasad przy kontakcie ze skórą?",
+                options: ["Są szorstkie", "Są śliskie w dotyku", "Mają słodki smak", "Błyskawicznie zamarzają"],
+                correct: 1,
+                explanation: "Zasady w dotyku wydają się śliskie (mydlaste). Wynika to z faktu, że reagują z tłuszczami na naszej skórze, tworząc mydła (proces zmydlania)."
+            },
+            {
+                q: "Związkiem chemicznym znanym potocznie jako 'wapno gaszone' jest:",
+                options: ["Tlenek wapnia", "Węglan wapnia", "Siarczan(VI) wapnia", "Wodorotlenek wapnia"],
+                correct: 3,
+                explanation: "Wapno gaszone to wodorotlenek wapnia \\(Ca(OH)_2\\), otrzymywany przez 'gaszenie' wodą wapna palonego (\\(CaO\\))."
+            },
+            {
+                q: "W reakcji tlenku sodu (\\(Na_2O\\)) z wodą powstaje:",
+                options: ["Kwas sodowy", "Wodór i sód", "Wodorotlenek sodu", "Tlen i sód"],
+                correct: 2,
+                explanation: "Tlenki metali 1 i 2 grupy to tlenki zasadowe. Ich reakcja z wodą prowadzi do powstania wodorotlenków: \\(Na_2O + H_2O \\rightarrow 2NaOH\\)."
+            }
+        ];
+
+        fetch('quiz.html')
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                doc.querySelectorAll('style').forEach(s => document.head.appendChild(s));
+                
+                const container = document.getElementById('quiz-container');
+                container.innerHTML = doc.body.innerHTML;
+                
+                doc.querySelectorAll('script').forEach(oldScript => {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = oldScript.textContent;
+                    document.body.appendChild(newScript);
+                });
+            })
+            .catch(err => {
+                document.getElementById('quiz-container').innerHTML = `<p class="text-danger text-center">Błąd ładowania quizu. Upewnij się, że używasz serwera HTTP.</p>`;
+            });
+    </script>
+</body>
+</html>
