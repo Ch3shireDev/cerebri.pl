@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script>
+        (function () {
+            const media = window.matchMedia('(prefers-color-scheme: dark)');
+            const applyTheme = (isDark) => document.documentElement.setAttribute('data-bs-theme', isDark ? 'dark' : 'light');
+            applyTheme(media.matches);
+            media.addEventListener('change', (e) => applyTheme(e.matches));
+        })();
+    </script>
+    <title>Test: Podstawy Ekologii - Cerebri.pl</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['\\(', '\\)']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+    <div id="quiz-container">
+        <p class="text-center mt-5">Ładowanie mechanizmu quizu...</p>
+    </div>
+
+    <script>
+        window.quizConfig = {
+            backRoute: 'biology',
+            backTitle: 'Biologia',
+            backUrl: '#!/biology',
+            backIndex: 'biology/index.html',
+            correctFeedback: "✅ Zgadza się!",
+            wrongFeedback: "❌ Niestety błąd."
+        };
+
+        window.quizResults = {
+            perfect: {
+                emoji: "🌍",
+                title: "Ekspert ekologii!",
+                suggestion: "Perfekcyjny wynik! Zależności w przyrodzie nie mają przed Tobą tajemnic."
+            },
+            great: {
+                emoji: "🌿",
+                title: "Świetny wynik!",
+                suggestion: "Brakuje Ci bardzo niewiele do 100%. Świetnie rozumiesz funkcjonowanie ekosystemów."
+            },
+            good: {
+                emoji: "🌱",
+                title: "Dobry początek!",
+                suggestion: "Masz solidne podstawy, ale możesz uzyskać znacznie lepszy wynik. Rozwiąż test ponownie."
+            },
+            poor: {
+                emoji: "🍂",
+                title: "Wymaga powtórki",
+                suggestion: "Przejrzyj podstawowe pojęcia ekologiczne i spróbuj ponownie, aby utrwalić wiedzę."
+            }
+        };
+
+        window.questions = [
+            { q: "Czym zajmuje się ekologia?", options: ["Ochroną środowiska przed zanieczyszczeniami", "Zależnościami między organizmami a ich środowiskiem", "Budową wewnętrzną organizmów", "Klasyfikacją i nazywaniem nowych gatunków"], correct: 1, explanation: "Ekologia to nauka badająca strukturę i funkcjonowanie przyrody, w tym interakcje między organizmami oraz między nimi a środowiskiem (abiotycznym i biotycznym)." },
+            { q: "Ekosystem to układ składający się z:", options: ["Tylko roślin i zwierząt na danym obszarze", "Populacji i jej siedliska", "Biocenozy i biotopu", "Samego środowiska nieożywionego"], correct: 2, explanation: "Ekosystem stanowi jedność przestrzenną i fizyczną utworzoną przez ożywioną część (biocenozę) i nieożywione środowisko (biotop)." },
+            { q: "Zbiór wszystkich osobników jednego gatunku, zamieszkujących wspólnie dany obszar w tym samym czasie, to:", options: ["Populacja", "Biocenoza", "Gatunek", "Ekosystem"], correct: 0, explanation: "Populacja to grupa krzyżujących się ze sobą osobników tego samego gatunku, zajmująca określoną przestrzeń." },
+            { q: "Wszystkie ożywione elementy ekosystemu (zwierzęta, rośliny, grzyby, bakterie) powiązane różnymi zależnościami tworzą:", options: ["Biotop", "Biom", "Siedlisko", "Biocenozę"], correct: 3, explanation: "Biocenoza to ogół organizmów występujących na danym obszarze, powiązanych ze sobą różnymi zależnościami (np. pokarmowymi)." },
+            { q: "Organizmy zamykające łańcuch pokarmowy, które rozkładają martwą materię organiczną do związków nieorganicznych, to:", options: ["Producenci", "Konsumenci I rzędu", "Reducenci (destruenci)", "Drapieżniki szczytowe"], correct: 2, explanation: "Reducenci (np. bakterie i grzyby) przywracają krążenie pierwiastków w przyrodzie, mineralizując szczątki organiczne." },
+            { q: "Zależność, w której jeden organizm żyje kosztem drugiego, wyrządzając mu szkody (ale z reguły go od razu nie zabijając), to:", options: ["Drapieżnictwo", "Pasożytnictwo", "Konkurencja", "Komensalizm"], correct: 1, explanation: "W pasożytnictwie pasożyt czerpie korzyści kosztem żywiciela, osłabiając go, np. kleszcz i pies." },
+            { q: "Miejsce w środowisku, w którym żyje dany organizm (zbiór warunków fizycznych i chemicznych), nazywamy:", options: ["Niszą ekologiczną", "Siedliskiem", "Biotopem", "Aerałem"], correct: 1, explanation: "Siedlisko (habitat) to przestrzeń fizyczna, w której organizm występuje." },
+            { q: "Mikoryza (współżycie korzeni drzew z grzybami) to przykład relacji nazywanej:", options: ["Komensalizmem", "Pasożytnictwem", "Konkurencją", "Mutualizmem (symbiozą)"], correct: 3, explanation: "Obie strony czerpią z tej relacji korzyści: grzyb otrzymuje związki organiczne, a roślina wodę i sole mineralne." },
+            { q: "Konsumenci pierwszego rzędu to w łańcuchu pokarmowym z reguły:", options: ["Organizmy samożywne", "Mięsożercy", "Roślinożercy", "Pasożyty"], correct: 2, explanation: "Konsumenci I rzędu zjadają bezpośrednio producentów (rośliny lub glony), są więc roślinożercami." },
+            { q: "Zjawisko uwalniania się substancji toksycznych (np. metali ciężkich) w coraz większym stężeniu na wyższych poziomach troficznych to:", options: ["Eutrofizacja", "Sukcesja ekologiczna", "Biomagnifikacja", "Chemosynteza"], correct: 2, explanation: "Biomagnifikacja sprawia, że najwięcej toksyn kumuluje się w ciałach drapieżników szczytowych." },
+            { q: "Współzawodnictwo między organizmami o te same, ograniczone zasoby środowiska (np. wodę, światło, pokarm) to:", options: ["Drapieżnictwo", "Konkurencja", "Allelopatia", "Pasożytnictwo"], correct: 1, explanation: "Konkurencja występuje, gdy nisze ekologiczne różnych organizmów lub osobników się pokrywają." },
+            { q: "Który z poniższych czynników zaliczamy do abiotycznych czynników środowiska?", options: ["Obecność drapieżników", "Dostępność pokarmu", "Temperatura powietrza", "Choroby pasożytnicze"], correct: 2, explanation: "Czynniki abiotyczne to elementy środowiska nieożywionego, takie jak temperatura, światło, woda, czy wiatr." },
+            { q: "Zależność między lwem a antylopą na sawannie to przykład:", options: ["Konkurencji", "Amensalizmu", "Drapieżnictwa", "Pasożytnictwa"], correct: 2, explanation: "Lew to drapieżnik, który poluje na antylopę (ofiarę), co jest klasycznym przykładem drapieżnictwa." },
+            { q: "Zarastanie jeziora i przekształcanie się go stopniowo w torfowisko, a następnie w las, to przykład:", options: ["Zaburzenia ekosystemu", "Sukcesji ekologicznej", "Klimaksu", "Degradacji siedliska"], correct: 1, explanation: "Sukcesja to kierunkowy, przewidywalny proces zmian w składzie gatunkowym biocenozy, prowadzący do rozwoju bardziej złożonego ekosystemu." },
+            { q: "Rola, jaką organizm pełni w ekosystemie, jego wymagania życiowe i powiązania z innymi organizmami to jego:", options: ["Siedlisko", "Nisza ekologiczna", "Poziom troficzny", "Biotop"], correct: 1, explanation: "Nisza ekologiczna opisuje sposób życia organizmu oraz jego pozycję w strukturze i funkcjonowaniu ekosystemu." },
+            { q: "Organizmy potrafiące wyprodukować związki organiczne z materii nieorganicznej (np. poprzez fotosyntezę) to:", options: ["Autotrofy", "Heterotrofy", "Saprobionty", "Destruenci"], correct: 0, explanation: "Autotrofy (organizmy samożywne) stanowią pierwszy poziom troficzny jako producenci." },
+            { q: "Remora (ryba) przyczepiająca się do rekina, zyskująca transport i resztki pokarmu (rekin na tym nie traci ani nie zyskuje), to przykład:", options: ["Mutualizmu", "Komensalizmu", "Pasożytnictwa", "Protokooperacji"], correct: 1, explanation: "W komensalizmie jeden gatunek odnosi korzyści, podczas gdy dla drugiego relacja ta jest obojętna." },
+            { q: "Jaki jest główny skutek nadmiernego nawożenia zbiorników wodnych związkami azotu i fosforu?", options: ["Zmniejszenie ilości glonów", "Eutrofizacja", "Zwiększenie przejrzystości wody", "Spadek temperatury wody"], correct: 1, explanation: "Eutrofizacja (przeżyźnienie) prowadzi do masowego zakwitu glonów, a w konsekwencji do spadku ilości tlenu i obumierania organizmów." }
+        ];
+
+        fetch('../templates/quiz.html')
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                doc.querySelectorAll('style').forEach(s => document.head.appendChild(s));
+                
+                const container = document.getElementById('quiz-container');
+                container.innerHTML = doc.body.innerHTML;
+                
+                doc.querySelectorAll('script').forEach(oldScript => {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = oldScript.textContent;
+                    document.body.appendChild(newScript);
+                });
+            })
+            .catch(err => {
+                document.getElementById('quiz-container').innerHTML = `<p class="text-danger text-center">Błąd ładowania quizu. Upewnij się, że używasz serwera HTTP.</p>`;
+            });
+    </script>
+</body>
+</html>
