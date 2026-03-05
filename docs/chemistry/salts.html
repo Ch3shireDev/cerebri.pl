@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script>
+        (function () {
+            const media = window.matchMedia('(prefers-color-scheme: dark)');
+            const applyTheme = (isDark) => document.documentElement.setAttribute('data-bs-theme', isDark ? 'dark' : 'light');
+            applyTheme(media.matches);
+            media.addEventListener('change', (e) => applyTheme(e.matches));
+        })();
+    </script>
+    <title>Test: Sole - Cerebri.pl</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['\\(', '\\)']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+    <div id="quiz-container">
+        <p class="text-center mt-5">Ładowanie mechanizmu quizu...</p>
+    </div>
+
+    <script>
+        // Konfiguracja nawigacji
+        window.quizConfig = {
+            backRoute: 'chemistry',
+            backTitle: 'Chemia',
+            backUrl: '#!/chemistry',
+            backIndex: 'chemistry/index.html'
+        };
+
+        // Konfiguracja wyników quizu
+        window.quizResults = {
+            perfect: {
+                emoji: "💎",
+                title: "Mistrzostwo!",
+                suggestion: "Perfekcyjny wynik! Jesteś ekspertem od soli."
+            },
+            great: {
+                emoji: "🏆",
+                title: "Świetny wynik!",
+                suggestion: "Brakuje Ci bardzo niewiele do 100%. Spróbuj jeszcze raz, aby wyeliminować ostatnie błędy!"
+            },
+            good: {
+                emoji: "🥈",
+                title: "Dobry początek!",
+                suggestion: "Masz solidne podstawy, ale możesz uzyskać znacznie lepszy wynik. Rozwiąż test ponownie, by utrwalić wiedzę."
+            },
+            poor: {
+                emoji: "📖",
+                title: "Wymaga powtórki",
+                suggestion: "Sole wymagają jeszcze trochę nauki. Przeczytaj wyjaśnienia i spróbuj uzyskać lepszy wynik w kolejnym podejściu."
+            }
+        };
+
+        // Dane quizu
+        window.questions = [
+            {
+                q: "Czym są sole w chemii?",
+                options: ["Związkami metali z tlenem", "Związkami powstałymi z reakcji kwasów z zasadami", "Roztworami wodnymi kwasów", "Związkami wodoru z niemetalami"],
+                correct: 1,
+                explanation: "Sole to związki chemiczne powstające w wyniku reakcji kwasów z zasadami (reakcja zobojętniania). Zbudowane są z kationów metali i anionów reszt kwasowych."
+            },
+            {
+                q: "Jaki jest wzór sumaryczny chlorku sodu?",
+                options: ["\\(Na_2Cl\\)", "\\(NaCl\\)", "\\(NaCl_2\\)", "\\(Na_2Cl_2\\)"],
+                correct: 1,
+                explanation: "Chlorek sodu (sól kuchenna) ma wzór \\(NaCl\\). Sód jest jednowartościowy, chlor w reszcie kwasowej również jest jednowartościowy."
+            },
+            {
+                q: "Jak nazywa się sól o wzorze \\(CaCO_3\\)?",
+                options: ["Chlorek wapnia", "Siarczan(VI) wapnia", "Węglan wapnia", "Azotan(V) wapnia"],
+                correct: 2,
+                explanation: "\\(CaCO_3\\) to węglan wapnia. Reszta kwasowa \\(CO_3\\) pochodzi od kwasu węglowego \\(H_2CO_3\\). Węglan wapnia występuje m.in. w postaci kredy i marmuru."
+            },
+            {
+                q: "Jaki jest produkt reakcji zobojętniania kwasu solnego z wodorotlenkiem sodu?",
+                options: ["\\(NaCl + H_2O\\)", "\\(NaOH + HCl\\)", "\\(Na_2O + HCl\\)", "\\(NaCl + H_2\\)"],
+                correct: 0,
+                explanation: "Reakcja zobojętniania: \\(HCl + NaOH \\rightarrow NaCl + H_2O\\). Produktem jest sól (chlorek sodu) i woda."
+            },
+            {
+                q: "Który z podanych wzorów przedstawia siarczan(VI) miedzi(II)?",
+                options: ["\\(CuSO_3\\)", "\\(CuSO_4\\)", "\\(Cu_2SO_4\\)", "\\(CuS\\)"],
+                correct: 1,
+                explanation: "Siarczan(VI) miedzi(II) ma wzór \\(CuSO_4\\). Reszta kwasowa \\(SO_4\\) pochodzi od kwasu siarkowego(VI) \\(H_2SO_4\\)."
+            },
+            {
+                q: "Jak otrzymuje się sole?",
+                options: ["Tylko przez rozpuszczanie metali w wodzie", "Tylko przez reakcję kwasu z zasadą", "M.in. przez reakcję kwasu z zasadą, kwasu z metalem lub kwasu z tlenkiem metalu", "Tylko przez reakcję dwóch soli"],
+                correct: 2,
+                explanation: "Sole można otrzymać na wiele sposobów, m.in.: kwas + zasada, kwas + metal, kwas + tlenek metalu, tlenek niemetalu + zasada."
+            },
+            {
+                q: "Jaki jest wzór sumaryczny azotanu(V) potasu?",
+                options: ["\\(KNO_2\\)", "\\(KNO_3\\)", "\\(K_2NO_3\\)", "\\(K(NO_3)_2\\)"],
+                correct: 1,
+                explanation: "Azotan(V) potasu (saletra potasowa) ma wzór \\(KNO_3\\). Reszta kwasowa \\(NO_3\\) pochodzi od kwasu azotowego(V) \\(HNO_3\\)."
+            },
+            {
+                q: "Jak nazywa się sól o wzorze \\(FeCl_3\\)?",
+                options: ["Chlorek żelaza(II)", "Chlorek żelaza(III)", "Chloran żelaza", "Chloryn żelaza(III)"],
+                correct: 1,
+                explanation: "\\(FeCl_3\\) to chlorek żelaza(III). Trzy atomy chloru jednowartościowego łączą się z jednym atomem żelaza trójwartościowego."
+            },
+            {
+                q: "Która z poniższych soli jest trudno rozpuszczalna w wodzie?",
+                options: ["\\(NaCl\\) (chlorek sodu)", "\\(KNO_3\\) (azotan(V) potasu)", "\\(BaSO_4\\) (siarczan(VI) baru)", "\\(CaCl_2\\) (chlorek wapnia)"],
+                correct: 2,
+                explanation: "Siarczan(VI) baru (\\(BaSO_4\\)) jest praktycznie nierozpuszczalny w wodzie. Wykorzystuje się go m.in. w diagnostyce medycznej (kontrast rentgenowski)."
+            },
+            {
+                q: "Co powstaje w wyniku reakcji cynku z kwasem solnym?",
+                options: ["\\(ZnCl_2 + H_2\\uparrow\\)", "\\(ZnCl + H_2O\\)", "\\(Zn(OH)_2 + HCl\\)", "\\(ZnO + HCl\\)"],
+                correct: 0,
+                explanation: "Cynk reaguje z kwasem solnym: \\(Zn + 2HCl \\rightarrow ZnCl_2 + H_2\\uparrow\\). Powstaje sól (chlorek cynku) i wydziela się wodór."
+            },
+            {
+                q: "Jaką wartościowość ma reszta kwasowa siarczanu(VI)?",
+                options: ["I", "II", "III", "IV"],
+                correct: 1,
+                explanation: "Reszta kwasowa siarczanu(VI) to \\(SO_4\\). Pochodzi od kwasu \\(H_2SO_4\\), który ma dwa atomy wodoru, więc reszta jest dwuwartościowa."
+            },
+            {
+                q: "Jak nazywa się proces, w którym kwas reaguje z zasadą tworząc sól i wodę?",
+                options: ["Utlenianie", "Redukcja", "Zobojętnianie", "Elektroliza"],
+                correct: 2,
+                explanation: "Reakcja zobojętniania (neutralizacji) to reakcja kwasu z zasadą, w wyniku której powstaje sól i woda."
+            },
+            {
+                q: "Jaki jest wzór sumaryczny fosforanu(V) wapnia?",
+                options: ["\\(CaPO_4\\)", "\\(Ca_3(PO_4)_2\\)", "\\(Ca_2PO_4\\)", "\\(Ca(PO_4)_3\\)"],
+                correct: 1,
+                explanation: "Fosforan(V) wapnia ma wzór \\(Ca_3(PO_4)_2\\). Wapń jest dwuwartościowy, a reszta fosforanowa(V) \\(PO_4\\) jest trójwartościowa."
+            },
+            {
+                q: "Która sól jest głównym składnikiem kamienia nazębnego?",
+                options: ["Chlorek sodu", "Siarczan(VI) wapnia", "Fosforan(V) wapnia", "Węglan sodu"],
+                correct: 2,
+                explanation: "Kamień nazębny zbudowany jest głównie z fosforanu(V) wapnia \\(Ca_3(PO_4)_2\\), który odkłada się na powierzchni zębów."
+            },
+            {
+                q: "Wzór soli \\(Na_2SO_4\\) to:",
+                options: ["Siarczek sodu", "Siarczan(IV) sodu", "Siarczan(VI) sodu", "Siarczyn sodu"],
+                correct: 2,
+                explanation: "\\(Na_2SO_4\\) to siarczan(VI) sodu. Reszta kwasowa \\(SO_4\\) pochodzi od kwasu siarkowego(VI), w którym siarka ma wartościowość VI."
+            },
+            {
+                q: "Jaki kolor ma roztwór siarczanu(VI) miedzi(II)?",
+                options: ["Bezbarwny", "Niebieski", "Zielony", "Żółty"],
+                correct: 1,
+                explanation: "Roztwór wodny siarczanu(VI) miedzi(II) \\(CuSO_4\\) ma charakterystyczny niebieski kolor, pochodzący od jonów \\(Cu^{2+}\\)."
+            },
+            {
+                q: "Jak nazywa się sól o wzorze \\(MgSO_4\\)?",
+                options: ["Siarczan(VI) manganu", "Siarczek magnezu", "Siarczan(VI) magnezu", "Siarczan(IV) magnezu"],
+                correct: 2,
+                explanation: "\\(MgSO_4\\) to siarczan(VI) magnezu (sól gorzka/sól Epsom). Reszta kwasowa \\(SO_4\\) pochodzi od kwasu siarkowego(VI)."
+            },
+            {
+                q: "Co to jest sól kamienna?",
+                options: ["\\(KCl\\) – chlorek potasu", "\\(NaCl\\) – chlorek sodu", "\\(CaCl_2\\) – chlorek wapnia", "\\(MgCl_2\\) – chlorek magnezu"],
+                correct: 1,
+                explanation: "Sól kamienna to minerał składający się głównie z chlorku sodu (\\(NaCl\\)). Jest najważniejszym źródłem soli kuchennej."
+            },
+            {
+                q: "Jaki jest wzór sumaryczny węglanu sodu?",
+                options: ["\\(NaCO_3\\)", "\\(Na_2CO_3\\)", "\\(Na_2C\\)", "\\(NaHCO_3\\)"],
+                correct: 1,
+                explanation: "Węglan sodu (soda kalcynowana) ma wzór \\(Na_2CO_3\\). Sód jest jednowartościowy, a reszta węglanowa \\(CO_3\\) jest dwuwartościowa, stąd potrzeba dwóch atomów sodu."
+            },
+            {
+                q: "Która z poniższych soli jest stosowana jako nawóz sztuczny?",
+                options: ["\\(NaCl\\) – chlorek sodu", "\\(BaSO_4\\) – siarczan(VI) baru", "\\(KNO_3\\) – azotan(V) potasu", "\\(PbS\\) – siarczek ołowiu(II)"],
+                correct: 2,
+                explanation: "Azotan(V) potasu (\\(KNO_3\\), saletra potasowa) jest powszechnie stosowany jako nawóz sztuczny, ponieważ dostarcza roślinom potasu i azotu."
+            }
+        ];
+
+        // Mechanizm include frontend-only
+        fetch('../templates/quiz.html')
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                // Dołącz style
+                doc.querySelectorAll('style').forEach(s => document.head.appendChild(s));
+                
+                // Dołącz strukture DOM (DOMParser umieszcza divy z top-level wewnątrz <body>)
+                const container = document.getElementById('quiz-container');
+                container.innerHTML = doc.body.innerHTML;
+                
+                // Wstrzyknij i wykonaj JS (innerHTML ignoruje tagi <script>)
+                doc.querySelectorAll('script').forEach(oldScript => {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = oldScript.textContent;
+                    document.body.appendChild(newScript);
+                });
+            })
+            .catch(err => {
+                document.getElementById('quiz-container').innerHTML = `<p class="text-danger text-center">Błąd ładowania quizu. Upewnij się, że używasz serwera HTTP.</p>`;
+            });
+    </script>
+</body>
+</html>
