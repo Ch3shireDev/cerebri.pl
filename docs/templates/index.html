@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script>
+        (function () {
+            const media = window.matchMedia('(prefers-color-scheme: dark)');
+            const applyTheme = (isDark) => {
+                document.documentElement.setAttribute('data-bs-theme', isDark ? 'dark' : 'light');
+                document.documentElement.setAttribute('data-theme-mode', isDark ? 'dark' : 'light');
+            };
+            applyTheme(media.matches);
+            media.addEventListener('change', (e) => applyTheme(e.matches));
+        })();
+    </script>
+    <title>Cerebri.pl</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-primary: #f4fbf7;
+            --bg-secondary: #ffffff;
+            --text-primary: #2c3e50;
+            --text-secondary: #666666;
+            --accent-color: #10ac84;
+            --accent-hover: #0d8a6a;
+            --card-border: rgba(0,0,0,0.1);
+        }
+
+        [data-bs-theme="dark"] {
+            --bg-primary: #111814;
+            --bg-secondary: #1e293b;
+            --text-primary: #e2e8f0;
+            --text-secondary: #b0b0b0;
+            --accent-color: #10ac84;
+            --accent-hover: #0d8a6a;
+            --card-border: rgba(255,255,255,0.1);
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            padding: 15px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .topic-card {
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--accent-color);
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: transform 0.2s ease;
+        }
+
+        .topic-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .topic-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 20px;
+            font-weight: 700;
+            padding: 6px 16px;
+            border: none;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        .topic-btn:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .desc-text {
+            font-size: 0.8rem;
+            line-height: 1.3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mx-auto" style="max-width: 600px; padding-bottom: 40px;">
+        <div class="text-center py-4 mb-3">
+            <h2 id="module-title" class="fw-bold mb-2" style="color: var(--accent-color);"></h2>
+            <p id="module-description" class="text-body-secondary px-3" style="font-size: 0.95rem; line-height: 1.5;"></p>
+        </div>
+
+        <div id="topics-container" class="d-flex flex-column gap-2"></div>
+    </div>
+
+    <script>
+        function setThemeVariables(themeSettings) {
+            if (!themeSettings) {
+                return;
+            }
+
+            const mode = document.documentElement.getAttribute('data-theme-mode') || 'light';
+            const palette = mode === 'dark' ? themeSettings.dark : themeSettings.light;
+
+            if (!palette) {
+                return;
+            }
+
+            Object.entries(palette).forEach(([key, value]) => {
+                document.documentElement.style.setProperty(`--${key}`, value);
+            });
+        }
+
+        function navigateTo(route, src) {
+            const isEmbedded = window.parent && window.parent !== window;
+            const parentFrame = isEmbedded ? window.parent.document.getElementById('content-frame') : null;
+
+            if (parentFrame) {
+                window.parent.history.pushState({ route }, '', `#!/${route}`);
+                parentFrame.src = src;
+                return;
+            }
+
+            window.location.href = `../${src}`;
+        }
+
+        function renderTopics(topics) {
+            const container = document.getElementById('topics-container');
+            container.innerHTML = '';
+
+            topics.forEach((topic) => {
+                const card = document.createElement('div');
+                card.className = 'card topic-card';
+
+                if (topic.disabled) {
+                    card.style.opacity = '0.6';
+                }
+
+                const cardBody = document.createElement('div');
+                cardBody.className = 'card-body p-3 d-flex justify-content-between align-items-center gap-3';
+
+                const contentWrapper = document.createElement('div');
+
+                const heading = document.createElement('h6');
+                heading.className = 'fw-bold mb-1';
+                if (topic.disabled) {
+                    heading.classList.add('text-body-secondary');
+                }
+                heading.textContent = topic.title;
+
+                const description = document.createElement('p');
+                description.className = 'text-body-secondary desc-text mb-0';
+                description.textContent = topic.description;
+
+                const button = document.createElement('button');
+                button.className = 'topic-btn flex-shrink-0';
+                button.textContent = topic.buttonLabel || (topic.disabled ? 'Wkrótce' : 'Otwórz');
+
+                if (topic.disabled) {
+                    button.disabled = true;
+                    button.style.cursor = 'not-allowed';
+                } else {
+                    button.addEventListener('click', () => navigateTo(topic.route, topic.src));
+                }
+
+                contentWrapper.appendChild(heading);
+                contentWrapper.appendChild(description);
+                cardBody.appendChild(contentWrapper);
+                cardBody.appendChild(button);
+                card.appendChild(cardBody);
+                container.appendChild(card);
+            });
+        }
+
+        async function initModulePage() {
+            const params = new URLSearchParams(window.location.search);
+            const moduleName = params.get('module');
+
+            if (!moduleName) {
+                document.getElementById('module-title').textContent = 'Brak modułu';
+                document.getElementById('module-description').textContent = 'Nie podano parametru "module" w adresie URL.';
+                return;
+            }
+
+            const script = document.createElement('script');
+            script.src = `../${moduleName}/index.js`;
+
+            await new Promise((resolve, reject) => {
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            }).catch(() => {
+                throw new Error(`Nie udało się wczytać danych modułu: ${moduleName}`);
+            });
+
+            if (!window.MODULE_INDEX_DATA) {
+                throw new Error(`Brak danych MODULE_INDEX_DATA dla modułu: ${moduleName}`);
+            }
+
+            const data = window.MODULE_INDEX_DATA;
+
+            document.title = data.pageTitle || `${data.moduleTitle} - Cerebri.pl`;
+            document.getElementById('module-title').textContent = data.moduleTitle;
+            document.getElementById('module-description').textContent = data.description;
+
+            setThemeVariables(data.theme);
+            renderTopics(data.topics || []);
+
+            const media = window.matchMedia('(prefers-color-scheme: dark)');
+            media.addEventListener('change', () => setThemeVariables(data.theme));
+        }
+
+        initModulePage().catch((error) => {
+            document.getElementById('module-title').textContent = 'Błąd ładowania';
+            document.getElementById('module-description').textContent = error.message;
+            document.getElementById('topics-container').innerHTML = '';
+        });
+    </script>
+</body>
+</html>

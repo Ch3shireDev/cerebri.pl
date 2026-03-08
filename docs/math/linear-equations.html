@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        (function () {
+            const media = window.matchMedia('(prefers-color-scheme: dark)');
+            const applyTheme = (isDark) => document.documentElement.setAttribute('data-bs-theme', isDark ? 'dark' : 'light');
+            applyTheme(media.matches);
+            media.addEventListener('change', (e) => applyTheme(e.matches));
+        })();
+    </script>
+    <title>Matematyka - Cerebri.pl</title>
+    
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-primary: #fdf5f6;
+            --bg-secondary: #ffffff;
+            --text-primary: #2c3e50;
+            --text-secondary: #666666;
+            --accent-color: #e84393;
+            --accent-hover: #d81b60;
+            --form-border: #e2e8f0;
+            --success-color: #27ae60;
+            --error-color: #c0392b;
+            --fire-color: #d35400;
+            --explanation-border: #e84393;
+        }
+
+        [data-bs-theme="dark"] {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --accent-color: #cc5555;
+            --accent-hover: #b34444;
+            --form-border: #444444;
+            --success-color: #4a9f6e;
+            --error-color: #d63031;
+            --fire-color: #e67e22;
+            --explanation-border: #cc5555;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            padding: 20px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        /* Stylizacja karty z zadaniem */
+        .quiz-card {
+            border: 1px solid var(--form-border);
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--accent-color);
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: transform 0.2s ease, background-color 0.2s, color 0.3s ease;
+        }
+        
+        .quiz-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        
+        .btn-start {
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 20px;
+            font-weight: 700;
+            padding: 6px 16px;
+            border: none;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            transition: background-color 0.3s ease;
+        }
+        
+        .btn-start:hover {
+            background-color: var(--accent-hover);
+            color: white;
+        }
+        
+        .math-title {
+            color: var(--accent-color);
+            font-weight: 800;
+        }
+
+        .desc-text {
+            font-size: 0.8rem;
+            line-height: 1.3;
+        }
+        
+        /* Gamifikacja i UI Quizu */
+        .option-btn {
+            width: 100%;
+            text-align: left;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border: 2px solid var(--form-border);
+            border-radius: 12px;
+            background: var(--bg-secondary);
+            font-weight: 700;
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--accent-color);
+            background: var(--bg-primary);
+            transform: translateX(5px);
+        }
+        .option-btn.correct {
+            background: var(--success-color);
+            border-color: var(--success-color);
+            color: white;
+        }
+        .option-btn.incorrect {
+            background: var(--error-color);
+            border-color: var(--error-color);
+            color: white;
+        }
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.9;
+        }
+        .stats-bar {
+            background: var(--bg-secondary);
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .streak-fire {
+            color: var(--fire-color);
+            font-weight: bold;
+        }
+        .combo-multiplier {
+            font-size: 0.9rem;
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+        .explanation-box {
+            display: none;
+            background: var(--bg-secondary);
+            border-left: 5px solid var(--explanation-border);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-align: left;
+            animation: fadeIn 0.4s;
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container mx-auto" id="main-content" style="max-width: 600px; padding-bottom: 40px;">
+        
+        <!-- Sekcja powitalna -->
+        <div class="text-center py-4 mb-3">
+            <h2 class="math-title fw-bold mb-2">Matematyka</h2>
+            <p class="text-body-secondary px-3" style="font-size: 0.95rem; line-height: 1.5;">
+                Zbiór testów sprawdzających wiedzę z matematyki. Rozwiązuj równania, trenuj logiczne myślenie i utrwalaj wzory. Wybierz dział, aby rozpocząć.
+            </p>
+        </div>
+
+        <!-- Lista dostępnych zestawów -->
+        <div class="d-flex flex-column gap-2">
+            <div class="card quiz-card">
+                <div class="card-body p-3 d-flex justify-content-between align-items-center gap-3">
+                    <div>
+                        <h6 class="fw-bold mb-1">Trening: Równania liniowe</h6>
+                        <p class="text-body-secondary desc-text mb-0">
+                            Nieskończony automat generujący równania z jedną niewiadomą (ax + b = c). Trenuj bez końca, utrzymuj serię i podbijaj mnożnik punktowy.
+                        </p>
+                    </div>
+                    <button id="start-quiz-btn" class="btn-start flex-shrink-0">Otwórz</button>
+                </div>
+            </div>
+            
+            <!-- Miejsce na kolejne zestawy w przyszłości -->
+            <div class="card quiz-card" style="opacity: 0.6;">
+                <div class="card-body p-3 d-flex justify-content-between align-items-center gap-3">
+                    <div>
+                        <h6 class="fw-bold mb-1 text-body-secondary">Ułamki i Procenty</h6>
+                        <p class="text-body-secondary desc-text mb-0">Obliczanie ułamków zwykłych, dziesiętnych oraz procentów w zadaniach praktycznych.</p>
+                    </div>
+                    <button class="btn-start flex-shrink-0" disabled style="cursor: not-allowed;">Wkrótce</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Skrypt obsługujący kliknięcie przycisku -->
+    <script>
+        let score = 0;
+        let streak = 0;
+        let maxStreak = 0;
+        let solvedCount = 0;
+        let currentProblem = null;
+
+        document.getElementById('start-quiz-btn').addEventListener('click', startEndlessMode);
+
+        function generateEquation() {
+            // Generuje równanie ax ± b = c
+            const a = Math.floor(Math.random() * 8) + 2; 
+            let x = Math.floor(Math.random() * 21) - 10; 
+            if (x === 0) x = 1; // Unikamy x=0 dla lepszego treningu
+            const b = Math.floor(Math.random() * 20) + 1; 
+            const isPlus = Math.random() > 0.5;
+
+            let c = isPlus ? (a * x + b) : (a * x - b);
+            const sign = isPlus ? '+' : '-';
+            const questionText = `${a}x ${sign} ${b} = ${c}`;
+
+            // Unikalne błędne odpowiedzi
+            let options = new Set([x]);
+            while(options.size < 4) {
+                let fakeX = x + (Math.floor(Math.random() * 15) - 7);
+                if(fakeX !== x) options.add(fakeX);
+            }
+            let shuffledOptions = Array.from(options).sort(() => Math.random() - 0.5);
+            let correctIndex = shuffledOptions.indexOf(x);
+
+            // Tłumaczenie
+            let step1 = isPlus ? `Odejmujemy ${b} od obu stron:` : `Dodajemy ${b} do obu stron:`;
+            let step1Result = isPlus ? c - b : c + b;
+            let explanation = `
+                <strong>Krok 1:</strong> ${step1}<br>
+                <span class="text-body-secondary font-monospace">${a}x = ${c} ${isPlus ? '-' : '+'} ${b}</span><br>
+                <span class="text-body-secondary font-monospace">${a}x = ${step1Result}</span><br><br>
+                <strong>Krok 2:</strong> Dzielimy obie strony przez ${a}:<br>
+                <span class="text-body-secondary font-monospace">x = ${step1Result} / ${a}</span><br>
+                <strong class="text-success fs-5">x = ${x}</strong>
+            `;
+
+            return { questionText, options: shuffledOptions, answerIndex: correctIndex, explanation, x };
+        }
+
+        function startEndlessMode() {
+            score = 0;
+            streak = 0;
+            maxStreak = 0;
+            solvedCount = 0;
+            renderNextEquation();
+        }
+
+        function renderNextEquation() {
+            currentProblem = generateEquation();
+            const content = document.getElementById('main-content');
+            
+            let multiplier = 1 + (streak * 0.5);
+            let multiplierText = streak > 1 ? `<span class="combo-multiplier">(Mnożnik x${multiplier})</span>` : "";
+            let level = Math.floor(solvedCount / 5) + 1;
+
+            content.innerHTML = `
+                <div class="stats-bar d-flex justify-content-between align-items-center text-start mb-4">
+                    <div>
+                        <span class="text-body-secondary">Punkty:</span> <strong class="fs-5" style="color: #e84393;">${score}</strong> 
+                        ${multiplierText}
+                    </div>
+                    <div class="text-center">
+                        <span class="text-body-secondary small fw-bold">Poziom ${level}</span><br>
+                        <span class="text-body-secondary small">Rozwiązane: ${solvedCount}</span>
+                    </div>
+                    <div class="${streak >= 3 ? 'streak-fire' : 'text-body-secondary'}">
+                        Seria: <strong>${streak}</strong>
+                    </div>
+                </div>
+                
+                <div class="card quiz-card text-start mb-3">
+                    <div class="card-body p-4 p-md-5 text-center">
+                        <h5 class="text-body-secondary mb-3">Rozwiąż równanie:</h5>
+                        <h2 class="fw-bold mb-4 font-monospace" style="font-size: 2.5rem;">${currentProblem.questionText}</h2>
+                        <div class="options-container text-start" id="options-container">
+                            ${currentProblem.options.map((opt, index) => `
+                                <button class="option-btn" onclick="checkMathAnswer(${index}, this)">
+                                    <span class="fw-bold me-2 text-body-secondary">${String.fromCharCode(65 + index)}.</span> x = ${opt}
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+
+                <div id="explanation-container" class="explanation-box"></div>
+                <div id="action-area" class="text-center mt-4"></div>
+            `;
+        }
+
+        window.checkMathAnswer = function(selectedIndex, btnElement) {
+            const allBtns = document.querySelectorAll('.option-btn');
+            const explanationContainer = document.getElementById('explanation-container');
+            const actionArea = document.getElementById('action-area');
+            
+            allBtns.forEach(btn => btn.disabled = true);
+
+            let isCorrect = selectedIndex === currentProblem.answerIndex;
+            let earnedPoints = 0;
+
+            if (isCorrect) {
+                btnElement.classList.add('correct');
+                streak++;
+                solvedCount++;
+                if (streak > maxStreak) maxStreak = streak;
+                
+                let multiplier = 1 + ((streak - 1) * 0.5);
+                earnedPoints = Math.round(10 * multiplier);
+                score += earnedPoints;
+            } else {
+                btnElement.classList.add('incorrect');
+                allBtns[currentProblem.answerIndex].classList.add('correct');
+                streak = 0;
+            }
+
+            let feedbackHeader = isCorrect 
+                ? `<h4 class="text-success fw-bold mb-3">Prawidłowo! (+${earnedPoints} pkt)</h4>` 
+                : `<h4 class="text-danger fw-bold mb-3">Błąd! Zobacz poprawne rozwiązanie:</h4>`;
+
+            explanationContainer.innerHTML = `
+                ${feedbackHeader}
+                <p class="mb-0 text-body-secondary" style="font-size: 1.1rem; line-height: 1.6;">${currentProblem.explanation}</p>
+            `;
+            explanationContainer.style.display = 'block';
+
+            actionArea.innerHTML = `
+                <button class="btn btn-start px-5 py-2 fs-5" onclick="renderNextEquation()">Następne równanie</button>
+                <button class="btn btn-outline-secondary px-4 py-2 mt-2 mt-md-0 ms-md-2" onclick="location.reload()">Zakończ</button>
+            `;
+        };
+    </script>
+
+</body>
+</html>
