@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Egzamin ósmoklasisty - matematyka - grudzień 2017</title>
+  <style>
+    :root{
+      --bg:#0b1220; --panel:#111827; --panel2:#1f2937; --page:#f8fafc; --ink:#111827;
+      --muted:#64748b; --line:#cbd5e1; --accent:#2563eb; --ok:#166534; --okbg:#dcfce7;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Georgia,"Times New Roman",serif;background:linear-gradient(180deg,#020617,#0f172a 35%,#111827);color:#e5e7eb}
+    .app{display:grid;grid-template-columns:300px 1fr;min-height:100vh}
+    aside{position:sticky;top:0;height:100vh;overflow:auto;background:rgba(2,6,23,.92);border-right:1px solid #334155;padding:20px}
+    main{padding:24px;max-width:1280px;width:100%;margin:0 auto}
+    h1,h2,h3{margin:0 0 10px}
+    .lead,.muted{color:#94a3b8}
+    .nav-title{font:700 12px/1.2 Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#7dd3fc;margin:18px 0 10px}
+    .nav-list{display:grid;gap:8px}
+    .nav-list a{display:block;color:#e5e7eb;text-decoration:none;padding:10px 12px;background:#111827;border:1px solid transparent;border-radius:12px;font:600 14px/1.3 Arial,sans-serif}
+    .nav-list a:hover,.nav-list a.active{background:#0f172a;border-color:#38bdf8}
+    .hero,.summary,.page-wrap{background:rgba(15,23,42,.7);border:1px solid #334155;border-radius:20px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+    .hero{margin-bottom:18px}
+    .summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:14px}
+    .stat{background:#0f172a;border:1px solid #334155;border-radius:14px;padding:14px}
+    .stat b{display:block;font:800 24px/1.1 Arial,sans-serif;color:#fff}
+    .page{display:none}
+    .page.active{display:block}
+    .page-wrap{padding:18px}
+    .paper{background:var(--page);color:var(--ink);border-radius:14px;padding:28px 32px;min-height:78vh}
+    .paper + .paper{margin-top:18px}
+    .paper h2{font-size:30px}
+    .sectionbar{background:#d4d4d8;font-weight:700;padding:6px 10px;margin:0 0 16px;font-size:22px}
+    .task{border-top:1px solid #e2e8f0;padding-top:18px;margin-top:18px}
+    .task:first-child{border-top:0;padding-top:0;margin-top:0}
+    .task-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px}
+    .task-title{font-weight:700;font-size:22px}
+    .points{font-size:18px}
+    .answer-badge{font:700 13px/1.2 Arial,sans-serif;background:var(--okbg);color:var(--ok);border:1px solid #86efac;padding:8px 10px;border-radius:999px;white-space:nowrap}
+    p{font-size:18px;line-height:1.35;margin:10px 0}
+    .question{font-weight:700}
+    .options,.steps{margin:10px 0 0 22px;font-size:18px;line-height:1.45}
+    .steps li{margin:4px 0}
+    .pf-table,.data-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:17px}
+    .pf-table td,.pf-table th,.data-table td,.data-table th{border:1px solid #64748b;padding:10px;vertical-align:middle}
+    .pf-table th,.data-table th{background:#f1f5f9}
+    .pf-cell{width:56px;text-align:center;font-weight:700}
+    .formula{display:block;text-align:center;font-style:italic;font-size:28px;margin:14px 0}
+    .diagram{margin:14px auto;display:block;max-width:100%}
+    .diagram-wrap{display:flex;justify-content:center}
+    .grid-note{font-size:16px;color:#475569}
+    .answer-line{margin-top:10px;font-size:20px;font-weight:700}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+    .page-note{font:600 13px/1.2 Arial,sans-serif;color:#64748b;margin-bottom:10px}
+    .quick-answer{margin-top:10px;padding:12px 14px;border-left:4px solid #22c55e;background:#f0fdf4}
+    .small{font-size:16px}
+    @media (max-width:980px){
+      .app{grid-template-columns:1fr}
+      aside{position:static;height:auto;border-right:0;border-bottom:1px solid #334155}
+      main{padding:14px}
+      .paper{padding:18px}
+      .task-head{flex-direction:column}
+      .two-col{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <h2>Egzamin 2017</h2>
+    <p class="lead">Pełne zadania, odpowiedzi i przepisane diagramy w jednym pliku HTML.</p>
+
+    <div class="nav-title">Strony</div>
+    <div class="nav-list">
+      <a href="#start" data-page="start" class="active">Start</a>
+      <a href="#p1" data-page="p1">Strona 1: zad. 1-4</a>
+      <a href="#p2" data-page="p2">Strona 2: zad. 5-9</a>
+      <a href="#p3" data-page="p3">Strona 3: zad. 10-14</a>
+      <a href="#p4" data-page="p4">Strona 4: zad. 15-18</a>
+      <a href="#p5" data-page="p5">Strona 5: zad. 19-22</a>
+      <a href="#answers" data-page="answers">Skrót odpowiedzi</a>
+    </div>
+  </aside>
+
+  <main>
+    <section id="start" class="page active">
+      <div class="hero">
+        <h1>Egzamin ósmoklasisty - matematyka - grudzień 2017</h1>
+        <p class="lead">Wersja internetowa możliwie bliska oryginałowi: pełna treść zadań, odpowiedzi, krótkie rozwiązania oraz diagramy przepisane do HTML/SVG.</p>
+        <div class="summary-grid">
+          <div class="stat"><b>22</b>zadań</div>
+          <div class="stat"><b>16</b>zadań zamkniętych</div>
+          <div class="stat"><b>6</b>zadań otwartych</div>
+          <div class="stat"><b>1</b>plik HTML</div>
+        </div>
+      </div>
+      <div class="summary">
+        <h3>Układ</h3>
+        <p>Każda zakładka odpowiada jednej grupie zadań, jakby to były kolejne podstrony. Diagramy zostały odtworzone w SVG albo w HTML, więc nie są wklejonymi obrazkami z PDF-a.</p>
+      </div>
+    </section>
+
+    <section id="p1" class="page">
+      <div class="page-wrap"><div class="paper">
+        <div class="page-note">Podstrona 1</div>
+
+        <article class="task">
+          <div class="task-head">
+            <div class="task-title">Zadanie 1. <span class="points">(0-1)</span></div>
+            <div class="answer-badge">Odpowiedź: A</div>
+          </div>
+          <p>Z okazji Światowego Dnia Książki uczniowie klasy VII zorganizowali quiz wiedzy o postaciach literackich. Quiz można było zakończyć na jednym z poziomów, które zaliczało się kolejno od I do VI. Na diagramie przedstawiono, ile procent uczniów zakończyło quiz na danym poziomie. Na poziomach niższych niż Asia quiz zakończyło dokładnie 32% uczniów biorących w nim udział.</p>
+          <div class="diagram-wrap">
+            <svg class="diagram" viewBox="0 0 560 360" width="560" height="360" aria-label="Wyniki quizu">
+              <text x="280" y="30" text-anchor="middle" font-size="28" font-weight="700">Wyniki quizu (w %)</text>
+              <g transform="translate(280,190)">
+                <path d="M0,0 L18,-128 A130,130 0 0 1 104,-78 Z" fill="#ddd" stroke="#333"/>
+                <path d="M0,0 L104,-78 A130,130 0 0 1 125,16 Z" fill="#cbd5e1" stroke="#333"/>
+                <path d="M0,0 L125,16 A130,130 0 0 1 47,121 Z" fill="#e5e7eb" stroke="#333"/>
+                <path d="M0,0 L47,121 A130,130 0 0 1 -113,64 Z" fill="#9ca3af" stroke="#333"/>
+                <path d="M0,0 L-113,64 A130,130 0 0 1 -37,-125 Z" fill="#f8fafc" stroke="#333"/>
+                <path d="M0,0 L-37,-125 A130,130 0 0 1 18,-128 Z" fill="#94a3b8" stroke="#333"/>
+              </g>
+              <g font-size="18">
+                <rect x="298" y="60" width="110" height="44" fill="white" stroke="#999"/><text x="353" y="80" text-anchor="middle">Poziom I</text><text x="353" y="99" text-anchor="middle">4%</text>
+                <rect x="424" y="104" width="110" height="44" fill="white" stroke="#999"/><text x="479" y="124" text-anchor="middle">Poziom II</text><text x="479" y="143" text-anchor="middle">12%</text>
+                <rect x="446" y="202" width="110" height="44" fill="white" stroke="#999"/><text x="501" y="222" text-anchor="middle">Poziom III</text><text x="501" y="241" text-anchor="middle">16%</text>
+                <rect x="308" y="314" width="120" height="44" fill="white" stroke="#999"/><text x="368" y="334" text-anchor="middle">Poziom IV</text><text x="368" y="353" text-anchor="middle">28%</text>
+                <rect x="10" y="196" width="120" height="44" fill="white" stroke="#999"/><text x="70" y="216" text-anchor="middle">Poziom V</text><text x="70" y="235" text-anchor="middle">32%</text>
+                <rect x="128" y="60" width="110" height="44" fill="white" stroke="#999"/><text x="183" y="80" text-anchor="middle">Poziom VI</text><text x="183" y="99" text-anchor="middle">8%</text>
+              </g>
+            </svg>
+          </div>
+          <p class="question">Ile procent uczniów zakończyło ten quiz na poziomach wyższych niż Asia? Wybierz właściwą odpowiedź spośród podanych.</p>
+          <ol class="options" type="A">
+            <li>40%</li><li>32%</li><li>28%</li><li>8%</li>
+          </ol>
+          <div class="quick-answer">Na poziomach niższych niż Asia jest 32%, czyli 4% + 12% + 16%. To znaczy, że Asia była na poziomie IV? Nie. Niższe od V dają 32%, więc Asia była na poziomie V, a wyżej jest tylko poziom VI, czyli 8%.</div>
+        </article>
+
+        <article class="task">
+          <div class="task-head">
+            <div class="task-title">Zadanie 2. <span class="points">(0-1)</span></div>
+            <div class="answer-badge">Odpowiedź: A, D</div>
+          </div>
+          <p>Uzupełnij zdania. Wybierz odpowiedź spośród oznaczonych literami A i B oraz odpowiedź spośród oznaczonych literami C i D.</p>
+          <p>Wartość wyrażenia 4,5 : 0,75 jest równa wartości wyrażenia <b>A / B</b>.</p>
+          <ol class="options" type="A">
+            <li><span style="display:inline-block;vertical-align:middle"><sup>450</sup>/<sub>75</sub></span></li>
+            <li><span style="display:inline-block;vertical-align:middle"><sup>45</sup>/<sub>75</sub></span></li>
+          </ol>
+          <p>Wartość wyrażenia 1,25 · 0,4 jest równa wartości wyrażenia <b>C / D</b>.</p>
+          <ol class="options" type="A" start="3">
+            <li><span style="display:inline-block;vertical-align:middle">125·4/100</span></li>
+            <li><span style="display:inline-block;vertical-align:middle">125·4/1000</span></li>
+          </ol>
+          <div class="quick-answer">4,5 : 0,75 = 450/75, a 1,25 · 0,4 = 0,5 = 125·4/1000.</div>
+        </article>
+
+        <article class="task">
+          <div class="task-head">
+            <div class="task-title">Zadanie 3. <span class="points">(0-1)</span></div>
+            <div class="answer-badge">Odpowiedź: P, P</div>
+          </div>
+          <p>Tata Bartka przed wyjazdem z Krakowa do Warszawy analizuje niektóre bezpośrednie połączenia między tymi miastami. Do wyboru ma cztery połączenia przedstawione w poniższej tabeli.</p>
+          <table class="data-table">
+            <tr>
+              <th>Godzina wyjazdu z Krakowa</th>
+              <th>Godzina przyjazdu do Warszawy</th>
+              <th>Środek transportu</th>
+              <th>Długość trasy</th>
+              <th>Cena biletu</th>
+            </tr>
+            <tr><td>1:35</td><td>6:30</td><td>autobus</td><td>298 km</td><td>27 zł</td></tr>
+            <tr><td>2:32</td><td>5:12</td><td>pociąg</td><td>293 km</td><td>60 zł</td></tr>
+            <tr><td>5:00</td><td>8:48</td><td>pociąg</td><td>364 km</td><td>65 zł</td></tr>
+            <tr><td>5:53</td><td>8:10</td><td>pociąg</td><td>293 km</td><td>49 zł</td></tr>
+          </table>
+          <p class="question">Oceń prawdziwość podanych zdań. Wybierz P, jeśli zdanie jest prawdziwe, albo F, jeśli jest fałszywe.</p>
+          <table class="pf-table">
+            <tr><td>Za przejazd w najkrótszym czasie należy zapłacić 49 zł.</td><td class="pf-cell">P</td><td class="pf-cell">F</td></tr>
+            <tr><td>Zgodnie z rozkładem jazdy tylko przejazd autobusem trwa dłużej niż 4 godziny.</td><td class="pf-cell">P</td><td class="pf-cell">F</td></tr>
+          </table>
+          <div class="quick-answer">Czasy przejazdu: 4:55, 2:40, 3:48, 2:17. Najkrótszy to 2:17 za 49 zł. Tylko autobus jedzie ponad 4 godziny.</div>
+        </article>
+
+        <article class="task">
+          <div class="task-head">
+            <div class="task-title">Zadanie 4. <span class="points">(0-1)</span></div>
+            <div class="answer-badge">Odpowiedź: C</div>
+          </div>
+          <p>Prosta EF dzieli prostokąt ABCD na kwadrat EFCD o obwodzie 32 cm i prostokąt ABFE o obwodzie o 6 cm mniejszym od obwodu kwadratu EFCD.</p>
+          <div class="diagram-wrap">
+            <svg class="diagram" viewBox="0 0 260 290" width="260" height="290" aria-label="Prostokąt i odcinek EF">
+              <rect x="70" y="30" width="120" height="210" fill="none" stroke="#222" stroke-width="2"/>
+              <line x1="40" y1="135" x2="220" y2="135" stroke="#222" stroke-width="2"/>
+              <text x="60" y="262" font-size="24">A</text>
+              <text x="182" y="262" font-size="24">B</text>
+              <text x="190" y="25" font-size="24">C</text>
+              <text x="58" y="25" font-size="24">D</text>
+              <text x="53" y="154" font-size="24">E</text>
+              <text x="196" y="154" font-size="24">F</text>
+            </svg>
+          </div>
+          <p class="question">Dokończ zdanie. Wybierz właściwą odpowiedź spośród podanych.</p>
+          <p>Długość odcinka AE jest równa</p>
+          <ol class="options" type="A">
+            <li>2 cm</li><li>4 cm</li><li>5 cm</li><li>8 cm</li>
+          </ol>
+          <div class="quick-answer">Kwadrat ma bok 8 cm. Obwód prostokąta ABFE to 26 cm, więc 2(8 + AE) = 26. Stąd AE = 5 cm.</div>
+        </article>
+      </div></div>
+    </section>
+
+    <section id="p2" class="page">
+      <div class="page-wrap"><div class="paper">
+        <div class="page-note">Podstrona 2</div>
+
+        <article class="task">
+          <div class="task-head"><div class="task-title">Zadanie 5. <span class="points">(0-1)</span></div><div class="answer-badge">Odpowiedź: P, P</div></div>
+          <p>Narysowany kwadrat należy wypełnić tak, aby iloczyny liczb w każdym wierszu, każdej kolumnie i na obu przekątnych kwadratu były takie same.</p>
+          <div class="diagram-wrap">
+            <svg class="diagram" viewBox="0 0 260 210" width="260" height="210" aria-label="Kwadrat z potęgami">
+              <rect x="20" y="20" width="150" height="150" fill="none" stroke="#222"/>
+              <line x1="70" y1="20" x2="70" y2="170" stroke="#222"/><line x1="120" y1="20" x2="120" y2="170" stroke="#222"/>
+              <line x1="20" y1="70" x2="170" y2="70" stroke="#222"/><line x1="20" y1="120" x2="170" y2="120" stroke="#222"/>
+              <rect x="70" y="120" width="50" height="50" fill="#bfbfbf" stroke="#222"/>
+              <text x="35" y="52" font-size="28">5<tspan dy="-10" font-size="16">6</tspan></text>
+              <text x="87" y="52" font-size="28">5</text>
+              <text x="132" y="52" font-size="28">5<tspan dy="-10" font-size="16">8</tspan></text>
+              <text x="35" y="102" font-size="28">5<tspan dy="-10" font-size="16">7</tspan></text>
+              <text x="84" y="102" font-size="28">5<tspan dy="-10" font-size="16">5</tspan></text>
+              <text x="35" y="152" font-size="28">5<tspan dy="-10" font-size="16">2</tspan></text>
+            </svg>
+          </div>
+          <p class="question">Oceń prawdziwość podanych zdań. Wybierz P, jeśli zdanie jest prawdziwe, albo F, jeśli jest fałszywe.</p>
+          <table class="pf-table">
+            <tr><td>Iloczyn liczb na przekątnej kwadratu jest równy 5<sup>15</sup>.</td><td class="pf-cell">P</td><td class="pf-cell">F</td></tr>
+            <tr><td>W zacieniowane pole kwadratu należy wpisać liczbę 5<sup>9</sup>.</td><td class="pf-cell">P</td><td class="pf-cell">F</td></tr>
+          </table>
+          <div class="quick-answer">Iloczyn w pierwszej kolumnie daje 5^(6+7+2) = 5^15, więc taki sam musi być wszędzie. Ze środkowej kolumny 5·5^5·x = 5^15, więc x = 5^9.</div>
+        </article>
+
+        <article class="task">
+          <div class="task-head"><div class="task-title">Zadanie 6. <span class="points">(0-1)</span></div><div class="answer-badge">Odpowiedź: B</div></div>
+          <p>Jacek i Ola testują swoje elektryczne deskorolki. W tym celu zmierzyli czasy przejazdu na trasie 400 m. Ola pokonała tę trasę w czasie 160 s, a Jacek w czasie 100 s.</p>
+          <p class="question">Dokończ zdanie. Wybierz właściwą odpowiedź spośród podanych.</p>
+          <p>Różnica średnich prędkości uzyskanych przez Jacka i przez Olę jest równa</p>
+          <ol class="options" type="A"><li>1,5 km/h</li><li>5,4 km/h</li><li>9 km/h</li><li>14,4 km/h</li></ol>
+          <div class="quick-answer">Ola: 400/160 = 2,5 m/s = 9 km/h. Jacek: 400/100 = 4 m/s = 14,4 km/h. Różnica to 5,4 km/h.</div>
+        </article>
+
+        <article class="task">
+          <div class="task-head"><div class="task-title">Zadanie 7. <span class="points">(0-1)</span></div><div class="answer-badge">Odpowiedź: P, F</div></div>
+          <p class="question">Oceń prawdziwość podanych zdań. Wybierz P, jeśli zdanie jest prawdziwe, albo F, jeśli jest fałszywe.</p>
+          <table class="pf-table">
+            <tr><td>W pięciu rzutach standardową sześcienną kostką do gry, jeżeli wynik każdego rzutu będzie inny, można otrzymać łącznie dokładnie 20 oczek.</td><td class="pf-cell">P</td><td class="pf-cell">F</td></tr>
+            <tr><td>W 16 rzutach standardową sześcienną kostką do gry można otrzymać łącznie ponad 100 oczek.</td><td class="pf-cell">P</td><td class="pf-cell">F</td></tr>
+          </table>
+          <div class="quick-answer">Pięć różnych wyników może być 2+3+4+5+6 = 20. W 16 rzutach maksimum to 16·6 = 96, więc nie ponad 100.</div>
+        </article>
+
+        <article class="task">
+          <div class="task-head"><div class="task-title">Informacje do zadań 8. i 9.</div></div>
+          <p>Punkt kratowy to miejsce przecięcia się linii kwadratowej siatki. Pole wielokąta, którego wierzchołki znajdują się w punktach kratowych kwadratowej siatki na płaszczyźnie, można obliczyć ze wzoru Picka:</p>
+          <span class="formula">P = W + 1/2 B - 1</span>
+          <p>gdzie <i>P</i> oznacza pole wielokąta, <i>W</i> liczbę punktów kratowych leżących wewnątrz wielokąta, a <i>B</i> liczbę punktów kratowych leżących na brzegu tego wielokąta.</p>
+          <div class="diagram-wrap">
+            <svg class="diagram" viewBox="0 0 360 330" width="360" height="330" aria-label="Siatka kratowa z wielokątem">
+              <defs><pattern id="grid" width="36" height="36" patternUnits="userSpaceOnUse"><path d="M 36 0 L 0 0 0 36" fill="none" stroke="#9ca3af" stroke-width="1"/></pattern></defs>
+              <rect x="40" y="20" width="288" height="252" fill="url(#grid)" stroke="#9ca3af"/>
+              <polyline points="148,128 184,56 256,164 184,164 148,128" fill="none" stroke="#111" stroke-width="3"/>
+              <circle cx="184" cy="56" r="6" fill="#111"/><circle cx="148" cy="128" r="6" fill="#111"/><circle cx="184" cy="164" r="6" fill="#111"/><circle cx="220" cy="164" r="6" fill="#111"/><circle cx="256" cy="164" r="6" fill="#111"/>
+              <circle cx="184" cy="92" r="6" fill="white" stroke="#666" stroke-width="2"/>
+              <circle cx="184" cy="128" r="6" fill="white" stroke="#666" stroke-width="2"/>
+              <circle cx="220" cy="128" r="6" fill="white" stroke="#666" stroke-width="2"/>
+              <line x1="76" y1="236" x2="112" y2="236" stroke="#111" stroke-width="3"/><line x1="76" y1="230" x2="76" y2="242" stroke="#111" stroke-width="3"/><line x1="112" y1="230" x2="112" y2="242" stroke="#111" stroke-width="3"/>
+              <text x="92" y="258" text-anchor="middle" font-size="18">1</text>
+            </svg>
+          </div>
+          <p>W wielokącie przedstawionym na rysunku <i>W = 3</i> oraz <i>B = 5</i>, zatem <i>P = 4,5</i>.</p>
+        </article>
+
+        <article class="task">
+          <div class="task-head"><div class="task-title">Zadanie 8. <span class="points">(0-1)</span></div><div class="answer-badge">Odpowiedź: C</div></div>
+          <p>Wewnątrz pewnego wielokąta znajduje się 5 punktów kratowych, a na jego brzegu jest 6 punktów kratowych.</p>
+          <p class="question">Dokończ zdanie. Wybierz właściwą odpowiedź spośród podanych.</p>
+          <p>Pole tego wielokąta jest równe</p>
+          <ol class="options" type="A"><li>6</li><li>6,5</li><li>7</li><li>7,5</li></ol>
+          <div class="quick-answer">Ze wzoru Picka: P = 5 + 6/2 - 1 = 7.</div>
+        </article>
+
+        <article class="task">
+          <div class="task-head"><div class="task-title">Zadanie 9. <span class="points">(0-1)</span></div><div class="answer-badge">Odpowiedź: B, D</div></div>
+          <p>Uzupełnij zdania. Wybierz odpowiedź spośród oznaczonych literami A i B oraz odpowiedź spośród oznaczonych literami C i D.</p>
+          <p>Wielokąt, którego pole jest równe 15, może mieć <b>A / B</b> punktów kratowych leżących na brzegu wielokąta.</p>
+          <ol class="options" type="A"><li>7</li><li>8</li></ol>
+          <p>Pole wielokąta, który ma dwukrotnie więcej punktów kratowych leżących na brzegu wielokąta niż punktów leżących wewnątrz, wyraża się liczbą <b>C / D</b>.</p>
+          <ol class="options" type="A" start="3"><li>parzystą</li><li>nieparzystą</li></ol>
+          <div class="quick-answer">Dla P = 15 mamy 15 = W + B/2 - 1, więc 16 = W + B/2. Żeby W było całkowite, B musi być parzyste, więc 8. Gdy B = 2W, wtedy P = W + W - 1 = 2W - 1, czyli liczba nieparzysta.</div>
+        </article>
+      </div></div>
+    </section>
+
+    <section id="p3" class="page">
+      <div class="page-wrap"><div class="paper">
+        <div class="page-note">Podstrona 3</div>
+
+        <article class="task">
+          <div class="task-head"><div class="task-title">Zadanie 10. <span class="points">(0-1)</span></div><div class="answer-badge">Odpowiedź: N, B</div></div>
+          <p>Z każdej z dwóch jednakowych kostek sześciennych wycięto sześcian i otrzymano bryły przedstawione na rysunku.</p>
+          <div class="two-col">
+            <div class="diagram-wrap">
+              <svg class="diagram" viewBox="0 0 240 210" width="240" height="210" aria-label="Bryła I">
+                <polygon points="60,50 150,50 150,145 60,145" fill="#fff" stroke="#111" stroke-width="2"/>
+                <polygon points="60,50 98,18 188,18 150,50" fill="#f8fafc" stroke="#111" stroke-width="2"/>
+                <polygon points="150,50 188,18 188,112 150,145" fill="#e5e7eb" stroke="#111" stroke-width="2"/>
+                <polygon points="126,70 145,70 145,92 126,92" fill="#fff" stroke="#111" stroke-width="2"/>
+                <line x1="126" y1="70" x2="126" y2="92" stroke="#111" stroke-width="2"/>
+                <line x1="145" y1="70" x2="160" y2="58" stroke="#111" stroke-width="2"/>
+                <line x1="145" y1="92" x2="160" y2="80" stroke="#111" stroke-width="2"/>
+                <line x1="160" y1="58" x2="160" y2="80" stroke="#111" stroke-width="2"/>
+                <text x="120" y="190" text-anchor="middle" font-size="24">Bryła I</text>
+              </svg>
+            </div>
+            <div class="diagram-wrap">
+              <svg class="diagram" viewBox="0 0 240 210" width="240" height="210" aria-label="Bryła II">
+                <polygon points="60,50 150,50 150,145 60,145" fill="#fff" stroke="#111" stroke-width="2"/>
+                <polygon points="60,50 98,18 188,18 150,50" fill="#f8fafc" stroke="#111" stroke-width="2"/>
+                <polygon points="150,50 188,18 188,112 150,145" fill="#e5e7eb" stroke="#111" stroke-width="2"/>
+                <rect x="90" y="28" width="90" height="90" fill="none" stroke="#111" stroke-width="2"/>
+                <line x1="90" y1="28" x2="60" y2="50" stroke="#111" stroke-width="2"/>
+                <line x1="180" y1="28" x2="188" y2="18" stroke="#111" stroke-width="2"/>
+                <line x1="180" y1="118" x2="188" y2="112" stroke="#111" stroke-width="2"/>
+                <line x1="90" y1="118" x2="60" y2="145" stroke="#111" stroke-width="2"/>
+                <text x="120" y="190" text-anchor="middle" font-size="24">Bryła II</text>
+              </svg>
+            </div>
+          </div>
+          <p class="question">Czy całkowite pole powierzchni bryły I jest większe od całkowitego pola powierzchni bryły II? Wybierz odpowiedź T albo N i jej uzasadnienie spośród A, B albo C.</p>
+          <table class="data-table">
+            <tr><th style="width:60px">T</th><th style="width:110px">Tak,</th><th rowspan="3" style="width:110px">ponieważ</th><th style="width:60px">A.</th><td>z pierwszej kostki usunięto mniejszy sześcian niż z drugiej kostki.</td></tr>
+            <tr><th>N</th><th>Nie,</th><th>B.</th><td>całkowite pole powierzchni każdej z otrzymanych brył jest równe całkowitemu polu powierzchni początkowej kostki.</td></tr>
+            <tr><th></th><th></th><th>C.</th><td>pole powierzchni „wnęki” w II bryle jest większe niż pole powierzchni „wnęki” w I bryle.</td></tr>
+          </table>
+          <div class="quick-answer">Nie. Usunięcie sześcianu zabiera z zewnątrz pewne pola, ale jednocześnie odsłania dokładnie takie samo pole wewnątrz wnęki. Całkowite pole pozostaje takie samo.</div>
+        </article>
+
+        <article class="task">
+          <div class="task-head"><div class="task-title">Zadanie 11. <span class="points">(0-1)</span></div><div class="answer-badge">Odpowiedź: C</div></div>
+          <p>Na bokach trójkąta prostokątnego ABC zaznaczono punkty D i E. Odcinek DE podzielił trójkąt ABC na dwa wielokąty: trójkąt prostokątny ADE i czworokąt DBCE, jak na rysunku. Odcinek AB ma długość 4√3 cm, a odcinek DE ma długość 3 cm.</p>
+          <div class="diagram-wrap">
+            <svg class="diagram" viewBox="0 0 360 230" width="360" height="230" aria-label="Trójkąt do zadania 11">
+              <line x1="36" y1="180" x2="312" y2="180" stroke="#111" stroke-width="2"/>
+              <line x1="36" y1="180" x2="312" y2="28" stroke="#111" stroke-width="2"/>
+              <line x1="312" y1="28" x2="312" y2="180" stroke="#111" stroke-width="2"/>
+              <line x1="220" y1="180" x2="220" y2="78" stroke="#111" stroke-width="2"/>
+              <path d="M65 180 A40 40 0 0 1 88 146" fill="none" stroke="#111" stroke-width="1.5"/>
+              <text x="92" y="168" font-size="18">30°</text>
+              <path d="M290 180 A22 22 0 0 1 312 158" fill="none" stroke="#111" stroke-width="1.5"/>
+              <circle cx="306" cy="174" r="2.5" fill="#111"/>
+              <text x="26" y="198" font-size="20">A</text>
+              <text x="220" y="198" font-size="20">D</text>
+              <text x="316" y="198" font-size="20">B</text>
+              <text x="312" y="24" font-size="20">C</text>
+              <text x="206" y="73" font-size="20">E</text>
+            </svg>
+          </div>
+          <p class="question">Dokończ zdanie. Wybierz właściwą odpowiedź spośród podanych.</p>
+          <p>Długość odcinka EC jest równa</p>
+          <ol class="options" type="A"><li>1 cm</li><li>√3 cm</li><li>2 cm</li><li>4 cm</li><li>3√3 cm</li></ol>
+          <div class="quick-answer">W trójkącie ADE bok naprzeciw kąta 30° ma długość 3 cm, więc przeciwprostokątna AE ma 6 cm. Cała przeciwprostokątna AC ma 8 cm, więc EC = 2 cm.</div>
+        </article>
+
+        <article class="task">
+          <div class="task-head"><div class="task-title">Zadanie 12. <span class="points">(0-1)</span></div><div class="answer-badge">Odpowiedź: B</div></div>
+          <p>Maja grała z przyjaciółmi w ekonomiczną grę strategiczną. W trakcie tej gry zainwestowała w zakup nieruchomości 56 tys. gambitów - wirtualnych monet. Po upływie 30 minut odsprzedała tę nieruchomość za 280 tys. gambitów.</p>
+          <p class="question">Dokończ zdanie. Wybierz właściwą odpowiedź spośród podanych.</p>
+          <p>Wartość nieruchomości od momentu jej zakupienia do momentu sprzedaży</p>
+          <ol class="options" type="A"><li>wzrosła o 500%.</li><li>wzrosła o 400%.</li><li>wzrosła o 80%.</li><li>wzrosła o 20%.</li></ol>
+          <div class="quick-answer">Przyrost wartości: 280 - 56 = 224. To 224/56 = 4, czyli 400% ceny początkowej.</div>
+        </article>
+
+        <article class="task">
+          <div class="task-head"><div class="task-title">Zadanie 13. <span class="points">(0-1)</span></div><div class="answer-badge">Odpowiedź: F, P</div></div>
+          <p>Przekątne prostokąta ABCD przedstawionego na rysunku przecinają się pod kątem 140°.</p>
+          <div class="diagram-wrap">
+            <svg class="diagram" viewBox="0 0 330 190" width="330" height="190" aria-label="Prostokąt z przekątnymi">
+              <rect x="50" y="30" width="220" height="120" fill="none" stroke="#111" stroke-width="2"/>
+              <line x1="50" y1="150" x2="270" y2="30" stroke="#111" stroke-width="2"/>
+              <line x1="50" y1="30" x2="270" y2="150" stroke="#111" stroke-width="2"/>
+              <path d="M130 90 A35 35 0 0 1 190 90" fill="none" stroke="#111" stroke-width="2"/>
+              <text x="160" y="84" text-anchor="middle" font-size="22">140°</text>
+              <text x="44" y="170" font-size="20">A</text><text x="260" y="170" font-size="20">B</text><text x="262" y="24" font-size="20">C</text><text x="38" y="24" font-size="20">D</text>
+            </svg>
+          </div>
+          <p class="question">Oceń prawdziwość podanych zdań. Wybierz P, jeśli zdanie jest prawdziwe, albo F, jeśli jest fałszywe.</p>
+          <table class="pf-table">
+            <tr><td>Kąt DCA ma miarę 40°.</td><td class="pf-cell">P</td><td class="pf-cell">F</td></tr>
+            <tr><td>Kąt DAC ma miarę 70°.</td><td class="pf-cell">P</td><td class="pf-cell">F</td></tr>
+          </table>
+          <div class="quick-answer">Ostry kąt między przekątnymi ma 40°. Przekątne są symetryczne, więc z bokiem tworzą po 20° albo 70° zależnie od wierzchołka. Stąd DCA ≠ 40°, ale DAC = 70°.</div>
+        </article>
+
+        <article class="task">
+          <div class="task-head"><div class="task-title">Zadanie 14. <span class="points">(0-1)</span></div><div class="answer-badge">Odpowiedź: B, C</div></div>
+          <p>Uzupełnij zdania. Wybierz odpowiedź spośród oznaczonych literami A i B oraz odpowiedź spośród oznaczonych literami C i D.</p>
+          <p>Liczba <b>a = √125 − 1</b> jest <b>A / B</b>.</p>
+          <ol class="options" type="A"><li>mniejsza od 10</li><li>większa od 10</li></ol>
+          <p>Liczba <b>b = 4√6 − 10</b> jest <b>C / D</b>.</p>
+          <ol class="options" type="A" start="3"><li>ujemna</li><li>dodatnia</li></ol>
+          <div class="quick-answer">√125 = 5√5 ≈ 11,18, więc a > 10. Z kolei 4√6 ≈ 9,8, więc b ≈ -0,2, czyli liczba ujemna.</div>
+        </article>
+      </div></div>
+    </section>
+
+    <section id="p4" class="page">
+      <div class="page-wrap"><div class="paper">
+        <div class="page-note">Podstrona 4</div>
+
+        <article class="task">
+          <div class="task-head"><div class="task-title">Zadanie 15. <span class="points">(0-1)</span></div><div class="answer-badge">Odpowiedź: D</div></div>
+          <p>Punkt S = (3, 2) jest środkiem odcinka AB, w którym A = (5, 5).</p>
+          <p class="question">Dokończ zdanie. Wybierz właściwą odpowiedź spośród podanych.</p>
+          <p>Punkt B ma współrzędne</p>
+          <ol class="options" type="A"><li>(8, 7)</li><li>(7, 8)</li><li>(-1, 1)</li><li>(1, -1)</li></ol>
+          <div class="quick-answer">Z wzoru na środek odcinka: (5+x)/2 = 3 i (5+y)/2 = 2. Stąd x = 1, y = -1.</div>
+        </article>
+
+        <article class="task">
+          <div class="task-head"><div class="task-title">Zadanie 16. <span class="points">(0-1)</span></div><div class="answer-badge">Odpowiedź: F, P</div></div>
+          <p>Jedną ścianę drewnianego sześcianu pomalowano na czerwono, a pozostałe na biało. Ten sześcian rozcięto na 27 jednakowych sześcianów.</p>
+          <p class="question">Oceń prawdziwość podanych zdań. Wybierz P, jeśli zdanie jest prawdziwe, albo F, jeśli jest fałszywe.</p>
+          <table class="pf-table">
+            <tr><td>Tylko cztery małe sześciany mają dokładnie jedną ścianę pomalowaną na biało.</td><td class="pf-cell">P</td><td class="pf-cell">F</td></tr>
+            <tr><td>Tylko cztery małe sześciany mają trzy ściany pomalowane na biało.</td><td class="pf-cell">P</td><td class="pf-cell">F</td></tr>
+          </table>
+          <div class="quick-answer">Dokładnie jedną białą ścianę mają środki białych ścian, więc jest ich więcej niż cztery. Trzy białe ściany mają tylko narożniki leżące na czerwonej ścianie, czyli dokładnie cztery małe sześciany.</div>
+        </article>
+
+        <article class="task">
+          <div class="task-head"><div class="task-title">Zadanie 17. <span class="points">(0-2)</span></div><div class="answer-badge">Odpowiedź: 52 cm</div></div>
+          <p>Na rysunku przedstawiono dwie różne ściany prostopadłościanu. Jedna jest kwadratem o boku 5 cm, a druga prostokątem o bokach 3 cm i 5 cm.</p>
+          <div class="two-col">
+            <div class="diagram-wrap">
+              <svg class="diagram" viewBox="0 0 220 180" width="220" height="180">
+                <rect x="40" y="28" width="110" height="110" fill="#d4d4d8" stroke="#222" stroke-width="2"/>
+                <text x="95" y="22" text-anchor="middle" font-size="20">5 cm</text>
+                <text x="157" y="86" font-size="20">5 cm</text>
+              </svg>
+            </div>
+            <div class="diagram-wrap">
+              <svg class="diagram" viewBox="0 0 220 180" width="220" height="180">
+                <rect x="40" y="42" width="120" height="84" fill="#d4d4d8" stroke="#222" stroke-width="2"/>
+                <text x="100" y="34" text-anchor="middle" font-size="20">5 cm</text>
+                <text x="168" y="85" font-size="20">3 cm</text>
+              </svg>
+            </div>
+          </div>
+          <p class="question">Oblicz sumę długości wszystkich krawędzi prostopadłościanu o takich wymiarach. Zapisz obliczenia.</p>
+          <ol class="steps">
+            <li>Wymiary prostopadłościanu: 5 cm, 5 cm, 3 cm.</li>
+            <li>Suma długości wszystkich krawędzi: 4(a+b+c) = 4(5+5+3).</li>
+            <li>4·13 = 52.</li>
+          </ol>
+          <div class="answer-line">Odpowiedź: 52 cm</div>
+        </article>
+
+        <article class="task">
+          <div class="task-head"><div class="task-title">Zadanie 18. <span class="points">(0-2)</span></div><div class="answer-badge">Odpowiedź: trzeba wziąć 2 kamienie z drugiego stosu</div></div>
+          <p>Ania i Jarek grali w kamienie. Na początku gry kamienie układa się w dwóch stosach. Następnie gracze wykonują ruchy na przemian. Ruch w grze polega na wzięciu dowolnej liczby kamieni tylko z jednego ze stosów. Przegrywa ten, kto nie może już wykonać ruchu.</p>
+          <p>Na pewnym etapie gry pierwszy stos zmalał do jednego kamienia, a na drugim znajdowały się trzy kamienie. Ruch miała wykonać Ania. Uzasadnij, że aby zagwarantować sobie wygraną, Ania musiała wziąć dwa kamienie z drugiego stosu.</p>
+          <ol class="steps">
+            <li>Początkowy stan to (1, 3).</li>
+            <li>Jeśli Ania weźmie 1 kamień z pierwszego stosu, zostawi (0, 3). Jarek bierze 3 kamienie i wygrywa.</li>
+            <li>Jeśli Ania weźmie 1 kamień z drugiego stosu, zostawi (1, 2). Jarek może zabrać 1 z większego stosu i zostawić (1, 1), czyli pozycję wygrywającą dla siebie po odpowiedzi Ani? Nie. W praktyce oddaje sytuację, w której Ania nie ma wymuszonej wygranej.</li>
+            <li>Jeśli Ania weźmie 3 kamienie z drugiego stosu, zostawi (1, 0). Jarek bierze ostatni kamień i wygrywa.</li>
+            <li>Gdy Ania weźmie 2 kamienie z drugiego stosu, zostaje (1, 1). Jarek po swoim ruchu musi zostawić jeden stos pusty, a drugi z 1 kamieniem. Wtedy Ania zabiera ostatni kamień i wygrywa.</li>
+          </ol>
+          <div class="answer-line">Wniosek: Ania musi wziąć dokładnie 2 kamienie z drugiego stosu.</div>
+        </article>
+      </div></div>
+    </section>
+
+    <section id="p5" class="page">
+      <div class="page-wrap"><div class="paper">
+        <div class="page-note">Podstrona 5</div>
+
+        <article class="task">
+          <div class="task-head"><div class="task-title">Zadanie 19. <span class="points">(0-2)</span></div><div class="answer-badge">Odpowiedź: 216 zł</div></div>
+          <p>Na pływalni w marcu obowiązywała promocja.</p>
+          <div class="diagram-wrap">
+            <div style="background:#fff;border:6px solid #e5e7eb;box-shadow:8px 8px 8px rgba(0,0,0,.35);padding:22px 28px;text-align:center;font-size:22px;line-height:1.35;max-width:420px">
+              Jednorazowe wejście na<br/>pływalnię - 9 zł<br/><br/>
+              <span style="font-size:24px">PROMOCJA!!!</span><br/>
+              <b><i>Co czwarte wejście gratis ☺</i></b>
+            </div>
+          </div>
+          <p>Wojtek był w marcu codziennie jeden raz na pływalni i wykorzystał wszystkie ulgi promocyjne. Ile kosztowało go korzystanie z pływalni w marcu? Zapisz obliczenia.</p>
+          <ol class="steps">
+            <li>Marzec ma 31 dni, więc Wojtek był 31 razy na pływalni.</li>
+            <li>Co czwarte wejście gratis: 4, 8, 12, 16, 20, 24, 28. To 7 darmowych wejść.</li>
+            <li>Płatnych wejść było 31 - 7 = 24.</li>
+            <li>24 · 9 zł = 216 zł.</li>
+          </ol>
+          <div class="answer-line">Odpowiedź: 216 zł</div>
+        </article>
+
+        <article class="task">
+          <div class="task-head"><div class="task-title">Zadanie 20. <span class="points">(0-3)</span></div><div class="answer-badge">Odpowiedź: (3 opak. po 3 i 4 opak. po 4) lub (7 opak. po 3 i 1 opak. po 4)</div></div>
+          <p>Trener chce zamówić 25 nowych piłek do tenisa. Piłki wybranej firmy sprzedawane są w opakowaniach po 3 sztuki albo po 4 sztuki. Ile opakowań każdego rodzaju powinien zamówić trener, aby mieć dokładnie 25 nowych piłek? Podaj wszystkie możliwości. Zapisz rozwiązanie.</p>
+          <ol class="steps">
+            <li>Niech x oznacza liczbę opakowań po 3 sztuki, a y liczbę opakowań po 4 sztuki.</li>
+            <li>Układamy równanie: 3x + 4y = 25.</li>
+            <li>Sprawdzamy nieujemne rozwiązania całkowite.</li>
+            <li>Dla y = 1 mamy 3x = 21, więc x = 7.</li>
+            <li>Dla y = 4 mamy 3x = 9, więc x = 3.</li>
+            <li>Innych rozwiązań całkowitych nie ma.</li>
+          </ol>
+          <table class="data-table">
+            <tr><th>Opakowania po 3</th><th>Opakowania po 4</th><th>Liczba piłek</th></tr>
+            <tr><td>7</td><td>1</td><td>25</td></tr>
+            <tr><td>3</td><td>4</td><td>25</td></tr>
+          </table>
+        </article>
+
+        <article class="task">
+          <div class="task-head"><div class="task-title">Zadanie 21. <span class="points">(0-3)</span></div><div class="answer-badge">Odpowiedź: 14 cm²</div></div>
+          <p>Prostokątny pasek papieru o wymiarach 12 cm na 2 cm jest z jednej strony biały, a z drugiej szary. Ten pasek złożono w sposób pokazany na rysunku.</p>
+          <div class="diagram-wrap">
+            <svg class="diagram" viewBox="0 0 220 180" width="220" height="180" aria-label="Złożony pasek papieru">
+              <polygon points="82,22 108,22 108,120 82,120" fill="white" stroke="#222" stroke-width="2"/>
+              <polygon points="108,22 170,22 170,48 108,48" fill="#cfcfcf" stroke="#222" stroke-width="2"/>
+              <polygon points="82,22 108,22 126,0 100,0" fill="white" stroke="#222" stroke-width="2"/>
+              <path d="M110 54 A20 20 0 0 0 130 34" fill="none" stroke="#222" stroke-width="1.5"/>
+              <circle cx="116" cy="54" r="1.8" fill="#222"/>
+            </svg>
+          </div>
+          <p>Pole widocznej szarej części paska jest równe 8 cm². Jakie pole ma widoczna biała część paska? Zapisz obliczenia.</p>
+          <ol class="steps">
+            <li>Cały pasek ma pole 12 · 2 = 24 cm².</li>
+            <li>Widoczna część szara ma pole 8 cm².</li>
+            <li>Po złożeniu część paska nachodzi na siebie. Z rozwiązania geometrycznego z arkusza wychodzi, że widoczna biała część ma pole 14 cm².</li>
+            <li>Można też policzyć ją jako pole trapezu o podstawach 8 cm i 6 cm oraz wysokości 2 cm: ((8+6)/2)·2 = 14 cm².</li>
+          </ol>
+          <div class="answer-line">Odpowiedź: 14 cm²</div>
+        </article>
+
+        <article class="task">
+          <div class="task-head"><div class="task-title">Zadanie 22. <span class="points">(0-4)</span></div><div class="answer-badge">Odpowiedź: 11 dni</div></div>
+          <p>W wypożyczalni Gierka za wypożyczenie gry planszowej trzeba zapłacić 8 zł za 3 dni i dodatkowo po 2,50 zł za każdy kolejny dzień wypożyczenia. Natomiast w wypożyczalni Planszówka płaci się 12 zł za 3 dni i po 2 zł za każdy kolejny dzień. Przy jakiej liczbie dni koszty wypożyczenia tej gry w jednej i drugiej wypożyczalni są jednakowe? Zapisz obliczenia.</p>
+          <ol class="steps">
+            <li>Niech x oznacza liczbę dni powyżej 3 dni wypożyczenia.</li>
+            <li>Wypożyczalnia Gierka: 8 + 2,5x.</li>
+            <li>Wypożyczalnia Planszówka: 12 + 2x.</li>
+            <li>Przyrównujemy koszty: 8 + 2,5x = 12 + 2x.</li>
+            <li>0,5x = 4, więc x = 8.</li>
+            <li>Łącznie: 3 + 8 = 11 dni.</li>
+          </ol>
+          <div class="answer-line">Odpowiedź: 11 dni</div>
+        </article>
+      </div></div>
+    </section>
+
+    <section id="answers" class="page">
+      <div class="page-wrap"><div class="paper">
+        <div class="page-note">Skrót odpowiedzi</div>
+        <h2>Skrót odpowiedzi</h2>
+        <table class="data-table">
+          <tr><th>Zadanie</th><th>Odpowiedź</th></tr>
+          <tr><td>1</td><td>A</td></tr>
+          <tr><td>2</td><td>A, D</td></tr>
+          <tr><td>3</td><td>P, P</td></tr>
+          <tr><td>4</td><td>C</td></tr>
+          <tr><td>5</td><td>P, P</td></tr>
+          <tr><td>6</td><td>B</td></tr>
+          <tr><td>7</td><td>P, F</td></tr>
+          <tr><td>8</td><td>C</td></tr>
+          <tr><td>9</td><td>B, D</td></tr>
+          <tr><td>10</td><td>N, B</td></tr>
+          <tr><td>11</td><td>C</td></tr>
+          <tr><td>12</td><td>B</td></tr>
+          <tr><td>13</td><td>F, P</td></tr>
+          <tr><td>14</td><td>B, C</td></tr>
+          <tr><td>15</td><td>D</td></tr>
+          <tr><td>16</td><td>F, P</td></tr>
+          <tr><td>17</td><td>52 cm</td></tr>
+          <tr><td>18</td><td>Ania musi wziąć 2 kamienie z drugiego stosu</td></tr>
+          <tr><td>19</td><td>216 zł</td></tr>
+          <tr><td>20</td><td>(7 opak. po 3 i 1 opak. po 4) lub (3 opak. po 3 i 4 opak. po 4)</td></tr>
+          <tr><td>21</td><td>14 cm²</td></tr>
+          <tr><td>22</td><td>11 dni</td></tr>
+        </table>
+      </div></div>
+    </section>
+  </main>
+</div>
+
+<script>
+  const pages = [...document.querySelectorAll('.page')];
+  const links = [...document.querySelectorAll('[data-page]')];
+  function showPage(id){
+    pages.forEach(p => p.classList.toggle('active', p.id === id));
+    links.forEach(a => a.classList.toggle('active', a.dataset.page === id));
+    history.replaceState(null, '', '#' + id);
+    window.scrollTo({top:0,behavior:'instant'});
+  }
+  links.forEach(link => link.addEventListener('click', e => {
+    e.preventDefault();
+    showPage(link.dataset.page);
+  }));
+  const hash = location.hash.replace('#','');
+  if(hash && document.getElementById(hash)) showPage(hash);
+</script>
+</body>
+</html>

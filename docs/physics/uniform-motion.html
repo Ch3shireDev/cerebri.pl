@@ -18,52 +18,63 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
 
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['\\(', '\\)']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
     <style>
         :root {
-            --bg-primary: #f6f5fa;
+            --bg-primary: #f0fcfd;
             --bg-secondary: #ffffff;
             --text-primary: #2c3e50;
-            --accent-color: #6c5ce7;
-            --accent-hover: #5b4bc4;
-            --form-border: #e2e8f0;
-            --success-color: #27ae60;
-            --error-color: #c0392b;
-            --fire-color: #d35400;
+            --text-secondary: #666666;
+            --accent-color: #0abde3;
+            --accent-hover: #0899cc;
+            --card-border: rgba(0, 0, 0, 0.1);
+            --success-color: #2ecc71;
+            --error-color: #e74c3c;
+            --streak-color: #f39c12;
         }
 
         [data-bs-theme="dark"] {
             --bg-primary: #1a1a1a;
             --bg-secondary: #2d2d2d;
             --text-primary: #ffffff;
-            --accent-color: #8b7dd1;
-            --accent-hover: #7a6cc0;
-            --form-border: #444444;
-            --success-color: #4a9f6e;
-            --error-color: #d63031;
-            --fire-color: #e67e22;
+            --text-secondary: #b0b0b0;
+            --accent-color: #2db8e6;
+            --accent-hover: #26a0d1;
+            --card-border: rgba(255, 255, 255, 0.1);
+            --success-color: #27ae60;
+            --error-color: #c0392b;
+            --streak-color: #f1c40f;
         }
 
         body {
             font-family: 'Nunito', sans-serif;
             background-color: var(--bg-primary);
             color: var(--text-primary);
-            padding: 20px;
+            padding: 15px;
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .quiz-card {
-            border: none;
+            border: 1px solid var(--card-border);
             border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
             border-left: 6px solid var(--accent-color);
             background-color: var(--bg-secondary);
             color: var(--text-primary);
-            transition: background-color 0.2s, color 0.3s ease;
         }
 
-        .quiz-card:hover {
+        .quiz-header {
             background-color: var(--bg-secondary);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
 
         .btn-start {
@@ -81,126 +92,177 @@
             color: white;
         }
 
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 16px;
+            max-width: 520px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-next,
+        .btn-end {
+            border-radius: 25px;
+            font-weight: 700;
+            padding: 12px 18px;
+            width: 100%;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .btn-next {
+            background-color: var(--text-primary);
+            color: var(--bg-primary);
+            border-color: var(--text-primary);
+        }
+
+        .btn-next:hover {
+            opacity: 0.92;
+            transform: translateY(-1px);
+        }
+
+        .btn-end {
+            background-color: var(--bg-secondary);
+            color: var(--text-secondary);
+            border-color: var(--card-border);
+        }
+
+        .btn-end:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+            transform: translateY(-1px);
+        }
+
+        @media (min-width: 768px) {
+            .action-buttons {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
         .physics-title {
             color: var(--accent-color);
             font-weight: 800;
         }
 
-        .option-btn {
-            width: 100%;
-            text-align: left;
-            padding: 15px 20px;
-            margin-bottom: 10px;
-            border: 2px solid var(--form-border);
-            border-radius: 12px;
-            background: var(--bg-secondary);
+        .stats-badge {
+            font-size: 0.9rem;
             font-weight: 700;
-            color: var(--text-primary);
-            transition: all 0.2s;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
-        .option-btn:hover:not(:disabled) {
-            border-color: var(--accent-color);
-            background: var(--bg-primary);
-            transform: translateX(5px);
-        }
+        .stats-correct { background-color: rgba(46, 204, 113, 0.15); color: var(--success-color); }
+        .stats-points { background-color: rgba(10, 189, 227, 0.15); color: var(--accent-color); }
+        .stats-level { background-color: rgba(243, 156, 18, 0.15); color: var(--streak-color); }
 
-        .option-btn.correct {
-            background: var(--success-color);
-            border-color: var(--success-color);
-            color: white;
-        }
-
-        .option-btn.incorrect {
-            background: var(--error-color);
-            border-color: var(--error-color);
-            color: white;
-        }
-
-        .option-btn:disabled {
-            cursor: not-allowed;
-            opacity: 0.9;
-        }
-
-        .stats-bar {
-            background: var(--bg-secondary);
-            border-radius: 15px;
-            padding: 15px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
-            color: var(--text-primary);
-        }
-
-        .streak-fire {
-            color: var(--fire-color);
-            font-weight: bold;
-            animation: pulse 1s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
+        .streak-badge {
+            color: var(--streak-color);
+            font-weight: 800;
+            font-size: 1.1rem;
         }
 
         .combo-multiplier {
             font-size: 0.9rem;
             color: var(--accent-color);
-            font-weight: bold;
+            font-weight: 700;
+        }
+
+        .option-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            padding: 15px 20px;
+            border: 2px solid var(--card-border);
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            font-weight: 700;
+            transition: all 0.2s;
+            font-size: 1.05rem;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .option-btn.correct {
+            background-color: var(--success-color) !important;
+            color: white !important;
+            border-color: var(--success-color);
+        }
+
+        .option-btn.incorrect {
+            background-color: var(--error-color) !important;
+            color: white !important;
+            border-color: var(--error-color);
+        }
+
+        .option-btn:disabled {
+            cursor: default;
+            opacity: 0.9;
         }
 
         .explanation-box {
             display: none;
-            background: var(--bg-secondary);
-            border-left: 5px solid var(--accent-color);
-            border-radius: 10px;
-            padding: 20px;
+            border-radius: 12px;
+            padding: 15px;
             margin-top: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             text-align: left;
-            animation: fadeIn 0.4s;
+            animation: fadeIn 0.3s;
+            background-color: rgba(10, 189, 227, 0.08);
+            border-left: 4px solid var(--accent-color);
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        .nowrap {
+            white-space: nowrap;
         }
     </style>
 </head>
 <body>
 
-    <div class="container text-center mx-auto" id="main-content" style="max-width: 800px;">
-        <div class="py-4">
-            <h1 class="physics-title mb-3">Witaj w dziale Fizyka!</h1>
-            <p class="lead text-body-secondary mb-5">
-                Poznawaj prawa natury, zasady dynamiki i tajemnice wszechświata na <strong>cerebri.pl</strong>.
-                Wybierz zestaw zadań z listy poniżej i sprawdź swoją wiedzę.
+    <div class="container mx-auto" id="main-content" style="max-width: 600px; padding-bottom: 40px;">
+        <div class="py-3">
+            <h2 class="physics-title mb-2" style="font-size: 1.5rem;">Witaj w dziale Fizyka!</h2>
+            <p class="text-body-secondary mb-4" style="font-size: 0.95rem;">
+                Poznawaj prawa natury i tajemnice wszechświata na <strong>cerebri.pl</strong>.
+                Wybierz zestaw zadań i sprawdź swoją wiedzę.
             </p>
         </div>
 
-        <div class="card quiz-card text-start mb-4">
-            <div class="card-body p-4 d-flex flex-column flex-md-row align-items-center justify-content-between">
+        <div class="card quiz-card text-start mb-3">
+            <div class="card-body p-3 d-flex flex-column flex-md-row align-items-center justify-content-between gap-2">
                 <div>
-                    <h4 class="fw-bold mb-2">Trening: Ruch jednostajny</h4>
-                    <p class="text-body-secondary mb-md-0 me-md-4">
-                        Zadania generowane automatycznie z obliczeń prędkości, drogi i czasu (v, s, t).
-                        Trenuj serię poprawnych odpowiedzi i zdobywaj więcej punktów.
+                    <h5 class="fw-bold mb-1" style="font-size: 1rem;">Trening: Ruch jednostajny</h5>
+                    <p class="text-body-secondary mb-0" style="font-size: 0.9rem;">
+                        Zadania z obliczeń prędkości, drogi i czasu (v, s, t). Trenuj i zdobywaj punkty.
                     </p>
                 </div>
-                <div class="mt-3 mt-md-0">
-                    <button id="start-quiz-btn" class="btn btn-start text-nowrap">Uruchom automat</button>
+                <div>
+                    <button id="start-quiz-btn" class="btn btn-start text-nowrap" style="padding: 8px 18px; font-size: 0.95rem;">Uruchom automat</button>
                 </div>
             </div>
         </div>
 
-        <div class="card quiz-card text-start mb-4" style="border-left-color: #b2bec3; opacity: 0.7;">
-            <div class="card-body p-4 d-flex flex-column flex-md-row align-items-center justify-content-between">
+        <div class="card quiz-card text-start mb-3" style="border-left-color: #b2bec3; opacity: 0.7;">
+            <div class="card-body p-3 d-flex flex-column flex-md-row align-items-center justify-content-between gap-2">
                 <div>
-                    <h4 class="fw-bold mb-2 text-body-secondary">Zestaw 2: Dynamika</h4>
-                    <p class="text-body-secondary mb-0">Moduł w trakcie przygotowywania...</p>
+                    <h5 class="fw-bold mb-1 text-body-secondary" style="font-size: 1rem;">Zestaw 2: Dynamika</h5>
+                    <p class="text-body-secondary mb-0" style="font-size: 0.9rem;">Moduł w trakcie przygotowywania...</p>
                 </div>
-                <div class="mt-3 mt-md-0">
-                    <button class="btn btn-secondary rounded-pill fw-bold px-4" disabled>Zablokowane</button>
+                <div>
+                    <button class="btn btn-secondary rounded-pill fw-bold" style="padding: 8px 16px; font-size: 0.9rem;" disabled>Zablokowane</button>
                 </div>
             </div>
         </div>
@@ -225,37 +287,37 @@
                 t = Math.floor(Math.random() * 10) + 2;
                 s = v * t;
                 const units = Math.random() > 0.5 ? { s: 'km', t: 'h', v: 'km/h' } : { s: 'm', t: 's', v: 'm/s' };
-                questionText = `Obiekt pokonał drogę <strong>${s} ${units.s}</strong> w czasie <strong>${t} ${units.t}</strong>. Jaka była jego średnia prędkość?`;
+                questionText = `Obiekt pokonał drogę <span class="nowrap"><strong>${s} ${units.s}</strong></span> w czasie <span class="nowrap"><strong>${t} ${units.t}</strong></span>. Jaka była jego średnia prędkość?`;
                 correctAnswer = v;
                 unitResult = units.v;
-                explanation = `<strong>Krok 1:</strong> Znamy wzór na prędkość: <span class="font-monospace">v = s / t</span><br>
-                               <strong>Krok 2:</strong> Podstawiamy dane: <span class="font-monospace">v = ${s} / ${t}</span><br>
-                               <strong class="text-success fs-5">Wynik: v = ${v} ${unitResult}</strong>`;
+                explanation = `<strong>Krok 1:</strong> Znamy wzór na prędkość: \\(v = \\frac{s}{t}\\)<br>
+                               <strong>Krok 2:</strong> Podstawiamy dane: \\(v = \\frac{${s}}{${t}}\\)<br>
+                               <strong class="text-success fs-5">Wynik: \\(v = ${v}\\) <span class="nowrap">${units.v}</span></strong>`;
             } else if (type === 's') {
                 v = Math.floor(Math.random() * 90) + 10;
                 t = Math.floor(Math.random() * 8) + 2;
                 s = v * t;
                 const units = Math.random() > 0.5 ? { s: 'km', t: 'h', v: 'km/h' } : { s: 'm', t: 's', v: 'm/s' };
-                questionText = `Pojazd porusza się ze stałą prędkością <strong>${v} ${units.v}</strong> przez <strong>${t} ${units.t}</strong>. Jaką drogę w tym czasie pokonał?`;
+                questionText = `Pojazd porusza się ze stałą prędkością <span class="nowrap"><strong>${v} ${units.v}</strong></span> przez <span class="nowrap"><strong>${t} ${units.t}</strong></span>. Jaką drogę w tym czasie pokonał?`;
                 correctAnswer = s;
                 unitResult = units.s;
-                explanation = `<strong>Krok 1:</strong> Przekształcamy wzór (v = s/t) na drogę: <span class="font-monospace">s = v &middot; t</span><br>
-                               <strong>Krok 2:</strong> Podstawiamy dane: <span class="font-monospace">s = ${v} &middot; ${t}</span><br>
-                               <strong class="text-success fs-5">Wynik: s = ${s} ${unitResult}</strong>`;
+                explanation = `<strong>Krok 1:</strong> Przekształcamy wzór na drogę: \\(s = v \\cdot t\\)<br>
+                               <strong>Krok 2:</strong> Podstawiamy dane: \\(s = ${v} \\cdot ${t}\\)<br>
+                               <strong class="text-success fs-5">Wynik: \\(s = ${s}\\) <span class="nowrap">${units.s}</span></strong>`;
             } else {
                 v = Math.floor(Math.random() * 15) + 2;
                 t = Math.floor(Math.random() * 15) + 2;
                 s = v * t;
                 const units = Math.random() > 0.5 ? { s: 'km', t: 'h', v: 'km/h' } : { s: 'm', t: 's', v: 'm/s' };
-                questionText = `Rowerzysta ma do przejechania <strong>${s} ${units.s}</strong>. Porusza się z prędkością <strong>${v} ${units.v}</strong>. Ile czasu zajmie mu ta trasa?`;
+                questionText = `Rowerzysta ma do przejechania <span class="nowrap"><strong>${s} ${units.s}</strong></span>. Porusza się z prędkością <span class="nowrap"><strong>${v} ${units.v}</strong></span>. Ile czasu zajmie mu ta trasa?`;
                 correctAnswer = t;
                 unitResult = units.t;
-                explanation = `<strong>Krok 1:</strong> Przekształcamy wzór (v = s/t) na czas: <span class="font-monospace">t = s / v</span><br>
-                               <strong>Krok 2:</strong> Podstawiamy dane: <span class="font-monospace">t = ${s} / ${v}</span><br>
-                               <strong class="text-success fs-5">Wynik: t = ${t} ${unitResult}</strong>`;
+                explanation = `<strong>Krok 1:</strong> Przekształcamy wzór na czas: \\(t = \\frac{s}{v}\\)<br>
+                               <strong>Krok 2:</strong> Podstawiamy dane: \\(t = \\frac{${s}}{${v}}\\)<br>
+                               <strong class="text-success fs-5">Wynik: \\(t = ${t}\\) <span class="nowrap">${units.t}</span></strong>`;
             }
 
-            let options = new Set([correctAnswer]);
+            const options = new Set([correctAnswer]);
             while (options.size < 4) {
                 let fake = correctAnswer + (Math.floor(Math.random() * 20) - 10);
                 if (options.size === 1 && type === 'v') fake = s * t;
@@ -286,37 +348,33 @@
             const level = Math.floor(solvedCount / 5) + 1;
 
             content.innerHTML = `
-                <div class="stats-bar d-flex justify-content-between align-items-center text-start mb-4">
-                    <div>
-                        <span class="text-body-secondary">Punkty:</span> <strong class="fs-5" style="color: var(--accent-color);">${score}</strong>
-                        ${multiplierText}
-                    </div>
-                    <div class="text-center">
-                        <span class="text-body-secondary small fw-bold">Poziom ${level}</span><br>
-                        <span class="text-body-secondary small">Rozwiązane: ${solvedCount}</span>
-                    </div>
-                    <div class="${streak >= 3 ? 'streak-fire' : 'text-body-secondary'}">
-                        Seria: <strong>${streak} 🔥</strong>
+                <div class="quiz-header" style="padding: 12px; margin-bottom: 16px;">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2" style="font-size: 0.85rem;">
+                        <div class="d-flex gap-2 flex-wrap">
+                            <div class="stats-badge stats-points">⭐ <span>${score}</span></div>
+                            <div class="stats-badge stats-level">📈 L${level}</div>
+                        </div>
+                        <div class="stats-badge stats-correct">✓ <span>${solvedCount}</span></div>
+                        <div class="streak-badge" style="font-size: 0.95rem;">🔥 <strong>${streak}</strong></div>
                     </div>
                 </div>
 
                 <div class="card quiz-card text-start mb-3">
-                    <div class="card-body p-4 p-md-5">
-                        <h4 class="fw-bold mb-4 lh-base" style="font-size: 1.5rem;">${currentProblem.questionText}</h4>
+                    <div class="card-body p-3">
+                        <h4 class="fw-bold mb-3 lh-base" style="font-size: 1.1rem;">${currentProblem.questionText}</h4>
                         <div class="options-container text-start" id="options-container">
                             ${currentProblem.options.map((opt, index) => `
-                                <button class="option-btn" onclick="checkPhysicsAnswer(${index}, this)">
-                                    <span class="fw-bold me-2 text-body-secondary">${String.fromCharCode(65 + index)}.</span> ${opt} ${currentProblem.unitResult}
+                                <button class="option-btn" style="padding: 12px 16px; margin-bottom: 10px; font-size: 0.95rem;" onclick="checkPhysicsAnswer(${index}, this)">
+                                    <span class="fw-bold me-2 text-body-secondary">${String.fromCharCode(65 + index)}.</span> <span class="nowrap">${opt} ${currentProblem.unitResult}</span>
                                 </button>
                             `).join('')}
                         </div>
                     </div>
                 </div>
 
-                <div id="explanation-container" class="explanation-box"></div>
-                <div id="action-area" class="text-center mt-4"></div>
-            `;
-        }
+                <div id="explanation-container" class="explanation-box" style="padding: 12px; margin-top: 16px; font-size: 0.95rem;"></div>
+                <div id="action-area" class="text-center mt-3"></div>
+            `;            if (window.MathJax) MathJax.typesetPromise().catch(err => console.log(err));        }
 
         window.checkPhysicsAnswer = function (selectedIndex, btnElement) {
             const allBtns = document.querySelectorAll('.option-btn');
@@ -344,22 +402,24 @@
             }
 
             const feedbackHeader = isCorrect
-                ? `<h4 class="text-success fw-bold mb-3">Znakomicie! (+${earnedPoints} pkt)</h4>`
-                : `<h4 class="text-danger fw-bold mb-3">Pudło! Sprawdź rozwiązanie:</h4>`;
+                ? `<h5 class="text-success fw-bold mb-2" style="font-size: 1rem;">Znakomicie! (+${earnedPoints} pkt)</h5>`
+                : `<h5 class="text-danger fw-bold mb-2" style="font-size: 1rem;">Pudło! Sprawdź rozwiązanie:</h5>`;
 
             explanationContainer.innerHTML = `
                 ${feedbackHeader}
-                <p class="mb-0 text-body-secondary" style="font-size: 1.1rem; line-height: 1.6;">${currentProblem.explanation}</p>
+                <p class="mb-0 text-body-secondary" style="font-size: 0.9rem; line-height: 1.5;">${currentProblem.explanation}</p>
             `;
             explanationContainer.style.display = 'block';
+            if (window.MathJax) MathJax.typesetPromise().catch(err => console.log(err));
 
             actionArea.innerHTML = `
-                <button class="btn btn-start px-5 py-2 fs-5" onclick="renderNextProblem()">Następne zadanie</button>
-                <button class="btn btn-outline-secondary px-4 py-2 mt-2 mt-md-0 ms-md-2" onclick="location.reload()">Zakończ</button>
+                <div class="action-buttons">
+                    <button class="btn-next" onclick="renderNextProblem()">Następne zadanie</button>
+                    <button class="btn-end" onclick="location.reload()">Zakończ</button>
+                </div>
             `;
         };
 
-        // Startuj trening od razu po wejściu na podstronę
         startEndlessPhysics();
     </script>
 </body>
