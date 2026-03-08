@@ -112,16 +112,13 @@
         }
 
         function navigateTo(route, src) {
-            const isEmbedded = window.parent && window.parent !== window;
-            const parentFrame = isEmbedded ? window.parent.document.getElementById('content-frame') : null;
-
-            if (parentFrame) {
-                window.parent.history.pushState({ route }, '', `#!/${route}`);
-                parentFrame.src = src;
-                return;
+            // Używamy centralnego routera
+            if (window.parent && window.parent.CerebrRouterAPI) {
+                window.parent.CerebrRouterAPI.navigate(route, src);
+            } else {
+                // Fallback: bezpośrednia nawigacja
+                window.location.href = `../${src}`;
             }
-
-            window.location.href = `../${src}`;
         }
 
         function renderTopics(topics) {

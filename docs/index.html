@@ -176,251 +176,43 @@
     <!-- Bootstrap 5.3 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Skrypt sterujący -->
+    <!-- Centralny Router -->
+    <script src="router.js"></script>
+
+    <!-- Inicjalizacja routingu -->
     <script>
+        // Inicjalizacja routera z iframe
         const iframe = document.getElementById('content-frame');
+        CerebrRouter.init(iframe);
 
-        // Mapa modułów: ścieżka -> data-src
-        const modules = {
-            'math': { src: 'math/index.html', name: 'Matematyka' },
-            'math/linear-equations': { src: 'math/linear-equations.html', name: 'Równania liniowe' },
-            'biology': { src: 'biology/index.html', name: 'Biologia' },
-            'biology/basics': { src: 'biology/basics.html', name: 'Podstawy Biologii' },
-            'biology/ecology': { src: 'biology/ecology.html', name: 'Ekologia' },
-            'biology/nature-conservation': { src: 'biology/nature-conservation.html', name: 'Ochrona Przyrody' },
-            'chemistry': { src: 'chemistry/index.html', name: 'Chemia' },
-            'chemistry/hydroacids': { src: 'chemistry/hydroacids.html', name: 'Kwasy Beztlenowe' },
-            'chemistry/oxyacids': { src: 'chemistry/oxyacids.html', name: 'Kwasy Tlenowe' },
-            'chemistry/acids': { src: 'chemistry/acids.html', name: 'Kwasy' },
-            'chemistry/bases': { src: 'chemistry/bases.html', name: 'Zasady i Wodorotlenki' },
-            'chemistry/salts': { src: 'chemistry/salts.html', name: 'Sole' },
-            'informatics': { src: 'informatics/index.html', name: 'Informatyka' },
-            'informatics/basics': { src: 'informatics/basics.html', name: 'Podstawy Informatyki' },
-            'physics': { src: 'physics/index.html', name: 'Fizyka' },
-            'physics/uniform-motion': { src: 'physics/uniform-motion.html', name: 'Ruch jednostajny' }
-        };
-
-        // Powitalny ekran generowany w locie (wyświetlany, gdy żaden plik nie jest załadowany)
-        const welcomeHTML = `
-            <!DOCTYPE html>
-            <html lang="pl">
-            <head>
-                <meta charset="UTF-8">
-                <!-- Kluczowy tag viewport dla urządzeń mobilnych wewnątrz iframe -->
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-                <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
-                <style>
-                    :root {
-                        --bg-color: #f4f9f9;
-                        --text-color: #333333;
-                        --accent-color: #4ecdc4;
-                        --secondary-text: #666666;
-                    }
-
-                    @media (prefers-color-scheme: dark) {
-                        :root {
-                            --bg-color: #1a1a1a;
-                            --text-color: #ffffff;
-                            --accent-color: #6dd5d1;
-                            --secondary-text: #b0b0b0;
-                        }
-                    }
-
-                    body {
-                        font-family: 'Nunito', sans-serif;
-                        background-color: var(--bg-color);
-                        color: var(--text-color);
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                        justify-content: center;
-                        min-height: 100vh;
-                        margin: 0;
-                        text-align: center;
-                        padding: 2rem 1rem;
-                        transition: background-color 0.3s ease, color 0.3s ease;
-                    }
-                    
-                    h1 { 
-                        color: var(--accent-color); 
-                        font-weight: 800;
-                        margin-bottom: 1.5rem;
-                    }
-                    
-                    p {
-                        color: var(--secondary-text);
-                        max-width: 600px;
-                        margin: 0 auto 1rem;
-                        line-height: 1.6;
-                    }
-
-                    .modules-grid {
-                        display: grid;
-                        grid-template-columns: repeat(2, 1fr);
-                        gap: 1rem;
-                        max-width: 600px;
-                        width: 100%;
-                        margin-top: 2rem;
-                    }
-
-                    .module-card {
-                        background: rgba(78, 205, 196, 0.1);
-                        border: 2px solid var(--accent-color);
-                        border-radius: 15px;
-                        padding: 1.5rem;
-                        cursor: pointer;
-                        transition: all 0.3s ease;
-                    }
-
-                    .module-card:hover {
-                        transform: translateY(-5px);
-                        box-shadow: 0 8px 20px rgba(78, 205, 196, 0.3);
-                        background: rgba(78, 205, 196, 0.2);
-                    }
-
-                    .module-card h3 {
-                        color: var(--accent-color);
-                        font-weight: 700;
-                        margin: 0;
-                        font-size: 1.3rem;
-                    }
-
-                    @media (max-width: 768px) {
-                        .modules-grid {
-                            grid-template-columns: 1fr;
-                        }
-                    }
-                </style>
-            </head>
-            <body>
-                <div>
-                    <h1 class="fs-2 fs-md-1">Witaj w Cerebri.pl!</h1>
-                    <p class="lead fs-6 fs-md-5">
-                        Platforma edukacyjna, która pomoże Ci utrwalić wiedzę z różnych dziedzin nauki.
-                    </p>
-                    <p class="fs-6">
-                        Rozwiązuj interaktywne quizy, ucz się w swoim tempie i sprawdź swoją wiedzę.
-                        Wybierz dział, który Cię interesuje i rozpocznij naukę!
-                    </p>
-                    
-                    <div class="modules-grid">
-                        <div class="module-card" onclick="window.parent.loadContent('math')">
-                            <h3>Matematyka</h3>
-                        </div>
-                        <div class="module-card" onclick="window.parent.loadContent('biology')">
-                            <h3>Biologia</h3>
-                        </div>
-                        <div class="module-card" onclick="window.parent.loadContent('chemistry')">
-                            <h3>Chemia</h3>
-                        </div>
-                        <div class="module-card" onclick="window.parent.loadContent('informatics')">
-                            <h3>Informatyka</h3>
-                        </div>
-                        <div class="module-card" onclick="window.parent.loadContent('physics')">
-                            <h3>Fizyka</h3>
-                        </div>
-                    </div>
-                </div>
-            </body>
-            </html>
-        `;
-
-        // Funkcja resetująca do ekranu startowego
-        function showWelcomeScreen() {
-            iframe.removeAttribute('src'); // Czyścimy ścieżkę do pliku
-            iframe.srcdoc = welcomeHTML;   // Wstrzykujemy ekran startowy
-            
-            // Usuwamy klasę 'active' ze wszystkich linków
-            document.querySelectorAll('.module-link').forEach(l => l.classList.remove('active'));
-        }
-
-        // Funkcja ładująca treść (moduł lub podstronę) na podstawie ścieżki
-        function loadContent(routePath) {
-            const route = modules[routePath];
-            if (!route) return false;
-
-            // Zaznaczanie aktywnego linku (dla głównych modułów)
-            document.querySelectorAll('.module-link').forEach(l => l.classList.remove('active'));
-            
-            // Jeśli to główny moduł (bez slasha), zaznacz go jako aktywny
-            const mainModule = routePath.split('/')[0];
-            const activeLink = document.querySelector(`[data-src="${modules[mainModule]?.src}"]`);
-            if (activeLink) activeLink.classList.add('active');
-
-            // Podmieniamy zawartość iframe
-            iframe.removeAttribute('srcdoc'); // Usuwamy wstrzyknięty ekran startowy
-            iframe.src = route.src;           // Ładujemy plik z odpowiedniej ścieżki
-
-            // Aktualizujemy URL bez przeładowania strony
-            window.history.pushState({ route: routePath }, route.name, `#!/${routePath}`);
-
-            // Ukrywanie menu na telefonach po kliknięciu
-            const navbarCollapse = document.getElementById('navbarNavDropdown');
-            if (navbarCollapse.classList.contains('show')) {
-                const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse);
-                bsCollapse.hide();
-            }
-
-            return true;
-        }
-
-        // Obsługa zmian URL (przycisk wstecz/naprzód)
-        window.addEventListener('popstate', function(e) {
-            if (e.state && e.state.route) {
-                loadContent(e.state.route);
-            } else {
-                showWelcomeScreen();
-                window.history.pushState(null, '', '#!/');
-            }
-        });
-
-        // Inicjalizacja na starcie - sprawdzenie URL i załadowanie odpowiedniej strony
-        function initializeFromUrl() {
-            const hash = window.location.hash;
-            
-            if (hash.startsWith('#!/')) {
-                const routePath = hash.substring(3); // Wyodrębniamy ścieżkę (np. 'chemistry/hydroacids' z '#!/chemistry/hydroacids')
-                
-                if (modules[routePath]) {
-                    // Zamiast push state, używamy replace state na start
-                    loadContent(routePath);
-                    // Zastąp historię, aby nie przewijać wstecz na stronę startową
-                    window.history.replaceState({ route: routePath }, modules[routePath].name, hash);
-                    return;
-                }
-            }
-            
-            // Domyślnie pokaż ekran powitalny
-            showWelcomeScreen();
-            window.history.replaceState(null, '', '#!/');
-        }
-
-        // Uruchom inicjalizację
-        initializeFromUrl();
-
-        // Obsługa kliknięć w menu
+        // Obsługa kliknięć w linki menu - nawigacja do głównych kategorii
         document.querySelectorAll('.module-link').forEach(link => {
             link.addEventListener('click', function(e) {
                 e.preventDefault();
                 
-                // Pobieranie ścieżki (np. math/index.html)
                 const targetSrc = this.getAttribute('data-src');
+                const mainCategories = ['math', 'biology', 'chemistry', 'informatics', 'physics'];
                 
-                // Znalezienie ID modułu na podstawie data-src
-                const moduleId = Object.keys(modules).find(key => modules[key].src === targetSrc);
+                // Znajdź kategorię na podstawie ścieżki
+                const category = mainCategories.find(cat => targetSrc.startsWith(cat));
                 
-                if (moduleId && !moduleId.includes('/')) {
-                    loadContent(moduleId);
+                if (category) {
+                    CerebrRouter.navigate(category);
+                    
+                    // Ukryj menu mobilne (Bootstrap)
+                    const navbarCollapse = document.getElementById('navbarNavDropdown');
+                    if (navbarCollapse && navbarCollapse.classList.contains('show')) {
+                        const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse);
+                        if (bsCollapse) bsCollapse.hide();
+                    }
                 }
             });
         });
 
-        // Powrót do startu po kliknięciu w logo
+        // Powrót do ekranu powitalnego po kliknięciu w logo
         document.getElementById('home-btn').addEventListener('click', function(e) {
             e.preventDefault();
-            showWelcomeScreen();
-            window.history.pushState(null, '', '#!/');
+            CerebrRouter.showWelcome();
         });
     </script>
 </body>

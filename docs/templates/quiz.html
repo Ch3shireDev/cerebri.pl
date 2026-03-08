@@ -321,7 +321,11 @@
         };
 
         const goBack = () => {
-            if(window.parent && window.parent.history) {
+            // Używamy centralnego routera - automatyczne skracanie route
+            if (window.parent && window.parent.CerebrRouterAPI) {
+                window.parent.CerebrRouterAPI.navigateBack();
+            } else if (window.parent && window.parent.history) {
+                // Fallback: bezpośrednia nawigacja do kategorii
                 window.parent.history.pushState({ route: cfg.backRoute }, cfg.backTitle, cfg.backUrl);
                 const frame = window.parent.document.getElementById('content-frame');
                 if(frame) frame.src = cfg.backIndex;
