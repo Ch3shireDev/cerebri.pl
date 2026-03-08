@@ -13,6 +13,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
 
+    <!-- Privacy-friendly analytics by Plausible -->
+    <script async src="https://plausible.io/js/pa-sXb6E-9tkTF0ej3WKhlwu.js"></script>
+    <script>
+    window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+    plausible.init()
+    </script>
+
+
     <style>
         /* Zmienne CSS dla obsługi motywu */
         :root {
@@ -140,6 +148,9 @@
                     <li class="nav-item">
                         <a class="nav-link module-link" href="#" data-src="informatics/index.html">💻 Informatyka</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link module-link" href="#" data-src="physics/index.html">⚛️ Fizyka</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -163,6 +174,7 @@
         // Mapa modułów: ścieżka -> data-src
         const modules = {
             'math': { src: 'math/index.html', name: 'Matematyka' },
+            'math/linear-equations': { src: 'math/linear-equations.html', name: 'Równania liniowe' },
             'biology': { src: 'biology/index.html', name: 'Biologia' },
             'biology/basics': { src: 'biology/basics.html', name: 'Podstawy Biologii' },
             'biology/ecology': { src: 'biology/ecology.html', name: 'Ekologia' },
@@ -174,7 +186,9 @@
             'chemistry/bases': { src: 'chemistry/bases.html', name: 'Zasady i Wodorotlenki' },
             'chemistry/salts': { src: 'chemistry/salts.html', name: 'Sole' },
             'informatics': { src: 'informatics/index.html', name: 'Informatyka' },
-            'informatics/basics': { src: 'informatics/basics.html', name: 'Podstawy Informatyki' }
+            'informatics/basics': { src: 'informatics/basics.html', name: 'Podstawy Informatyki' },
+            'physics': { src: 'physics/index.html', name: 'Fizyka' },
+            'physics/uniform-motion': { src: 'physics/uniform-motion.html', name: 'Ruch jednostajny' }
         };
 
         // Powitalny ekran generowany w locie (wyświetlany, gdy żaden plik nie jest załadowany)
@@ -293,6 +307,9 @@
                         </div>
                         <div class="module-card" onclick="window.parent.loadContent('informatics')">
                             <h3>Informatyka</h3>
+                        </div>
+                        <div class="module-card" onclick="window.parent.loadContent('physics')">
+                            <h3>Fizyka</h3>
                         </div>
                     </div>
                 </div>
