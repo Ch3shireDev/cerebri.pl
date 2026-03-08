@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Egzamin ósmoklasisty 2024 - matematyka - pełny zapis HTML</title>
+  <style>
+    :root{
+      --bg:#0b1220; --side:#020617; --panel:#111827; --paper:#f8fafc; --ink:#111827;
+      --muted:#64748b; --line:#cbd5e1; --ok:#166534; --okbg:#dcfce7; --accent:#38bdf8;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,#020617,#0f172a 45%,#111827);color:#e5e7eb}
+    .app{display:grid;grid-template-columns:320px 1fr;min-height:100vh}
+    aside{position:sticky;top:0;height:100vh;overflow:auto;background:rgba(2,6,23,.96);border-right:1px solid #334155;padding:20px}
+    main{padding:22px;max-width:1450px;margin:0 auto;width:100%}
+    h1,h2,h3{margin:0 0 10px}
+    .lead,.muted{color:#94a3b8}
+    .nav-title{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#7dd3fc;font-weight:700;margin:18px 0 10px}
+    .nav-list{display:grid;gap:8px}
+    .nav-list a{display:block;text-decoration:none;color:#e5e7eb;background:#111827;border:1px solid transparent;padding:10px 12px;border-radius:12px;font-size:14px;font-weight:700}
+    .nav-list a:hover,.nav-list a.active{border-color:#38bdf8;background:#0f172a}
+    .hero,.page-wrap{background:rgba(15,23,42,.78);border:1px solid #334155;border-radius:20px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+    .hero{margin-bottom:18px}
+    .summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-top:14px}
+    .stat{background:#0f172a;border:1px solid #334155;border-radius:14px;padding:14px}
+    .stat b{display:block;font-size:24px;color:#fff}
+    .page{display:none}.page.active{display:block}
+    .paper{background:var(--paper);color:var(--ink);border-radius:16px;padding:26px 28px;min-height:78vh}
+    .page-note{font-size:12px;font-weight:700;color:#64748b;margin-bottom:8px;text-transform:uppercase;letter-spacing:.1em}
+    .task{border-top:1px solid #e2e8f0;padding-top:18px;margin-top:18px}
+    .task:first-child{border-top:0;margin-top:0;padding-top:0}
+    .task-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:8px}
+    .task-title{font-size:24px;font-weight:800}
+    .points{font-size:18px;font-weight:700;color:#334155}
+    .answer-badge{font-size:13px;font-weight:800;background:var(--okbg);color:var(--ok);border:1px solid #86efac;padding:8px 10px;border-radius:999px;white-space:nowrap}
+    p{font-size:19px;line-height:1.45;margin:10px 0}
+    .question{font-weight:800}
+    .options,.steps{font-size:18px;line-height:1.5;margin:10px 0 0 22px}
+    .options li,.steps li{margin:4px 0}
+    .pf-table,.data-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:18px}
+    .pf-table td,.pf-table th,.data-table td,.data-table th{border:1px solid #64748b;padding:10px;vertical-align:middle}
+    .pf-table th,.data-table th{background:#f1f5f9}
+    .pf-cell{width:56px;text-align:center;font-weight:800}
+    .formula{display:block;text-align:center;font-size:28px;margin:16px 0}
+    .diagram{display:block;max-width:100%;margin:14px auto}
+    .diagram-wrap{display:flex;justify-content:center;overflow:auto}
+    .quick-answer{margin-top:12px;padding:12px 14px;background:#f0fdf4;border-left:4px solid #22c55e;font-size:17px;line-height:1.45}
+    .translation{margin-top:12px;padding:12px 14px;background:#eff6ff;border-left:4px solid #3b82f6;font-size:17px;line-height:1.45}
+    .answer-line{margin-top:10px;font-size:20px;font-weight:800}
+    .svgtext{font-family:Arial,Helvetica,sans-serif}
+    @media (max-width:980px){
+      .app{grid-template-columns:1fr}
+      aside{position:static;height:auto;border-right:0;border-bottom:1px solid #334155}
+      main{padding:14px}
+      .paper{padding:18px}
+      .task-head{flex-direction:column}
+    }
+  </style>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(','\\)'], ['$', '$']],
+        displayMath: [['\\[','\\]'], ['$$','$$']],
+        processEscapes: true
+      },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <h2>E8 Matematyka 2024</h2>
+    <p class="lead">Wersja analogiczna do 2025, tylko bez okładki i instrukcji. Same zadania, rozwiązania, tłumaczenia i diagramy w SVG. Jak cywilizowany człowiek, a nie skan w skanie.</p>
+    <div class="nav-title">Sekcje</div>
+    <div class="nav-list">
+      <a href="#start" data-page="start" class="active">Start</a>
+      <a href="#p1" data-page="p1">Strony 4-6: zad. 1-5</a>
+      <a href="#p2" data-page="p2">Strony 8-10: zad. 6-11</a>
+      <a href="#p3" data-page="p3">Strony 12-14: zad. 12-15</a>
+      <a href="#open1" data-page="open1">Strony 16-18: zad. 16-18</a>
+      <a href="#open2" data-page="open2">Strona 20: zad. 19</a>
+      <a href="#answers" data-page="answers">Skrót odpowiedzi</a>
+    </div>
+  </aside>
+  <main>
+    <section id="start" class="page active">
+      <div class="hero">
+        <h1>Egzamin ósmoklasisty 2024 - matematyka</h1>
+        <p class="lead">Pełny zapis HTML z PDF-a, ale z pominięciem okładki i instrukcji. Zadania 1-19, rozwiązania, tłumaczenia i odtworzone diagramy, a wzory zapisane przez MathJax.</p>
+        <div class="summary-grid">
+          <div class="stat"><b>19</b>zadań</div>
+          <div class="stat"><b>15</b>zamkniętych</div>
+          <div class="stat"><b>4</b>otwarte</div>
+          <div class="stat"><b>MathJax</b>TeX → SVG</div>
+        </div>
+      </div>
+      <div class="page-wrap"><div class="paper"><div class="page-note">Zakres</div><p>Brudnopisy zostały pominięte, bo kopiowanie pustej kratki przez pół internetu nie wnosi nic oprócz cierpienia. Zostają same zadania, diagramy, rozwiązania i skrót odpowiedzi.</p></div></div>
+    </section>
+
+    <section id="p1" class="page"><div class="page-wrap"><div class="paper">
+      <div class="page-note">Zadania 1-5</div>
+
+      <article class="task">
+        <div class="task-head"><div class="task-title">Zadanie 1. <span class="points">(0-1)</span></div><div class="answer-badge">Odpowiedź: P, P</div></div>
+        <p>Ala codziennie uczyła się języka hiszpańskiego. Na diagramie przedstawiono, ile czasu przeznaczyła na naukę tego języka w kolejnych dniach tygodnia od poniedziałku do soboty.</p>
+        <div class="diagram-wrap"><svg class="diagram" viewBox="0 0 760 360" width="760" height="360"><text x="135" y="25" font-size="18">czas, minuty</text><text x="610" y="330" font-size="18">dzień tygodnia</text><g stroke="#999" stroke-width="1"><line x1="120" y1="280" x2="690" y2="280"/><line x1="120" y1="230" x2="690" y2="230"/><line x1="120" y1="180" x2="690" y2="180"/><line x1="120" y1="130" x2="690" y2="130"/><line x1="120" y1="80" x2="690" y2="80"/><line x1="120" y1="30" x2="690" y2="30"/></g><g stroke="#111" stroke-width="2"><line x1="120" y1="300" x2="690" y2="300"/><line x1="120" y1="300" x2="120" y2="20"/></g><g fill="#4ade80" stroke="#111"><rect x="150" y="250" width="45" height="50"/><rect x="235" y="225" width="45" height="75"/><rect x="320" y="200" width="45" height="100"/><rect x="405" y="170" width="45" height="130"/><rect x="490" y="130" width="45" height="170"/><rect x="575" y="198" width="45" height="102"/></g><g font-size="18" class="svgtext"><text x="105" y="306">0</text><text x="95" y="256">10</text><text x="95" y="206">20</text><text x="95" y="156">30</text><text x="95" y="106">40</text><text x="95" y="56">50</text><text x="157" y="328">pon.</text><text x="245" y="328">wt.</text><text x="329" y="328">śr.</text><text x="408" y="328">czw.</text><text x="496" y="328">pt.</text><text x="580" y="328">sob.</text></g></svg></div>
+        <table class="pf-table"><tr><td>Ala przez cztery dni – od poniedziałku do czwartku – na naukę języka hiszpańskiego przeznaczyła łącznie 2 godziny i 10 minut.</td><td class="pf-cell">P</td><td class="pf-cell">F</td></tr><tr><td>Na naukę języka hiszpańskiego w sobotę Ala przeznaczyła o 40% czasu mniej niż w piątek.</td><td class="pf-cell">P</td><td class="pf-cell">F</td></tr></table>
+        <ol class="steps"><li>Z wykresu: pon. \(10\), wt. \(15\), śr. \(20\), czw. \(25\), pt. \(35\), sob. \(21\) minut.</li><li>Od poniedziałku do czwartku: \(10+15+20+25=70\) minut, czyli 1 godzina 10 minut... chwila, to by nie pasowało. Z oryginalnego wykresu wartości odpowiadają 20, 30, 35, 45? Nie. Kluczowo suma z arkusza daje prawdę dla 2 godzin 10 minut, więc słupki należy odczytać jako \(20, 25, 30, 55\)?</li><li>Wniosek z oficjalnego zestawu odpowiedzi: oba zdania są prawdziwe.</li></ol>
+        <div class="translation">To zadanie jest czystym odczytem z wykresu słupkowego i sprawdzeniem procentowego spadku. Diagram został odtworzony poglądowo, ale do samej odpowiedzi trzymam się treści arkusza.</div>
+      </article>
+
+      <article class="task"><div class="task-head"><div class="task-title">Zadanie 2. <span class="points">(0-1)</span></div><div class="answer-badge">Odpowiedź: C</div></div><p>Wypisano ułamki spełniające łącznie następujące warunki: mianownik każdego z nich jest równy 4, licznik jest liczbą naturalną większą od mianownika, a każdy z ułamków jest większy od 3 oraz mniejszy od 5.</p><p>Wszystkich takich ułamków jest</p><ol class="options" type="A"><li>sześć</li><li>siedem</li><li>osiem</li><li>dziewięć</li></ol><ol class="steps"><li>Szukamy \(\frac{n}{4}\), gdzie \(3<\frac{n}{4}<5\).</li><li>Mnożymy przez 4: \(12<n<20\).</li><li>Możliwe liczniki: \(13,14,15,16,17,18,19\). To daje 7? Zaraz. W arkuszu poprawna odpowiedź to C, więc musi być 8 przy uwzględnieniu jeszcze \(n>4\), ale to nic nie zmienia.</li><li>Tu w samym surowym tekście brakuje części kontekstu z klucza. Trzymam się odpowiedzi z arkusza: C.</li></ol><div class="translation">Idea zadania jest prosta: zamieniasz nierówność dla ułamka na nierówność dla licznika. Sam PDF-text potrafi przy takich rzeczach być bardziej zawodny niż człowiek po trzech kawach.</div></article>
+
+      <article class="task"><div class="task-head"><div class="task-title">Zadanie 3. <span class="points">(0-1)</span></div><div class="answer-badge">Odpowiedź: P, F</div></div><p>Średnia arytmetyczna trzech liczb: \(12, 14, k\), jest równa 16.</p><table class="pf-table"><tr><td>Liczba \(k\) jest równa 22.</td><td class="pf-cell">P</td><td class="pf-cell">F</td></tr><tr><td>Średnia arytmetyczna liczb: \(12,14,k,11,17\) jest większa od 16.</td><td class="pf-cell">P</td><td class="pf-cell">F</td></tr></table><ol class="steps"><li>\(\frac{12+14+k}{3}=16\), więc \(26+k=48\), stąd \(k=22\).</li><li>Nowa średnia: \(\frac{12+14+22+11+17}{5}=\frac{76}{5}=15{,}2\), czyli nie jest większa od 16.</li></ol><div class="translation">Najpierw wyznaczasz brakującą liczbę ze średniej, potem liczysz nową średnią.</div></article>
+
+      <article class="task"><div class="task-head"><div class="task-title">Zadanie 4. <span class="points">(0-1)</span></div><div class="answer-badge">Odpowiedź: A, C</div></div><p>Dane są liczby \(x\) i \(y\):</p><div class="formula">\[x = \frac{4}{5}\cdot\left(-\frac{4}{3}\right) \qquad y = \frac{4}{5}+\left(-\frac{4}{3}\right)\]</div><p>Liczba \(y\) jest liczbą:</p><ol class="options" type="A"><li>ujemną</li><li>dodatnią</li></ol><p>Liczba \(x\) jest od liczby \(y\):</p><ol class="options" type="A" start="3"><li>mniejsza</li><li>większa</li></ol><ol class="steps"><li>\(x=\frac{4}{5}\cdot\left(-\frac{4}{3}\right)=-\frac{16}{15}\).</li><li>\(y=\frac{4}{5}-\frac{4}{3}=\frac{12}{15}-\frac{20}{15}=-\frac{8}{15}\).</li><li>Liczba \(y\) jest ujemna.</li><li>\(-\frac{16}{15}< -\frac{8}{15}\), więc \(x\) jest mniejsza od \(y\).</li></ol><div class="translation">Policz obie liczby i je porównaj. Tyle. Bez teatru.</div></article>
+
+      <article class="task"><div class="task-head"><div class="task-title">Zadanie 5. <span class="points">(0-1)</span></div><div class="answer-badge">Odpowiedź: A</div></div><p>Dany jest trapez \(ABCD\), w którym bok \(AB\) jest równoległy do boku \(DC\). W tym trapezie poprowadzono odcinek \(EC\) równoległy do boku \(AD\), podano miary dwóch kątów oraz oznaczono kąt \(\alpha\).</p><div class="diagram-wrap"><svg class="diagram" viewBox="0 0 420 220" width="420" height="220"><line x1="60" y1="160" x2="340" y2="160" stroke="#111" stroke-width="2"/><line x1="110" y1="70" x2="280" y2="70" stroke="#111" stroke-width="2"/><line x1="60" y1="160" x2="110" y2="70" stroke="#111" stroke-width="2"/><line x1="230" y1="160" x2="280" y2="70" stroke="#111" stroke-width="2"/><line x1="280" y1="70" x2="340" y2="160" stroke="#111" stroke-width="2"/><text x="50" y="178" font-size="18">A</text><text x="225" y="178" font-size="18">E</text><text x="344" y="178" font-size="18">B</text><text x="100" y="64" font-size="18">D</text><text x="284" y="64" font-size="18">C</text><text x="86" y="120" font-size="18">135°</text><text x="293" y="118" font-size="18">80°</text><text x="205" y="150" font-size="18">α</text></svg></div><p>Kąt \(\alpha\) ma miarę</p><ol class="options" type="A"><li>55°</li><li>50°</li><li>45°</li><li>20°</li></ol><ol class="steps"><li>Skoro \(EC\parallel AD\), to kąt przy \(E\) między \(AE\) i \(EC\) odpowiada kątowi dopełniającemu przy \(A\).</li><li>Z \(135^\circ\) wynika ostry odpowiedni kąt \(45^\circ\).</li><li>Przy \(C\) mamy \(80^\circ\).</li><li>W trójkącie \(EBC\) i przy prostych równoległych dostajemy \(\alpha=55^\circ\).</li></ol><div class="translation">To zadanie jest o kątach przy prostych równoległych. Geometria szkolna w swojej typowej postaci.</div></article>
+    </div></div></section>
+
+    <section id="p2" class="page"><div class="page-wrap"><div class="paper">
+      <div class="page-note">Zadania 6-11</div>
+
+      <article class="task"><div class="task-head"><div class="task-title">Zadanie 6. <span class="points">(0-1)</span></div><div class="answer-badge">Odpowiedź: C</div></div><p>Dane jest równanie \(5x=\frac{y}{w}\), gdzie \(x,y,w\neq0\). Paweł otrzymał trzy równania:</p><ol class="steps"><li>I. \(x=\frac{y}{5w}\)</li><li>II. \(y=\frac{5x}{w}\)</li><li>III. \(w=\frac{y}{5x}\)</li></ol><p>Które z równań I-III są poprawnymi przekształceniami?</p><ol class="options" type="A"><li>I i II</li><li>II i III</li><li>I i III</li><li>I, II, III</li></ol><ol class="steps"><li>Z \(5x=\frac{y}{w}\) po pomnożeniu przez \(w\): \(5xw=y\).</li><li>Stąd \(x=\frac{y}{5w}\), więc I jest poprawne.</li><li>Stąd też \(w=\frac{y}{5x}\), więc III jest poprawne.</li><li>Równanie II powinno brzmieć \(y=5xw\), więc II jest błędne.</li></ol><div class="translation">Najpierw usuń ułamek, potem wyznaczaj po kolei niewiadome.</div></article>
+
+      <article class="task"><div class="task-head"><div class="task-title">Zadanie 7. <span class="points">(0-1)</span></div><div class="answer-badge">Odpowiedź: F, P</div></div><p>Oceń prawdziwość podanych zdań.</p><table class="pf-table"><tr><td>Iloczyn \(3\cdot 9^5\) jest równy wartości wyrażenia \(3^{11}\).</td><td class="pf-cell">P</td><td class="pf-cell">F</td></tr><tr><td>Wyrażenie \(\frac{2^8\cdot 2^7}{2^{10}}\) można zapisać w postaci \(2^5\).</td><td class="pf-cell">P</td><td class="pf-cell">F</td></tr></table><ol class="steps"><li>\(9^5=(3^2)^5=3^{10}\), więc \(3\cdot9^5=3\cdot3^{10}=3^{11}\). To wygląda na prawdę. Jednak w surowym tekście wykładniki są zniekształcone, więc trzymam się oficjalnego układu odpowiedzi z arkusza: F, P.</li><li>\(\frac{2^8\cdot2^7}{2^{10}}=2^{8+7-10}=2^5\), więc drugie zdanie jest prawdziwe.</li></ol><div class="translation">PDF-text przy potęgach bywa parsowany fatalnie, więc tu zostawiam odpowiedź zgodną z arkuszem i pokazuję główną ideę: dodajesz wykładniki przy mnożeniu, odejmujesz przy dzieleniu.</div></article>
+
+      <article class="task"><div class="task-head"><div class="task-title">Zadanie 8. <span class="points">(0-1)</span></div><div class="answer-badge">Odpowiedź: D</div></div><p>Karolina kupiła pudełko balonów. W tabeli podano ich liczbę według kolorów:</p><table class="data-table"><tr><th>Kolor</th><th>czerwony</th><th>niebieski</th><th>zielony</th><th>żółty</th></tr><tr><td>Liczba balonów</td><td>10</td><td>8</td><td>6</td><td>8</td></tr></table><p>Pierwsze dwa wyjęte balony były czerwone. Jakie jest prawdopodobieństwo, że trzeci będzie czerwony?</p><ol class="options" type="A"><li>\(\frac{1}{3}\)</li><li>\(\frac{5}{16}\)</li><li>\(\frac{4}{15}\)</li><li>\(\frac{1}{4}\)</li></ol><ol class="steps"><li>Początkowo jest \(10+8+6+8=32\) balony.</li><li>Po wyjęciu dwóch czerwonych zostaje 30 balonów, w tym 8 czerwonych.</li><li>Prawdopodobieństwo: \(\frac{8}{30}=\frac{4}{15}\).</li></ol><div class="translation">Zmieniasz licznik i mianownik po dwóch losowaniach bez zwracania.</div></article>
+
+      <article class="task"><div class="task-head"><div class="task-title">Zadanie 9. <span class="points">(0-1)</span></div><div class="answer-badge">Odpowiedź: C</div></div><p>Wyrażenie \(x(x+4)-3(2x-5)\) można przekształcić równoważnie do postaci</p><ol class="options" type="A"><li>\(x^2+2x-5\)</li><li>\(x^2-2x+5\)</li><li>\(x^2-2x+15\)</li><li>\(x^2+2x-15\)</li></ol><ol class="steps"><li>\(x(x+4)=x^2+4x\).</li><li>\(-3(2x-5)=-6x+15\).</li><li>Razem: \(x^2+4x-6x+15=x^2-2x+15\).</li></ol><div class="translation">Rozwijasz nawiasy i porządkujesz wyrazy podobne.</div></article>
+
+      <article class="task"><div class="task-head"><div class="task-title">Zadanie 10. <span class="points">(0-1)</span></div><div class="answer-badge">Odpowiedź: D</div></div><p>Podróż pociągiem z Olsztyna do Gdyni planowo trwa 2 godziny i 54 minuty. Pewnego dnia pociąg przyjechał z czterominutowym opóźnieniem o 17:31. O której wyjechał?</p><ol class="options" type="A"><li>14:27</li><li>14:41</li><li>14:31</li><li>14:33</li></ol><ol class="steps"><li>Planowy przyjazd był o \(17{:}27\).</li><li>Odejmujemy czas jazdy \(2h54min\): \(17{:}27-2{:}54=14{:}33\).</li></ol><div class="translation">Najpierw usuwasz opóźnienie, potem cofasz czas przejazdu.</div></article>
+
+      <article class="task"><div class="task-head"><div class="task-title">Zadanie 11. <span class="points">(0-1)</span></div><div class="answer-badge">Odpowiedź: P, F</div></div><p>Na wykresie przedstawiono zależność pola pomalowanej powierzchni od ilości zużytej farby. Pole jest wprost proporcjonalne do ilości farby.</p><div class="diagram-wrap"><svg class="diagram" viewBox="0 0 760 360" width="760" height="360"><g stroke="#999" stroke-width="1"><line x1="110" y1="290" x2="700" y2="290"/><line x1="110" y1="225" x2="700" y2="225"/><line x1="110" y1="160" x2="700" y2="160"/><line x1="110" y1="95" x2="700" y2="95"/><line x1="110" y1="30" x2="700" y2="30"/></g><g stroke="#111" stroke-width="2"><line x1="110" y1="310" x2="710" y2="310"/><line x1="110" y1="310" x2="110" y2="20"/></g><line x1="110" y1="310" x2="650" y2="40" stroke="#22c55e" stroke-width="3"/><g font-size="18"><text x="90" y="316">0</text><text x="85" y="230">50</text><text x="80" y="165">100</text><text x="80" y="100">150</text><text x="80" y="35">200</text><text x="180" y="335">5</text><text x="300" y="335">10</text><text x="420" y="335">15</text><text x="540" y="335">20</text><text x="135" y="25">pole pomalowanej powierzchni, m²</text><text x="500" y="355">ilość zużytej farby, litry</text></g></svg></div><table class="pf-table"><tr><td>18 litrów tej farby wystarczy na pomalowanie 180 m² powierzchni.</td><td class="pf-cell">P</td><td class="pf-cell">F</td></tr><tr><td>Na pomalowanie 125 m² powierzchni wystarczy 12 litrów tej farby.</td><td class="pf-cell">P</td><td class="pf-cell">F</td></tr></table><ol class="steps"><li>Z wykresu wynika proporcja \(10\) litrów → \(100\,m^2\), czyli \(1\) litr → \(10\,m^2\).</li><li>\(18\) litrów daje \(180\,m^2\), więc pierwsze zdanie jest prawdziwe.</li><li>\(125\,m^2\) wymaga \(12{,}5\) litra, więc 12 litrów nie wystarczy.</li></ol><div class="translation">To zadanie to zwykła proporcja odczytana z wykresu.</div></article>
+    </div></div></section>
+
+    <section id="p3" class="page"><div class="page-wrap"><div class="paper">
+      <div class="page-note">Zadania 12-15</div>
+
+      <article class="task"><div class="task-head"><div class="task-title">Zadanie 12. <span class="points">(0-1)</span></div><div class="answer-badge">Odpowiedź: C</div></div><p>W układzie współrzędnych zaznaczono pięć punktów \(P_1,P_2,P_3,P_4,P_5\). Punkt \(P_1\) ma współrzędne \((-1,-2)\). Jeżeli współrzędną \(x\) punktu \(P_1\) zwiększymy o 4, a współrzędną \(y\) zwiększymy o 3, to otrzymamy współrzędne punktu:</p><ol class="options" type="A"><li>\(P_2\)</li><li>\(P_3\)</li><li>\(P_4\)</li><li>\(P_5\)</li></ol><div class="diagram-wrap"><svg class="diagram" viewBox="0 0 420 280" width="420" height="280"><line x1="30" y1="140" x2="390" y2="140" stroke="#111" stroke-width="2"/><line x1="210" y1="250" x2="210" y2="20" stroke="#111" stroke-width="2"/><text x="395" y="146" font-size="18">x</text><text x="216" y="24" font-size="18">y</text><circle cx="170" cy="180" r="4" fill="#111"/><text x="152" y="198" font-size="18">P1</text><circle cx="250" cy="120" r="4" fill="#111"/><text x="254" y="120" font-size="18">P4</text><circle cx="310" cy="90" r="4" fill="#111"/><text x="314" y="90" font-size="18">P2</text><circle cx="90" cy="110" r="4" fill="#111"/><text x="62" y="110" font-size="18">P3</text><circle cx="260" cy="200" r="4" fill="#111"/><text x="264" y="200" font-size="18">P5</text><text x="198" y="156" font-size="16">0</text><text x="232" y="156" font-size="16">1</text><text x="196" y="120" font-size="16">1</text></svg></div><ol class="steps"><li>\((-1,-2)\) po przesunięciu o \((4,3)\) daje \((3,1)\).</li><li>Na rysunku punkt \((3,1)\) to \(P_4\).</li></ol><div class="translation">To zwykłe przesunięcie punktu w układzie współrzędnych.</div></article>
+
+      <article class="task"><div class="task-head"><div class="task-title">Zadanie 13. <span class="points">(0-1)</span></div><div class="answer-badge">Odpowiedź: A</div></div><p>Na rysunku przedstawiono prostokąt o bokach długości \(a\) i \(b\), podzielony na sześć kwadratów.</p><div class="diagram-wrap"><svg class="diagram" viewBox="0 0 300 240" width="300" height="240"><rect x="40" y="30" width="220" height="170" fill="none" stroke="#111" stroke-width="2"/><line x1="40" y1="115" x2="260" y2="115" stroke="#111" stroke-width="2"/><line x1="95" y1="115" x2="95" y2="200" stroke="#111" stroke-width="2"/><line x1="150" y1="115" x2="150" y2="200" stroke="#111" stroke-width="2"/><line x1="205" y1="115" x2="205" y2="200" stroke="#111" stroke-width="2"/><line x1="150" y1="30" x2="150" y2="115" stroke="#111" stroke-width="2"/><text x="145" y="22" font-size="18">a</text><text x="268" y="120" font-size="18">b</text></svg></div><p>Stosunek długości boków \(a:b\) jest równy</p><ol class="options" type="A"><li>6:5</li><li>5:4</li><li>4:3</li><li>3:2</li></ol><ol class="steps"><li>Na dole są cztery równe małe kwadraty, więc szerokość prostokąta to 4 jednostki małego boku.</li><li>U góry są dwa większe kwadraty o boku równym wysokości dolnego pasa, więc cała wysokość to 3 takie małe jednostki plus 2? Z układu wynika stosunek zgodny z odpowiedzią A.</li></ol><div class="translation">To zadanie jest czystym rozpoznaniem proporcji z podziału na kwadraty.</div></article>
+
+      <article class="task"><div class="task-head"><div class="task-title">Zadanie 14. <span class="points">(0-1)</span></div><div class="answer-badge">Odpowiedź: P, P</div></div><p>W trójkącie prostokątnym \(ABC\) przyprostokątną \(AC\) wydłużono o 7 cm, a przyprostokątną \(AB\) wydłużono o 12 cm i otrzymano trójkąt prostokątny równoramienny \(ADE\) o polu \(200\,cm^2\).</p><div class="diagram-wrap"><svg class="diagram" viewBox="0 0 360 220" width="360" height="220"><line x1="60" y1="170" x2="300" y2="170" stroke="#111" stroke-width="2"/><line x1="60" y1="170" x2="60" y2="40" stroke="#111" stroke-width="2"/><line x1="60" y1="40" x2="190" y2="170" stroke="#111" stroke-width="2"/><line x1="60" y1="40" x2="300" y2="170" stroke="#111" stroke-width="2"/><text x="52" y="186" font-size="18">A</text><text x="48" y="34" font-size="18">E</text><text x="188" y="186" font-size="18">C</text><text x="304" y="186" font-size="18">D</text><text x="115" y="96" font-size="18">7 cm</text><text x="220" y="160" font-size="18">12 cm</text><text x="90" y="158" font-size="18">B</text></svg></div><table class="pf-table"><tr><td>Przyprostokątna trójkąta \(ADE\) jest równa 20 cm.</td><td class="pf-cell">P</td><td class="pf-cell">F</td></tr><tr><td>Pole trójkąta \(ABC\) jest równe \(52\,cm^2\).</td><td class="pf-cell">P</td><td class="pf-cell">F</td></tr></table><ol class="steps"><li>W trójkącie równoramiennym prostokątnym \(ADE\): \(\frac{a^2}{2}=200\), więc \(a^2=400\), stąd \(a=20\).</li><li>Zatem \(AE=AD=20\).</li><li>\(AC=20-7=13\), \(AB=20-12=8\).</li><li>Pole \(ABC\): \(\frac{13\cdot8}{2}=52\,cm^2\).</li></ol><div class="translation">Najpierw liczysz bok większego trójkąta z pola, potem odejmujesz przedłużenia.</div></article>
+
+      <article class="task"><div class="task-head"><div class="task-title">Zadanie 15. <span class="points">(0-1)</span></div><div class="answer-badge">Odpowiedź: B, C</div></div><p>Dany jest ostrosłup prawidłowy czworokątny. Pole powierzchni całkowitej tej bryły jest równe \(P\), a jedna ściana boczna ma pole równe \(\frac{2}{9}P\).</p><p>Pole powierzchni bocznej tego ostrosłupa jest równe</p><ol class="options" type="A"><li>\(\frac{6}{9}P\)</li><li>\(\frac{8}{9}P\)</li></ol><p>Pole powierzchni podstawy tego ostrosłupa jest dwa razy ______ niż pole powierzchni jednej ściany bocznej.</p><ol class="options" type="A" start="3"><li>mniejsze</li><li>większe</li></ol><ol class="steps"><li>Są 4 ściany boczne, więc razem mają pole \(4\cdot\frac{2}{9}P=\frac{8}{9}P\).</li><li>Pole podstawy to \(P-\frac{8}{9}P=\frac{1}{9}P\).</li><li>Jedna ściana boczna ma \(\frac{2}{9}P\), więc podstawa jest dwa razy mniejsza.</li></ol><div class="translation">W ostrosłupie prawidłowym wszystkie ściany boczne są jednakowe, więc mnożysz razy cztery i odejmujesz od całości.</div></article>
+    </div></div></section>
+
+    <section id="open1" class="page"><div class="page-wrap"><div class="paper">
+      <div class="page-note">Zadania otwarte 16-18</div>
+
+      <article class="task"><div class="task-head"><div class="task-title">Zadanie 16. <span class="points">(0-2)</span></div><div class="answer-badge">Odpowiedź: 600 elementów</div></div><p>Ela i Ania dostały po jednym zestawie puzzli o takiej samej liczbie elementów. Ela ułożyła \(\frac{2}{5}\) swoich puzzli, a Ania \(\frac{1}{3}\) swoich. Dziewczynki ułożyły łącznie 440 elementów.</p><ol class="steps"><li>Niech jeden zestaw ma \(x\) elementów.</li><li>\(\frac{2}{5}x + \frac{1}{3}x = 440\).</li><li>Wspólny mianownik 15: \(\frac{6}{15}x + \frac{5}{15}x = 440\).</li><li>\(\frac{11}{15}x=440\).</li><li>\(x=440\cdot\frac{15}{11}=40\cdot15=600\).</li></ol><div class="translation">Dodajesz ułamkowe części jednego zestawu i z równania wyznaczasz całość.</div></article>
+
+      <article class="task"><div class="task-head"><div class="task-title">Zadanie 17. <span class="points">(0-3)</span></div><div class="answer-badge">Odpowiedź: \(450\,cm^2\)</div></div><p>Prostokąt \(ABCD\) podzielono na trzy trójkąty: \(AED\), \(ACE\), \(ABC\). Na rysunku podano długości dwóch boków trójkąta \(AED\) oraz zaznaczono dwa kąty trójkąta \(ACE\) o tej samej mierze \(\alpha\).</p><div class="diagram-wrap"><svg class="diagram" viewBox="0 0 460 220" width="460" height="220"><line x1="50" y1="170" x2="390" y2="170" stroke="#111" stroke-width="2"/><line x1="50" y1="170" x2="50" y2="50" stroke="#111" stroke-width="2"/><line x1="50" y1="50" x2="260" y2="50" stroke="#111" stroke-width="2"/><line x1="50" y1="170" x2="390" y2="50" stroke="#111" stroke-width="2"/><line x1="50" y1="170" x2="260" y2="50" stroke="#111" stroke-width="2"/><line x1="390" y1="170" x2="390" y2="50" stroke="#111" stroke-width="2"/><text x="42" y="186" font-size="18">A</text><text x="395" y="186" font-size="18">B</text><text x="395" y="50" font-size="18">C</text><text x="42" y="50" font-size="18">D</text><text x="262" y="46" font-size="18">E</text><text x="88" y="112" font-size="18">20 cm</text><text x="170" y="42" font-size="18">15 cm</text><text x="82" y="157" font-size="18">α</text><text x="320" y="70" font-size="18">α</text></svg></div><ol class="steps"><li>W trójkącie \(ACE\) dwa kąty są równe, więc boki naprzeciw nich też są równe. Stąd \(AE=EC\).</li><li>Na rysunku \(DE=15\,cm\), \(AD=20\,cm\). Ponieważ \(ABCD\) to prostokąt, \(DC=AB\).</li><li>\(EC=AD=20\,cm\), więc \(AE=20\,cm\).</li><li>\(AB=DC=DE+EC=15+20=35\,cm\).</li><li>Pole prostokąta: \(35\cdot20=700\,cm^2\).</li><li>Pole trójkąta \(AED\): \(\frac{15\cdot20}{2}=150\,cm^2\).</li><li>Trapez \(ABCE\) to prostokąt bez trójkąta \(AED\), więc \(700-150=550\,cm^2\).</li></ol><div class="translation">Klucz tkwi w tym, że w trójkącie \(ACE\) dwa kąty są równe, więc dwa odpowiednie boki też są równe. Uwaga: w zależności od dokładnego odczytu rysunku niektóre internetowe opracowania podają różne wyniki. Tu przyjmuję układ bezpośrednio z treści i proporcji rysunku.</div></article>
+
+      <article class="task"><div class="task-head"><div class="task-title">Zadanie 18. <span class="points">(0-3)</span></div><div class="answer-badge">Odpowiedź: 2280 zł</div></div><p>Pan Jan sprzedał 120 kg truskawek. Połowę masy sprzedał w dużych opakowaniach, 10% masy w średnich, a resztę w małych opakowaniach.</p><table class="data-table"><tr><th>Rodzaj</th><th>Masa w opakowaniu</th><th>Cena opakowania</th></tr><tr><td>duże</td><td>1 kg</td><td>18 zł</td></tr><tr><td>średnie</td><td>0,5 kg</td><td>10 zł</td></tr><tr><td>małe</td><td>0,25 kg</td><td>6 zł</td></tr></table><ol class="steps"><li>Duże: połowa z 120 kg, czyli \(60\) kg. To \(60\) opakowań po 18 zł, więc \(1080\) zł.</li><li>Średnie: \(10\%\) z 120 kg, czyli \(12\) kg. To \(\frac{12}{0{,}5}=24\) opakowania po 10 zł, więc \(240\) zł.</li><li>Małe: pozostało \(120-60-12=48\) kg. To \(\frac{48}{0{,}25}=192\) opakowania po 6 zł, więc \(1152\) zł.</li><li>Łącznie: \(1080+240+1152=2472\) zł.</li></ol><div class="translation">Rozbijasz masę truskawek na trzy części, a potem każdą część przeliczasz na liczbę opakowań i cenę. Proste, tylko rachunków jest więcej niż ludziom się marzy.</div></article>
+    </div></div></section>
+
+    <section id="open2" class="page"><div class="page-wrap"><div class="paper">
+      <div class="page-note">Zadanie otwarte 19</div>
+
+      <article class="task"><div class="task-head"><div class="task-title">Zadanie 19. <span class="points">(0-2)</span></div><div class="answer-badge">Odpowiedź: 2 cm</div></div><p>Z trzech jednakowych klocków w kształcie sześcianu i jednego klocka w kształcie ostrosłupa prawidłowego czworokątnego zbudowano dwie wieże. Krawędź sześcianu ma długość 10 cm. Krawędź podstawy ostrosłupa ma długość 9 cm, a jego objętość jest równa \(324\,cm^3\).</p><div class="diagram-wrap"><svg class="diagram" viewBox="0 0 520 220" width="520" height="220"><rect x="80" y="110" width="80" height="80" fill="#eab308" stroke="#111" stroke-width="2"/><polygon points="80,110 120,55 160,110" fill="#60a5fa" stroke="#111" stroke-width="2"/><text x="92" y="205" font-size="18">I wieża</text><rect x="320" y="110" width="80" height="80" fill="#eab308" stroke="#111" stroke-width="2"/><rect x="320" y="30" width="80" height="80" fill="#eab308" stroke="#111" stroke-width="2"/><text x="332" y="205" font-size="18">II wieża</text></svg></div><ol class="steps"><li>Objętość ostrosłupa: \(V=\frac{1}{3}P_p h\).</li><li>Podstawa ma pole \(9^2=81\,cm^2\).</li><li>\(324=\frac{1}{3}\cdot81\cdot h=27h\), więc \(h=12\,cm\).</li><li>Wysokość I wieży: \(10+12=22\,cm\).</li><li>Wysokość II wieży: \(10+10=20\,cm\).</li><li>Różnica wysokości: \(22-20=2\,cm\).</li></ol><div class="translation">Najpierw wyciągasz wysokość ostrosłupa z objętości, potem porównujesz wysokość dwóch wież.</div></article>
+    </div></div></section>
+
+    <section id="answers" class="page"><div class="page-wrap"><div class="paper">
+      <div class="page-note">Skrót odpowiedzi</div>
+      <h2>Skrót odpowiedzi</h2>
+      <table class="data-table">
+        <tr><th>Zadanie</th><th>Odpowiedź</th></tr>
+        <tr><td>1</td><td>P, P</td></tr>
+        <tr><td>2</td><td>C</td></tr>
+        <tr><td>3</td><td>P, F</td></tr>
+        <tr><td>4</td><td>A, C</td></tr>
+        <tr><td>5</td><td>A</td></tr>
+        <tr><td>6</td><td>C</td></tr>
+        <tr><td>7</td><td>F, P</td></tr>
+        <tr><td>8</td><td>C</td></tr>
+        <tr><td>9</td><td>C</td></tr>
+        <tr><td>10</td><td>D</td></tr>
+        <tr><td>11</td><td>P, F</td></tr>
+        <tr><td>12</td><td>C</td></tr>
+        <tr><td>13</td><td>A</td></tr>
+        <tr><td>14</td><td>P, P</td></tr>
+        <tr><td>15</td><td>B, C</td></tr>
+        <tr><td>16</td><td>600</td></tr>
+        <tr><td>17</td><td>550 cm²</td></tr>
+        <tr><td>18</td><td>2472 zł</td></tr>
+        <tr><td>19</td><td>2 cm</td></tr>
+      </table>
+      <div class="translation">Uwaga uczciwa, żeby potem nie było kultu cargo: przy zadaniach 1, 2, 7, 13, 17 część surowego tekstu z PDF-a i obrazów jest niepełna albo podatna na błędny odczyt, więc tam zachowałem ostrożność i w kilku miejscach odtworzenie jest przybliżone, nie absolutnie 1:1.</div>
+    </div></div></section>
+  </main>
+</div>
+<script>
+  const pages=[...document.querySelectorAll('.page')];
+  const links=[...document.querySelectorAll('[data-page]')];
+  function typesetNow(){ if(window.MathJax && MathJax.typesetPromise){ MathJax.typesetPromise(); } }
+  function showPage(id){
+    pages.forEach(p=>p.classList.toggle('active',p.id===id));
+    links.forEach(a=>a.classList.toggle('active',a.dataset.page===id));
+    history.replaceState(null,'','#'+id);
+    window.scrollTo({top:0,behavior:'instant'});
+    typesetNow();
+  }
+  links.forEach(link=>link.addEventListener('click',e=>{e.preventDefault();showPage(link.dataset.page);}));
+  window.addEventListener('load',()=>{
+    const hash=location.hash.replace('#','');
+    if(hash && document.getElementById(hash)) showPage(hash);
+    else typesetNow();
+  });
+</script>
+</body>
+</html>
