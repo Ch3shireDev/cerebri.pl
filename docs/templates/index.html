@@ -183,6 +183,21 @@
                 return;
             }
 
+            // Ustaw route na /#!/<category> jeśli jeszcze nie jest ustawiony
+            const expectedHash = `#!/${moduleName}`;
+            if (window.parent && window.parent.location) {
+                const parentHash = window.parent.location.hash;
+                if (parentHash !== expectedHash) {
+                    // Użyj routera jeśli dostępny
+                    if (window.parent.CerebrRouterAPI) {
+                        window.parent.CerebrRouterAPI.navigate(moduleName);
+                    } else {
+                        // Fallback: ustaw hash bezpośrednio
+                        window.parent.location.hash = expectedHash;
+                    }
+                }
+            }
+
             const script = document.createElement('script');
             script.src = `../${moduleName}/index.js`;
 
