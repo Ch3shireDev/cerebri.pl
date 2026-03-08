@@ -1,8 +1,7 @@
 /**
  * Cerebri.pl - Centralny Router
  * Zarządzanie nawigacją Hash-based dla całej aplikacji
- * 
- * Obsługuje routing w formacie:
+ * * Obsługuje routing w formacie:
  * - /#!/<category> - strona główna kategorii (np. /#!/biology)
  * - /#!/<category>/<quiz-name> - konkretny quiz (np. /#!/biology/basics)
  */
@@ -82,134 +81,6 @@
     };
 
     // ========================================
-    // EKRAN POWITALNY HTML
-    // ========================================
-    
-    const WELCOME_SCREEN_HTML = `
-        <!DOCTYPE html>
-        <html lang="pl">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-            <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
-            <style>
-                :root {
-                    --bg-color: #f4f9f9;
-                    --text-color: #333333;
-                    --accent-color: #4ecdc4;
-                    --secondary-text: #666666;
-                }
-
-                @media (prefers-color-scheme: dark) {
-                    :root {
-                        --bg-color: #1a1a1a;
-                        --text-color: #ffffff;
-                        --accent-color: #6dd5d1;
-                        --secondary-text: #b0b0b0;
-                    }
-                }
-
-                body {
-                    font-family: 'Nunito', sans-serif;
-                    background-color: var(--bg-color);
-                    color: var(--text-color);
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    min-height: 100vh;
-                    margin: 0;
-                    text-align: center;
-                    padding: 2rem 1rem;
-                    transition: background-color 0.3s ease, color 0.3s ease;
-                }
-                
-                h1 { 
-                    color: var(--accent-color); 
-                    font-weight: 800;
-                    margin-bottom: 1.5rem;
-                }
-                
-                p {
-                    color: var(--secondary-text);
-                    max-width: 600px;
-                    margin: 0 auto 1rem;
-                    line-height: 1.6;
-                }
-
-                .modules-grid {
-                    display: grid;
-                    grid-template-columns: repeat(2, 1fr);
-                    gap: 1rem;
-                    max-width: 600px;
-                    width: 100%;
-                    margin-top: 2rem;
-                }
-
-                .module-card {
-                    background: rgba(78, 205, 196, 0.1);
-                    border: 2px solid var(--accent-color);
-                    border-radius: 15px;
-                    padding: 1.5rem;
-                    cursor: pointer;
-                    transition: all 0.3s ease;
-                }
-
-                .module-card:hover {
-                    transform: translateY(-5px);
-                    box-shadow: 0 8px 20px rgba(78, 205, 196, 0.3);
-                    background: rgba(78, 205, 196, 0.2);
-                }
-
-                .module-card h3 {
-                    color: var(--accent-color);
-                    font-weight: 700;
-                    margin: 0;
-                    font-size: 1.3rem;
-                }
-
-                @media (max-width: 768px) {
-                    .modules-grid {
-                        grid-template-columns: 1fr;
-                    }
-                }
-            </style>
-        </head>
-        <body>
-            <div>
-                <h1 class="fs-2 fs-md-1">Witaj w Cerebri.pl!</h1>
-                <p class="lead fs-6 fs-md-5">
-                    Platforma edukacyjna, która pomoże Ci utrwalić wiedzę z różnych dziedzin nauki.
-                </p>
-                <p class="fs-6">
-                    Rozwiązuj interaktywne quizy, ucz się w swoim tempie i sprawdź swoją wiedzę.
-                    Wybierz dział, który Cię interesuje i rozpocznij naukę!
-                </p>
-                
-                <div class="modules-grid">
-                    <div class="module-card" onclick="window.parent.CerebrRouterAPI.navigate('math')">
-                        <h3>Matematyka</h3>
-                    </div>
-                    <div class="module-card" onclick="window.parent.CerebrRouterAPI.navigate('biology')">
-                        <h3>Biologia</h3>
-                    </div>
-                    <div class="module-card" onclick="window.parent.CerebrRouterAPI.navigate('chemistry')">
-                        <h3>Chemia</h3>
-                    </div>
-                    <div class="module-card" onclick="window.parent.CerebrRouterAPI.navigate('informatics')">
-                        <h3>Informatyka</h3>
-                    </div>
-                    <div class="module-card" onclick="window.parent.CerebrRouterAPI.navigate('physics')">
-                        <h3>Fizyka</h3>
-                    </div>
-                </div>
-            </div>
-        </body>
-        </html>
-    `;
-
-    // ========================================
     // KLASA ROUTER
     // ========================================
     
@@ -247,13 +118,18 @@
         }
 
         /**
-         * Pokazuje ekran powitalny
+         * Pokazuje ekran powitalny bezpośrednio z elementu w index.html
          */
         showWelcome() {
             if (!this.iframe) return;
             
+            // Wyczyść zawartość iframe'a
             this.iframe.removeAttribute('src');
-            this.iframe.srcdoc = WELCOME_SCREEN_HTML;
+            this.iframe.removeAttribute('srcdoc');
+            
+            // Przełącz widoczność kontenerów
+            document.getElementById('iframe-wrapper').classList.add('d-none');
+            document.getElementById('welcome-screen').classList.remove('d-none');
             
             // Zaktualizuj URL
             if (window.location.hash !== '#!/') {
@@ -282,6 +158,10 @@
                 console.error('Router nie zainicjalizowany - brak iframe');
                 return false;
             }
+
+            // Przełącz widoczność - ukryj powitanie, pokaż iframe
+            document.getElementById('welcome-screen').classList.add('d-none');
+            document.getElementById('iframe-wrapper').classList.remove('d-none');
 
             // WAŻNE: Najpierw zaktualizuj URL, POTEM zmień iframe
             // To zapewnia, że URL jest zawsze zsynchronizowany z zawartością
@@ -341,6 +221,10 @@
          */
         navigateToCategory(categoryRoute, categorySrc) {
             if (!this.iframe) return;
+
+            // Przełącz widoczność - ukryj powitanie, pokaż iframe
+            document.getElementById('welcome-screen').classList.add('d-none');
+            document.getElementById('iframe-wrapper').classList.remove('d-none');
 
             const route = this.routes[categoryRoute];
             const routeName = route ? route.name : 'Powrót';
@@ -440,20 +324,6 @@
             }
             return null;
         }
-
-        /**
-         * Ukrywa menu mobilne po nawigacji (Bootstrap)
-         * @private
-         */
-        _hideMobileMenu() {
-            const navbarCollapse = document.getElementById('navbarNavDropdown');
-            if (navbarCollapse && navbarCollapse.classList.contains('show')) {
-                const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse);
-                if (bsCollapse) {
-                    bsCollapse.hide();
-                }
-            }
-        }
     }
 
     // ========================================
@@ -474,15 +344,6 @@
          * @param {string} src - Ścieżka do pliku (opcjonalnie, dla kompatybilności)
          */
         navigate: function(route, src) {
-            console.log('[CerebrRouterAPI] navigate() wywołane z route:', route, 'src:', src);
-            
-            // Ten kod ZAWSZE wykonuje się w parent window context
-            // (bo jest wywoływany jako window.parent.CerebrRouterAPI.navigate())
-            // Więc router jest już dostępny bezpośrednio
-            console.log('[CerebrRouterAPI] Używam głównego routera');
-
-            // ZAWSZE używaj standardowej nawigacji routera
-            // Router automatycznie znajdzie src na podstawie route
             router.navigate(route);
         },
 
@@ -491,18 +352,12 @@
          * @param {string|null} fromRoute - Opcjonalny route, z którego wracamy
          */
         navigateBack: function(fromRoute = null) {
-            console.log('[CerebrRouterAPI] navigateBack() wywołane z fromRoute:', fromRoute);
-            
-            // Ten kod ZAWSZE wykonuje się w parent window context
-            // Jeśli nie podano fromRoute, odczytaj aktualny route z URL
             if (!fromRoute) {
                 const hash = window.location.hash;
                 if (hash.startsWith('#!/')) {
                     fromRoute = hash.substring(3) || null;
                 }
-                console.log('[CerebrRouterAPI] Odczytany fromRoute z URL:', fromRoute);
             }
-
             return router.navigateBack(fromRoute);
         },
 

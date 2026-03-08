@@ -39,6 +39,7 @@
             --text-secondary: #666666;
             --navbar-gradient: linear-gradient(135deg, #ff6b6b, #feca57);
             --navbar-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            --welcome-accent: #4ecdc4;
         }
 
         @media (prefers-color-scheme: dark) {
@@ -49,6 +50,7 @@
                 --text-secondary: #b0b0b0;
                 --navbar-gradient: linear-gradient(135deg, #cc5555, #cc9933);
                 --navbar-shadow: 0 4px 10px rgba(0,0,0,0.5);
+                --welcome-accent: #6dd5d1;
             }
         }
 
@@ -61,7 +63,7 @@
             color: var(--text-primary);
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Zapobiega przewijaniu głównej strony, przewijamy tylko iframe */
+            overflow: hidden; /* Zapobiega przewijaniu głównej strony, przewijamy tylko iframe lub stronę powitalną */
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
@@ -98,13 +100,77 @@
             background-color: rgba(255, 255, 255, 0.2);
         }
 
-        /* Główny kontener i obszar iframe */
+        /* Główny kontener i obszar roboczy */
         .main-container {
             flex-grow: 1;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
+        /* --- Ekran Powitalny --- */
+        #welcome-screen {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem 1rem;
+            overflow-y: auto; /* Pozwala przewijać menu powitalne na bardzo małych ekranach */
+        }
+        
+        #welcome-screen h1 { 
+            color: var(--welcome-accent); 
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+        }
+        
+        #welcome-screen p {
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 1rem;
+            line-height: 1.6;
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            max-width: 600px;
+            width: 100%;
+            margin-top: 2rem;
+        }
+
+        .module-card {
+            background: rgba(78, 205, 196, 0.1);
+            border: 2px solid var(--welcome-accent);
+            border-radius: 15px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .module-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(78, 205, 196, 0.3);
+            background: rgba(78, 205, 196, 0.2);
+        }
+
+        .module-card h3 {
+            color: var(--welcome-accent);
+            font-weight: 700;
+            margin: 0;
+            font-size: 1.3rem;
+        }
+
+        @media (max-width: 768px) {
+            .modules-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* --- Iframe --- */
         .iframe-wrapper {
             flex-grow: 1;
             border: none;
@@ -131,6 +197,11 @@
             width: 1.2em;
             height: 1.2em;
         }
+
+        /* Klasa do przełączania widoków */
+        .d-none {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
@@ -144,33 +215,55 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
                 <ul class="navbar-nav ms-auto text-center mt-2 mt-lg-0">
-                    <!-- Główne działy - ładują podstrony z folderów do iframe -->
-                    <li class="nav-item">
-                        <a class="nav-link module-link" href="#" data-src="math/index.html">🧮 Matematyka</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link module-link" href="#" data-src="biology/index.html">🧬 Biologia</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link module-link" href="#" data-src="chemistry/index.html">🧪 Chemia</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link module-link" href="#" data-src="informatics/index.html">💻 Informatyka</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link module-link" href="#" data-src="physics/index.html">⚛️ Fizyka</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link module-link" href="#" data-src="math/index.html">🧮 Matematyka</a></li>
+                    <li class="nav-item"><a class="nav-link module-link" href="#" data-src="biology/index.html">🧬 Biologia</a></li>
+                    <li class="nav-item"><a class="nav-link module-link" href="#" data-src="chemistry/index.html">🧪 Chemia</a></li>
+                    <li class="nav-item"><a class="nav-link module-link" href="#" data-src="informatics/index.html">💻 Informatyka</a></li>
+                    <li class="nav-item"><a class="nav-link module-link" href="#" data-src="physics/index.html">⚛️ Fizyka</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Główny obszar roboczy z iframe. Użycie responsywnych paddingów Bootstrapa -->
+    <!-- Główny obszar roboczy -->
     <main class="main-container p-0 p-md-2">
-        <div class="iframe-wrapper">
-            <!-- Iframe ładujący zewnętrzne pliki -->
+        
+        <!-- Ekran Powitalny (wbudowany w index.html zamiast router.js) -->
+        <div id="welcome-screen">
+            <h1 class="fs-2 fs-md-1">Witaj w Cerebri.pl!</h1>
+            <p class="lead fs-6 fs-md-5">
+                Platforma edukacyjna, która pomoże Ci utrwalić wiedzę z różnych dziedzin nauki.
+            </p>
+            <p class="fs-6 text-secondary">
+                Rozwiązuj interaktywne quizy, ucz się w swoim tempie i sprawdź swoją wiedzę.
+                Wybierz dział, który Cię interesuje i rozpocznij naukę!
+            </p>
+            
+            <div class="modules-grid">
+                <!-- Po przeniesieniu do indexu wywołujemy wprost CerebrRouter -->
+                <div class="module-card" onclick="CerebrRouter.navigate('math')">
+                    <h3>Matematyka</h3>
+                </div>
+                <div class="module-card" onclick="CerebrRouter.navigate('biology')">
+                    <h3>Biologia</h3>
+                </div>
+                <div class="module-card" onclick="CerebrRouter.navigate('chemistry')">
+                    <h3>Chemia</h3>
+                </div>
+                <div class="module-card" onclick="CerebrRouter.navigate('informatics')">
+                    <h3>Informatyka</h3>
+                </div>
+                <div class="module-card" onclick="CerebrRouter.navigate('physics')">
+                    <h3>Fizyka</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Obszar Iframe (ukryty na start) -->
+        <div id="iframe-wrapper" class="iframe-wrapper d-none">
             <iframe id="content-frame" title="Okno Modułu Edukacyjnego"></iframe>
         </div>
+
     </main>
 
     <!-- Bootstrap 5.3 JS -->
