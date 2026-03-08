@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script>
+        (function () {
+            const media = window.matchMedia('(prefers-color-scheme: dark)');
+            const applyTheme = (isDark) => document.documentElement.setAttribute('data-bs-theme', isDark ? 'dark' : 'light');
+            applyTheme(media.matches);
+            media.addEventListener('change', (e) => applyTheme(e.matches));
+        })();
+    </script>
+    <title>Test: Podstawy Biologii - Cerebri.pl</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['\\(', '\\)']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+    <div id="quiz-container">
+        <p class="text-center mt-5">Ładowanie mechanizmu quizu...</p>
+    </div>
+
+    <script>
+        window.quizConfig = {
+            backRoute: 'biology',
+            backTitle: 'Biologia',
+            backUrl: '#!/biology',
+            backIndex: 'biology/index.html',
+            correctFeedback: "✅ Zgadza się!",
+            wrongFeedback: "❌ Niestety błąd."
+        };
+
+        window.quizResults = {
+            perfect: {
+                emoji: "🧬",
+                title: "Ekspert biologii!",
+                suggestion: "Perfekcyjny wynik! Budowa komórki i procesy życiowe nie mają przed Tobą tajemnic."
+            },
+            great: {
+                emoji: "🔬",
+                title: "Świetny wynik!",
+                suggestion: "Brakuje Ci bardzo niewiele do 100%. Świetnie rozumiesz podstawy biologii."
+            },
+            good: {
+                emoji: "🌱",
+                title: "Dobry początek!",
+                suggestion: "Masz solidne podstawy, ale możesz uzyskać znacznie lepszy wynik. Rozwiąż test ponownie."
+            },
+            poor: {
+                emoji: "🦠",
+                title: "Wymaga powtórki",
+                suggestion: "Przejrzyj podstawowe pojęcia biologiczne i spróbuj ponownie, aby utrwalić wiedzę."
+            }
+        };
+
+        window.questions = [
+            { q: "Jaka jest podstawowa jednostka strukturalna i funkcjonalna każdego organizmu?", options: ["Tkanka", "Komórka", "Narząd", "Białko"], correct: 1, explanation: "Komórka to najmniejsza zdolna do życia i w pełni funkcjonująca jednostka organizmów." },
+            { q: "Proces, w którym rośliny wytwarzają pokarm przy udziale światła to:", options: ["Oddychanie", "Chemosynteza", "Fotosynteza", "Transpiracja"], correct: 2, explanation: "Fotosynteza pozwala roślinom przekształcać energię świetlną w energię chemiczną zmagazynowaną w pokarmie." },
+            { q: "Który związek odpowiada za transport tlenu we krwi?", options: ["Insulina", "Hemoglobina", "Keratyna", "Miozyna"], correct: 1, explanation: "Hemoglobina to czerwony barwnik w erytrocytach (krwinkach czerwonych), który wiąże i transportuje tlen." },
+            { q: "Gdzie w komórce eukariotycznej zachodzi oddychanie tlenowe?", options: ["W jądrze komórkowym", "W chloroplastach", "W rybosomach", "W mitochondriach"], correct: 3, explanation: "Mitochondria pełnią funkcję 'elektrowni' komórki, uwalniając energię (ATP) w procesie oddychania tlenowego." },
+            { q: "Ile par chromosomów występuje w komórkach somatycznych człowieka?", options: ["21", "22", "23", "46"], correct: 2, explanation: "Zdrowy człowiek posiada w komórkach somatycznych 23 pary chromosomów, co daje łącznie 46 chromosomów." },
+            { q: "Który kwas nukleinowy jest głównym nośnikiem informacji genetycznej?", options: ["RNA", "DNA", "ATP", "NADH"], correct: 1, explanation: "DNA (kwas deoksyrybonukleinowy) jest głównym nośnikiem informacji genetycznej w komórkach." },
+            { q: "Co jest największym narządem w ciele człowieka?", options: ["Wątroba", "Skóra", "Płuca", "Jelito cienkie"], correct: 1, explanation: "Skóra to największy narząd pokrywający całe ciało, pełniący funkcje ochronne i termoregulacyjne." },
+            { q: "Jaka tkanka roślinna przewodzi wodę i sole mineralne od korzeni w górę?", options: ["Łyko", "Drewno (ksylem)", "Miękisz", "Skórka"], correct: 1, explanation: "Drewno (ksylem) transportuje wodę wraz z rozpuszczonymi solami mineralnymi od korzeni do pozostałych części rośliny." },
+            { q: "Kto sformułował teorię ewolucji poprzez dobór naturalny?", options: ["Gregor Mendel", "Ludwik Pasteur", "Karol Darwin", "Oswald Avery"], correct: 2, explanation: "Karol Darwin w swoim dziele 'O powstawaniu gatunków' opisał mechanizm ewolucji poprzez dobór naturalny." },
+            { q: "Która z wymienionych grup NIE jest królestwem organizmów żywych?", options: ["Zwierzęta", "Rośliny", "Grzyby", "Wirusy"], correct: 3, explanation: "Wirusy nie mają budowy komórkowej i nie przejawiają samodzielnie funkcji życiowych, dlatego nie zaliczamy ich do organizmów." },
+            { q: "Co jest głównym produktem limfocytów B (część układu odpornościowego)?", options: ["Erytrocyty", "Przeciwciała", "Płytki krwi", "Antygeny"], correct: 1, explanation: "Limfocyty B produkują specyficzne białka zwane przeciwciałami, które neutralizują antygeny (patogeny)." },
+            { q: "Jaki hormon obniża poziom glukozy we krwi?", options: ["Adrenalina", "Glukagon", "Insulina", "Tyroksyna"], correct: 2, explanation: "Insulina, produkowana przez trzustkę, odpowiada za obniżanie stężenia glukozy we krwi." },
+            { q: "W której części oka powstaje obraz wzrokowy?", options: ["Na rogówce", "W soczewce", "Na siatkówce", "W tęczówce"], correct: 2, explanation: "Siatkówka to wewnętrzna błona oka zawierająca komórki światłoczułe, na której powstaje odwrócony obraz." },
+            { q: "Która z wymienionych tkanek jest tkanką łączną płynną?", options: ["Tkanka tłuszczowa", "Krew", "Tkanka kostna", "Tkanka chrzęstna"], correct: 1, explanation: "Krew to wyjątkowa tkanka łączna, której substancją międzykomórkową jest płynne osocze." },
+            { q: "Jaki gaz jest pobierany przez rośliny podczas fotosyntezy?", options: ["Tlen", "Dwutlenek węgla", "Azot", "Wodór"], correct: 1, explanation: "Rośliny pobierają z powietrza dwutlenek węgla (CO2) i wykorzystują go do produkcji związków organicznych." },
+            { q: "Jakie białko jest głównym budulcem włosów i paznokci?", options: ["Kolagen", "Elastyna", "Keratyna", "Fibryna"], correct: 2, explanation: "Keratyna to twarde, wytrzymałe białko strukturalne budujące włosy, paznokcie i naskórek." },
+            { q: "Jak nazywa się proces podziału komórki, w którym powstają dwie identyczne komórki potomne?", options: ["Mitoza", "Mejoza", "Zapłodnienie", "Koniugacja"], correct: 0, explanation: "Mitoza prowadzi do powstania dwóch identycznych genetycznie komórek o takiej samej liczbie chromosomów." },
+            { q: "Do zwierząt stałocieplnych należą:", options: ["Płazy i gady", "Ryby i ssaki", "Ptaki i ssaki", "Owady i ptaki"], correct: 2, explanation: "Tylko ptaki i ssaki posiadają fizjologiczne mechanizmy pozwalające na utrzymanie stałej temperatury ciała." },
+            { q: "Co jest głównym narządem wymiany gazowej u ryb?", options: ["Płuca", "Tchawki", "Skrzela", "Skóra"], correct: 2, explanation: "Skrzela są przystosowane do pobierania tlenu rozpuszczonego w środowisku wodnym." },
+            { q: "Która witamina może być syntetyzowana w skórze człowieka pod wpływem promieniowania UV?", options: ["Witamina A", "Witamina C", "Witamina D", "Witamina K"], correct: 2, explanation: "Witamina D (D3) jest syntetyzowana w naskórku z pochodnej cholesterolu pod wpływem światła słonecznego." }
+        ];
+
+        fetch('../templates/quiz.html')
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                doc.querySelectorAll('style').forEach(s => document.head.appendChild(s));
+                
+                const container = document.getElementById('quiz-container');
+                container.innerHTML = doc.body.innerHTML;
+                
+                doc.querySelectorAll('script').forEach(oldScript => {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = oldScript.textContent;
+                    document.body.appendChild(newScript);
+                });
+            })
+            .catch(err => {
+                document.getElementById('quiz-container').innerHTML = `<p class="text-danger text-center">Błąd ładowania quizu. Upewnij się, że używasz serwera HTTP.</p>`;
+            });
+    </script>
+</body>
+</html>
