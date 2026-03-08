@@ -16,7 +16,7 @@
     
     const ROUTES = {
         'math': { 
-            src: 'math/index.html', 
+            src: 'templates/index.html?module=math', 
             name: 'Matematyka' 
         },
         'math/linear-equations': { 
@@ -24,7 +24,7 @@
             name: 'Równania liniowe' 
         },
         'biology': { 
-            src: 'biology/index.html', 
+            src: 'templates/index.html?module=biology', 
             name: 'Biologia' 
         },
         'biology/basics': { 
@@ -40,7 +40,7 @@
             name: 'Ochrona Przyrody' 
         },
         'chemistry': { 
-            src: 'chemistry/index.html', 
+            src: 'templates/index.html?module=chemistry', 
             name: 'Chemia' 
         },
         'chemistry/hydroacids': { 
@@ -64,7 +64,7 @@
             name: 'Sole' 
         },
         'informatics': { 
-            src: 'informatics/index.html', 
+            src: 'templates/index.html?module=informatics', 
             name: 'Informatyka' 
         },
         'informatics/basics': { 
@@ -72,7 +72,7 @@
             name: 'Podstawy Informatyki' 
         },
         'physics': { 
-            src: 'physics/index.html', 
+            src: 'templates/index.html?module=physics', 
             name: 'Fizyka' 
         },
         'physics/uniform-motion': { 
@@ -297,7 +297,10 @@
 
             // Załaduj zawartość w iframe
             this.iframe.removeAttribute('srcdoc');
-            this.iframe.src = route.src;
+
+            // Użyj absolutnego URL, aby uniknąć problemów z kontekstem ścieżek
+            const absoluteSrc = new URL(route.src, window.location.href).href;
+            this.iframe.src = absoluteSrc;
 
             return true;
         }
@@ -387,12 +390,9 @@
 
             // Znajdź główną kategorię (np. 'biology' z 'biology/basics')
             const mainCategory = routePath.split('/')[0];
-            const mainRoute = this.routes[mainCategory];
 
-            if (!mainRoute) return;
-
-            // Znajdź i oznacz odpowiedni link w menu
-            const activeLink = document.querySelector(`[data-src="${mainRoute.src}"]`);
+            // Linki w menu mają data-src w formie '<category>/index.html'
+            const activeLink = document.querySelector(`[data-src^="${mainCategory}/"]`);
             if (activeLink) {
                 activeLink.classList.add('active');
             }
@@ -471,24 +471,19 @@
         /**
          * Nawigacja do route'a - użycie w szablonach
          * @param {string} route - Ścieżka routingu
-         * @param {string} src - Ścieżka do pliku (opcjonalnie)
+         * @param {string} src - Ścieżka do pliku (opcjonalnie, dla kompatybilności)
          */
         navigate: function(route, src) {
-            // Jeśli jesteśmy w iframe, odwołaj się do routera w parent
-            const targetRouter = window.parent && window.parent.CerebrRouter 
-                ? window.parent.CerebrRouter 
-                : router;
+            console.log('[CerebrRouterAPI] navigate() wywołane z route:', route, 'src:', src);
+            
+            // Ten kod ZAWSZE wykonuje się w parent window context
+            // (bo jest wywoływany jako window.parent.CerebrRouterAPI.navigate())
+            // Więc router jest już dostępny bezpośrednio
+            console.log('[CerebrRouterAPI] Używam głównego routera');
 
-            // Jeśli podano src, użyj go do nawigacji
-            if (src && window.parent && window.parent.history) {
-                window.parent.history.pushState({ route }, '', `#!/${route}`);
-                const frame = window.parent.document.getElementById('content-frame');
-                if (frame) frame.src = src;
-                return;
-            }
-
-            // W przeciwnym razie użyj standardowej nawigacji
-            targetRouter.navigate(route);
+            // ZAWSZE używaj standardowej nawigacji routera
+            // Router automatycznie znajdzie src na podstawie route
+            router.navigate(route);
         },
 
         /**
@@ -496,20 +491,19 @@
          * @param {string|null} fromRoute - Opcjonalny route, z którego wracamy
          */
         navigateBack: function(fromRoute = null) {
-            const targetRouter = window.parent && window.parent.CerebrRouter 
-                ? window.parent.CerebrRouter 
-                : router;
-
-            // Jeśli nie podano fromRoute, odczytaj aktualny route z parent window
+            console.log('[CerebrRouterAPI] navigateBack() wywołane z fromRoute:', fromRoute);
+            
+            // Ten kod ZAWSZE wykonuje się w parent window context
+            // Jeśli nie podano fromRoute, odczytaj aktualny route z URL
             if (!fromRoute) {
-                const targetWindow = window.parent && window.parent !== window ? window.parent : window;
-                const hash = targetWindow.location.hash;
+                const hash = window.location.hash;
                 if (hash.startsWith('#!/')) {
                     fromRoute = hash.substring(3) || null;
                 }
+                console.log('[CerebrRouterAPI] Odczytany fromRoute z URL:', fromRoute);
             }
 
-            return targetRouter.navigateBack(fromRoute);
+            return router.navigateBack(fromRoute);
         },
 
         /**
@@ -518,22 +512,14 @@
          * @param {string} categorySrc - Ścieżka do kategorii
          */
         navigateToCategory: function(categoryRoute, categorySrc) {
-            const targetRouter = window.parent && window.parent.CerebrRouter 
-                ? window.parent.CerebrRouter 
-                : router;
-
-            targetRouter.navigateToCategory(categoryRoute, categorySrc);
+            router.navigateToCategory(categoryRoute, categorySrc);
         },
 
         /**
-         * Zwraca aktualny route (z perspektywy parent lub bieżącego okna)
+         * Zwraca aktualny route z URL parent window
          */
         getCurrentRoute: function() {
-            const targetWindow = window.parent && window.parent !== window 
-                ? window.parent 
-                : window;
-                
-            const hash = targetWindow.location.hash;
+            const hash = window.location.hash;
             if (hash.startsWith('#!/')) {
                 const route = hash.substring(3);
                 return route || null;
