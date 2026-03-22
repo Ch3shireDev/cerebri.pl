@@ -347,7 +347,7 @@
         function startQuiz() {
             if (questions.length === 0) return;
             if (countdownTimeout) clearTimeout(countdownTimeout);
-            shuffleArray(questions);
+            if (cfg.shuffleQuestions !== false) shuffleArray(questions);
             currentQuestion = 0;
             score = 0;
             points = 0;
