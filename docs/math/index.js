@@ -30,10 +30,16 @@ window.MODULE_INDEX_DATA = {
             src: 'math/linear-equations.html'
         },
         {
+            title: 'Egzamin Ósmoklasisty 2025',
+            description: 'Zadania z matematyki przygotowujące do egzaminu ósmoklasisty 2025.',
+            route: 'math/egzamin-2025',
+            src: 'math/egzamin-2025.html'
+        },
+        {
             title: 'Ułamki i Procenty',
             description: 'Obliczanie ułamków zwykłych, dziesiętnych oraz procentów w zadaniach praktycznych.',
             disabled: true,
             buttonLabel: 'Wkrótce'
-        }
+        },
     ]
 };

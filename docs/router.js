@@ -22,6 +22,10 @@
             src: 'math/linear-equations.html', 
             name: 'Równania liniowe' 
         },
+        'math/egzamin-2025': { 
+            src: 'math/egzamin-2025.html', 
+            name: 'Egzamin Ósmoklasisty 2025' 
+        },
         'biology': { 
             src: 'templates/index.html?module=biology', 
             name: 'Biologia' 

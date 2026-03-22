@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script>
+        (function () {
+            const media = window.matchMedia('(prefers-color-scheme: dark)');
+            const applyTheme = (isDark) => document.documentElement.setAttribute('data-bs-theme', isDark ? 'dark' : 'light');
+            applyTheme(media.matches);
+            media.addEventListener('change', (e) => applyTheme(e.matches));
+        })();
+    </script>
+    <title>Test: Egzamin ósmoklasisty 2025 – matematyka (zadania zamknięte) - Cerebri.pl</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['\\(', '\\)']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+    <div id="quiz-container">
+        <p class="text-center mt-5">Ładowanie mechanizmu quizu...</p>
+    </div>
+
+    <script>
+        window.quizConfig = {
+            backRoute: 'math',
+            backTitle: 'Matematyka',
+            backUrl: '#!/math',
+            backIndex: 'math/index.html',
+            correctFeedback: "✅ Poprawnie!",
+            wrongFeedback: "❌ To nie jest poprawna odpowiedź."
+        };
+
+        window.quizResults = {
+            perfect: {
+                emoji: "🏆",
+                title: "Wynik perfekcyjny",
+                suggestion: "Bardzo dobrze. Wszystkie zadania zamknięte zostały rozwiązane poprawnie."
+            },
+            great: {
+                emoji: "📘",
+                title: "Bardzo dobry wynik",
+                suggestion: "Masz bardzo dobre opanowanie materiału. Pojedyncze błędy nie zaburzają całości obrazu."
+            },
+            good: {
+                emoji: "🧮",
+                title: "Dobry wynik",
+                suggestion: "Podstawy są opanowane, ale część typów zadań wymaga jeszcze utrwalenia."
+            },
+            poor: {
+                emoji: "📐",
+                title: "Potrzebna powtórka",
+                suggestion: "Warto wrócić do działań na ułamkach, procentach, geometrii i zadań tekstowych."
+            }
+        };
+        
+window.questions = [
+    {
+        q: "Aldona chce kupić deskorolkę za 180 zł. Z wykresu wynika, że w styczniu odłożyła 50 zł, a w lutym 40 zł. Jaki procent potrzebnej kwoty odłożyła łącznie w styczniu i lutym?",
+        options: ["45%", "50%", "55%", "60%"],
+        correct: 1,
+        explanation: "W styczniu i lutym Aldona odłożyła razem \\(50+40=90\\) zł. Porównujemy tę kwotę z ceną deskorolki: \\(\\frac{90}{180}=\\frac{1}{2}=50\\%\\)."
+    },
+    {
+        q: "Aldona chce kupić deskorolkę za 180 zł. Z wykresu wynika, że w styczniu odłożyła 50 zł, a w marcu 60 zł. O ile procent kwota odłożona w marcu była większa od kwoty odłożonej w styczniu?",
+        options: ["10%", "15%", "20%", "25%"],
+        correct: 2,
+        explanation: "Różnica wynosi \\(60-50=10\\) zł. Odnosimy ją do kwoty ze stycznia: \\(\\frac{10}{50}=0{,}2=20\\%\\)."
+    },
+    {
+        q: "Wartość wyrażenia \\(\\left(2{,}4 - 5\\frac{1}{3}\\right) : (-2)\\) jest równa",
+        options: ["\\(-1\\frac{8}{15}\\)", "\\(-1\\frac{7}{15}\\)", "\\(1\\frac{7}{15}\\)", "\\(1\\frac{8}{15}\\)"],
+        correct: 2,
+        explanation: "Zamieniamy liczby na ułamki zwykłe: \\(2{,}4=\\frac{12}{5}\\), \\(5\\frac{1}{3}=\\frac{16}{3}\\). Następnie \\(\\frac{12}{5}-\\frac{16}{3}=\\frac{36}{15}-\\frac{80}{15}=-\\frac{44}{15}\\). Po podzieleniu przez \\(-2\\) otrzymujemy \\(\\frac{22}{15}=1\\frac{7}{15}\\)."
+    },
+    {
+        q: "Która z liczb 91, 92, 95, 97 przy dzieleniu przez 7 daje resztę 1?",
+        options: ["91", "92", "95", "97"],
+        correct: 1,
+        explanation: "Sprawdzamy kolejne liczby. \\(91=7\\cdot13\\), więc daje resztę 0. \\(92=7\\cdot13+1\\), więc daje resztę 1. To poprawna odpowiedź."
+    },
+    {
+        q: "Średnia arytmetyczna czterech liczb \\(a,b,c,d\\) jest równa 9, a średnia dwóch liczb \\(e,f\\) jest równa 6. O ile suma liczb \\(a,b,c,d\\) jest większa od sumy liczb \\(e,f\\)?",
+        options: ["3", "24", "30", "36"],
+        correct: 1,
+        explanation: "Suma czterech liczb wynosi \\(4\\cdot 9=36\\). Suma dwóch liczb wynosi \\(2\\cdot 6=12\\). Różnica tych sum to \\(36-12=24\\)."
+    },
+    {
+        q: "Średnia arytmetyczna czterech liczb \\(a,b,c,d\\) jest równa 9, a średnia dwóch liczb \\(e,f\\) jest równa 6. Jaka jest średnia arytmetyczna wszystkich sześciu liczb \\(a,b,c,d,e,f\\)?",
+        options: ["8", "7{,}5", "9", "6"],
+        correct: 0,
+        explanation: "Suma czterech pierwszych liczb to \\(4\\cdot9=36\\), a suma dwóch kolejnych to \\(2\\cdot6=12\\). Łączna suma sześciu liczb wynosi \\(48\\). Średnia arytmetyczna to \\(\\frac{48}{6}=8\\)."
+    },
+    {
+        q: "Z wzoru \\(L = 2a + 2b + c\\) wyznaczono poprawnie wielkość \\(a\\). Które równanie jest prawidłowe?",
+        options: ["\\(a = \\frac{L-2b-c}{2}\\)", "\\(a = \\frac{L-2b+c}{2}\\)", "\\(a = L+2b-c\\)", "\\(a = L-2b-c\\)"],
+        correct: 0,
+        explanation: "Od obu stron równania odejmujemy \\(2b\\) i \\(c\\): \\(2a=L-2b-c\\). Następnie dzielimy obie strony przez 2 i otrzymujemy \\(a=\\frac{L-2b-c}{2}\\)."
+    },
+    {
+        q: "W pudełku są piłki fioletowe, białe i czarne. Fioletowych jest \\(x\\), białych \\(4x\\), a czarnych o 3 więcej niż białych. Łączną liczbę piłek opisuje wyrażenie",
+        options: ["\\(9x+3\\)", "\\(9x-3\\)", "\\(6x+3\\)", "\\(6x-3\\)"],
+        correct: 0,
+        explanation: "Piłek fioletowych jest \\(x\\), białych \\(4x\\), a czarnych \\(4x+3\\). Suma wszystkich piłek wynosi \\(x+4x+(4x+3)=9x+3\\)."
+    },
+    {
+        q: "Dane jest wyrażenie \\(K = \\frac{1}{9}\\cdot\\sqrt{\\frac{1}{16}} - \\frac{1}{16}\\cdot\\sqrt{\\frac{1}{9}}\\). Czy wyrażenie \\(K\\) ma wartość ujemną?",
+        options: ["Prawda", "Fałsz"],
+        correct: 1,
+        explanation: "Obliczamy: \\(\\sqrt{\\frac{1}{16}}=\\frac{1}{4}\\) oraz \\(\\sqrt{\\frac{1}{9}}=\\frac{1}{3}\\). Stąd \\(K=\\frac{1}{9}\\cdot\\frac{1}{4}-\\frac{1}{16}\\cdot\\frac{1}{3}=\\frac{1}{36}-\\frac{1}{48}=\\frac{1}{144}\\), czyli liczba dodatnia. Zdanie jest fałszywe."
+    },
+    {
+        q: "Dane są wyrażenia \\(K = \\frac{1}{9}\\cdot\\sqrt{\\frac{1}{16}} - \\frac{1}{16}\\cdot\\sqrt{\\frac{1}{9}}\\) oraz \\(L = 9\\cdot\\sqrt{16} - 16\\cdot\\sqrt{9}\\). Czy wartość wyrażenia \\(L\\) jest większa od wartości wyrażenia \\(K\\)?",
+        options: ["Prawda", "Fałsz"],
+        correct: 1,
+        explanation: "Najpierw obliczamy \\(K\\): \\(K=\\frac{1}{144}\\). Następnie \\(L=9\\cdot4-16\\cdot3=36-48=-12\\). Liczba \\(-12\\) nie jest większa od \\(\\frac{1}{144}\\), więc zdanie jest fałszywe."
+    },
+    {
+        q: "Wartość wyrażenia \\(8^6 : 4^3\\) zapisana w postaci potęgi liczby 2 jest równa",
+        options: ["\\(2^2\\)", "\\(2^3\\)", "\\(2^4\\)", "\\(2^{12}\\)"],
+        correct: 3,
+        explanation: "Zapisujemy liczby jako potęgi liczby 2: \\(8=2^3\\), \\(4=2^2\\). Otrzymujemy \\((2^3)^6 : (2^2)^3 = 2^{18} : 2^6 = 2^{12}\\)."
+    },
+    {
+        q: "Rowerzysta pokonał 100 m z prędkością \\(5\\,\\frac{m}{s}\\). Czas przejazdu wynosi",
+        options: ["50 sekund", "20 sekund", "500 sekund", "200 sekund"],
+        correct: 1,
+        explanation: "Korzystamy ze wzoru \\(t=\\frac{s}{v}\\). Otrzymujemy \\(t=\\frac{100}{5}=20\\) sekund."
+    },
+    {
+        q: "Na loterii jest 72 losy. Wygrywają losy od 1 do 9 oraz od 46 do 72. Prawdopodobieństwo wylosowania pustego losu jest równe",
+        options: ["\\(\\frac{26}{72}\\)", "\\(\\frac{27}{72}\\)", "\\(\\frac{35}{72}\\)", "\\(\\frac{36}{72}\\)"],
+        correct: 3,
+        explanation: "Losów wygrywających od 1 do 9 jest 9, a od 46 do 72 jest \\(72-46+1=27\\). Razem daje to \\(9+27=36\\) losów wygrywających. Pustych losów jest więc \\(72-36=36\\), zatem szukane prawdopodobieństwo to \\(\\frac{36}{72}\\)."
+    },
+    {
+        q: "W trójkącie prostokątnym \\(DBC\\) dane są \\(|DB|=30\\,cm\\) i \\(|DC|=50\\,cm\\). Czy pole trójkąta \\(DBC\\) jest równe \\(600\\,cm^2\\)?",
+        options: ["Prawda", "Fałsz"],
+        correct: 0,
+        explanation: "Z twierdzenia Pitagorasa: \\(BC=\\sqrt{50^2-30^2}=\\sqrt{2500-900}=\\sqrt{1600}=40\\). Pole trójkąta \\(DBC\\) wynosi \\(\\frac{30\\cdot40}{2}=600\\,cm^2\\). Zdanie jest prawdziwe."
+    },
+    {
+        q: "Dany jest trójkąt prostokątny \\(ABC\\). Na środku boku \\(AB\\) zaznaczono punkt \\(D\\), a odcinek \\(DC\\) dzieli trójkąt na dwa trójkąty \\(ADC\\) i \\(DBC\\). Ponadto \\(|AD|=|DB|=30\\,cm\\) oraz \\(|DC|=50\\,cm\\). Czy pole trójkąta \\(ABC\\) jest dwa razy większe od pola trójkąta \\(ADC\\)?",
+        options: ["Prawda", "Fałsz"],
+        correct: 0,
+        explanation: "Ponieważ \\(|AD|=|DB|=30\\,cm\\), mamy \\(|AB|=60\\,cm\\). W trójkącie prostokątnym \\(DBC\\) obliczamy \\(BC=\\sqrt{50^2-30^2}=40\\,cm\\). Pole \\(ABC\\) wynosi więc \\(\\frac{60\\cdot40}{2}=1200\\,cm^2\\), a pole \\(ADC\\): \\(\\frac{30\\cdot40}{2}=600\\,cm^2\\). Zatem pole \\(ABC\\) jest dwa razy większe od pola \\(ADC\\)."
+    },
+    {
+        q: "Na osi liczbowej zaznaczono punkty \\(A\\), \\(B\\), \\(C\\). Odcinek \\(AC\\) podzielono na 6 równych części. Wiadomo, że dwa zaznaczone punkty pośrednie mają współrzędne 56 i 83, a między nimi są trzy równe odcinki. Czy współrzędna punktu \\(C\\) jest liczbą parzystą?",
+        options: ["Prawda", "Fałsz"],
+        correct: 1,
+        explanation: "Jedna część ma długość \\(\\frac{83-56}{3}=9\\). Przesuwając się po osi co 9 jednostek, otrzymujemy kolejne współrzędne: \\(47, 56, 65, 74, 83, 92, 101\\). Zatem \\(C=101\\), a 101 jest liczbą nieparzystą. Zdanie jest fałszywe."
+    },
+    {
+        q: "Na osi liczbowej zaznaczono punkty \\(A\\), \\(B\\), \\(C\\). Odcinek \\(AC\\) podzielono na 6 równych części. Wiadomo, że dwa zaznaczone punkty pośrednie mają współrzędne 56 i 83, a między nimi są trzy równe odcinki. Czy współrzędna punktu \\(B\\) jest liczbą mniejszą od 74?",
+        options: ["Prawda", "Fałsz"],
+        correct: 1,
+        explanation: "Jedna część ma długość \\(\\frac{83-56}{3}=9\\). Kolejne współrzędne to \\(47, 56, 65, 74, 83, 92, 101\\), więc punkt \\(B\\) ma współrzędną \\(74\\). Nie jest to liczba mniejsza od 74, lecz jej równa. Zdanie jest fałszywe."
+    },
+    {
+        q: "Trapez \\(ABCD\\) podzielono na trzy figury: kwadrat \\(AEGD\\), trójkąt \\(EFG\\) i romb \\(FBCG\\). Z rysunku wynika, że bok kwadratu ma długość 6, odcinek \\(EF\\) ma długość 8, a boki rombu mają długość 10. Obwód trapezu \\(ABCD\\) jest równy",
+        options: ["56", "72", "88", "120"],
+        correct: 0,
+        explanation: "Kwadrat ma bok 6, więc \\(AE=DG=AD=6\\). Romb ma wszystkie boki równe 10, więc \\(FB=BC=CG=10\\). Odcinek \\(EF\\) ma długość 8, dlatego \\(AB=AE+EF+FB=6+8+10=24\\), a \\(DC=DG+GC=6+10=16\\). Obwód wynosi \\(24+10+16+6=56\\)."
+    },
+    {
+        q: "W równoległoboku \\(ABCD\\) dane są punkty \\(A=(-3,-2)\\), \\(C=(4,2)\\), \\(D=(-1,2)\\). Współrzędne punktu \\(B\\) to",
+        options: ["\\((4,-2)\\)", "\\((3,-2)\\)", "\\((2,-2)\\)", "\\((6,-2)\\)"],
+        correct: 2,
+        explanation: "Wyznaczamy wektor \\(\\overrightarrow{DC}=(4-(-1),2-2)=(5,0)\\). W równoległoboku \\(\\overrightarrow{AB}=\\overrightarrow{DC}\\), więc \\(B=A+\\overrightarrow{DC}=(-3,-2)+(5,0)=(2,-2)\\)."
+    },
+    {
+        q: "Pole powierzchni całkowitej prostopadłościanu o krawędziach 5, 6 i 7 jest równe",
+        options: ["107", "172", "210", "214"],
+        correct: 3,
+        explanation: "Stosujemy wzór \\(P_c=2(ab+ac+bc)\\). Otrzymujemy \\(P_c=2(5\\cdot6+5\\cdot7+6\\cdot7)=2(30+35+42)=2\\cdot107=214\\)."
+    }
+];
+
+        fetch('../templates/quiz.html')
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+
+                doc.querySelectorAll('style').forEach(s => document.head.appendChild(s));
+
+                const container = document.getElementById('quiz-container');
+                container.innerHTML = doc.body.innerHTML;
+
+                doc.querySelectorAll('script').forEach(oldScript => {
+                    const newScript = document.createElement('script');
+                    newScript.textContent = oldScript.textContent;
+                    document.body.appendChild(newScript);
+                });
+            })
+            .catch(err => {
+                document.getElementById('quiz-container').innerHTML = `<p class="text-danger text-center">Błąd ładowania quizu. Upewnij się, że używasz serwera HTTP.</p>`;
+            });
+    </script>
+</body>
+</html>
